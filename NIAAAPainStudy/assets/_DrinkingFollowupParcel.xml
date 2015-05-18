@@ -1,0 +1,545 @@
+<root>
+	    <category>
+        <description>ALCOHOL EFFECT ITEMS</description>
+        <questionblock type="radio">
+            <answer id = "1">1 - Strongly disagree</answer>
+            <answer id = "2">2 - Disagree</answer>
+            <answer id = "3">3 - Uncertain</answer>
+            <answer id = "4">4 - Agree</answer>
+            <answer id = "5">5 - Strongly agree</answer>
+            <text id = "6q55">Since I drank alcohol, my physical pain has decreased.</text>
+			<text id = "6q56">Since I drank alcohol, I feel happier.</text>
+			<text id = "6q57">Since I drank alcohol, it has been harder to think or perform a task.</text>
+			<text id = "6q58">Since I drank alcohol, my unpleasant feelings have been relieved.</text>
+			<text id = "6q59">Since I drank alcohol, I have had pleasant feelings.</text>
+			<text id = "6q60">Since I drank alcohol, I feel more relaxed or calm.</text>
+			<text id = "6q61">Since I drank alcohol, I feel worse.</text>
+			<text id = "6q62">Since I drank alcohol, I have been able to get through my work or activities.</text>
+			<text id = "6q63">Since I drank alcohol, I forgot about my problems.</text>
+			<text id = "6q64">Since I drank alcohol, I feel less depressed.</text>
+        </questionblock>
+        
+        <question id = "6q65" type = "number">
+            <text>HOW MANY DRINKS did you consume SINCE the last survey you answered?</text>
+            <answer id = "item">drink(s)</answer>
+            <answer id = "min">1</answer>
+            <answer id = "max">24</answer>
+        </question>
+        
+<!--         <question id = "6q66" type = "radio"> -->
+<!--             <text>When did you finish your first DRINK?</text> -->
+<!--             <answer id = "1">Just now</answer> -->
+<!--             <answer id = "2">15 minutes ago</answer> -->
+<!--             <answer id = "3">30 minutes ago</answer> -->
+<!--             <answer id = "4">45 minutes ago</answer> -->
+<!--             <answer id = "5">1 hour ago</answer> -->
+<!--             <answer id = "6">More than 1 hour ago</answer> -->
+<!--         </question> -->
+<!--     </category> -->
+    
+    <category>
+        <description>PAIN MEDICATION USE</description>
+        <question id = "6q01" type = "radio">
+            <text>Have you taken any OPIOID PAIN MEDICATION since the last survey you answered?</text>
+            <answer id = "1"  option="Please remember to use the initial pain medication report to log all primary opioid pain medication use." triggerFile="PainFollowupParcel.xml">Yes</answer>
+            <answer id = "2" skip = "6q24">No</answer>
+        </question>
+    </category>
+    
+<!--     same -->
+
+    <category>
+        <description>PAIN MEDICATION EFFECT ITEMS</description>
+        <questionblock type="radio">
+            <answer id = "1">1 - Strongly disagree</answer>
+            <answer id = "2">2 - Disagree</answer>
+            <answer id = "3">3 - Uncertain</answer>
+            <answer id = "4">4 - Agree</answer>
+            <answer id = "5">5 - Strongly agree</answer>
+            <text id = "6q02">Since I took my opioid pain medication, my physical pain has decreased.</text>
+			<text id = "6q03">Since I took my opioid pain medication, I feel happier.</text>
+			<text id = "6q04">Since I took my opioid pain medication, it has been harder to think or perform a task.</text>
+			<text id = "6q05">Since I took my opioid pain medication, my unpleasant feelings have been relieved.</text>
+			<text id = "6q06">Since I took my opioid pain medication, I have had pleasant feelings.</text>
+			<text id = "6q07">Since I took my opioid pain medication, I feel more relaxed or calm.</text>
+			<text id = "6q08">Since I took my opioid pain medication, I feel worse.</text>
+			<text id = "6q09">Since I took my opioid pain medication, I have been able to get through my work or activities.</text>
+			<text id = "6q10">Since I took my opioid pain medication, I forgot about my problems.</text>
+			<text id = "6q11">Since I took my opioid pain medication, I feel less depressed.</text>
+		</questionblock>
+        
+<!--         //1 -->
+        <question id = "6q12" type = "radio">
+            <text>Which OPIOID PAIN MEDICATION did you take?</text>
+            <answer id = "1">Primary (the medication you take regularly)</answer>
+            <answer id = "2">Secondary (the medication you take as needed)</answer>
+            <answer id = "3" skip = "6q15">Both</answer>
+        </question>
+        
+<!--         //2 -->
+        <question id = "6q13" type = "radio">
+            <text>How much of your OPIOID PAIN MEDICATION did you take SINCE the last survey you answered?</text>
+            <answer id = "1" skip = "6q19">My prescribed dose</answer>
+            <answer id = "2">Different than my prescribed dose</answer>
+        </question>
+        <question id = "6q14" type = "number">
+            <text>Please enter the number of milligrams you took for your opioid pain medication.</text>
+            <answer id = "item">milligram(s)</answer>
+            <answer id = "min">1</answer>
+            <answer id = "max">500</answer>
+<!--             <answer skip = "6q39"></answer>skip -->
+        </question>
+        
+<!--         //2a -->
+        <question id = "6q15" type = "radio">
+            <text>How much of your PRIMARY opioid pain medication did you take SINCE the last survey you answered?</text>
+            <answer id = "1" skip = "6q37">My prescribed dose</answer>
+            <answer id = "2">Different than my prescribed dose</answer>
+        </question>
+        <question id = "6q6" type = "number">
+            <text>Please enter the number of milligrams you took for your opioid pain medication.</text>
+            <answer id = "item">milligram(s)</answer>
+            <answer id = "min">1</answer>
+            <answer id = "max">500</answer>
+        </question>
+        
+<!--         //2b -->
+        <question id = "6q17" type = "radio">
+            <text>How much of your SECONDARY opioid pain medication did you take SINCE the last survey you answered?</text>
+            <answer id = "1" skip = "6q19">My prescribed dose</answer>
+            <answer id = "2">Different than my prescribed dose</answer>
+        </question>
+        <question id = "6q18" type = "number">
+            <text>Please enter the number of milligrams you took for your opioid pain medication.</text>
+            <answer id = "item">milligram(s)</answer>
+            <answer id = "min">1</answer>
+            <answer id = "max">500</answer>
+        </question>
+        
+<!--         //3 -->
+        <question id = "6q19" type = "radio">
+            <text>When did you take your OPIOID PAIN MEDICATION?</text>
+            <answer id = "1">Just now</answer>
+			<answer id = "2">15 minutes ago</answer>
+			<answer id = "3">30 minutes ago</answer>
+			<answer id = "4">45 minutes ago</answer>
+			<answer id = "5">1 hour ago</answer>
+			<answer id = "6">More than 1 hour ago</answer>
+        </question>
+        
+		<question id = "6q20" type = "check">
+            <text>I took my opioid pain medication because” (check all that apply)</text>
+			<answer id = "1">This is when I normally take my pain medication.</answer>
+			<answer id = "2">My pain increased or I had breakthrough pain.</answer>
+			<answer id = "3">I forgot to take my pain medication until now.</answer>
+			<answer id = "4">I am taking my pain medication early.</answer>
+			<answer id = "5">The pain medication I took earlier did not sufficiently reduce my pain.</answer>
+			<answer id = "6">I wanted to take my pain medication for other reasons.</answer>
+        </question>
+    </category>
+
+    <category>
+        <description>OTHER PAIN MEDICATION USE</description>
+        <question id = "6q21" type = "radio">
+            <text>In addition to your OPIOID PAIN MEDICATION, have you taken any other PAIN medications since the last survey you answered?</text>
+            <answer id = "1">Yes</answer>
+            <answer id = "2" skip = "6q24">No</answer>
+        </question>
+        
+        <question id = "6q22" type = "radio">
+            <text>What OTHER pain medication did you take?</text>
+            <answer id = "1">nonopioid PRESCRIPTION pain medication</answer>
+            <answer id = "2">OVER-THE-COUNTER pain medication</answer>
+        </question>
+        <question id = "6q23" type = "number">
+            <text>Please enter the number of milligrams of pain medication you took.</text>
+            <answer id = "item">milligram(s)</answer>
+            <answer id = "min">1</answer>
+            <answer id = "max">500</answer>
+        </question>
+    </category>
+    
+<!--     same -->
+
+<!--     <category> -->
+<!--         <description>RECENT DRINKING</description> -->
+<!--         <question id = "6q54" type = "radio"> -->
+<!--             <text>Have you CONSUMED ALCOHOL since the last survey you answered?</text> -->
+<!--             <answer id = "1" triggerFile="DrinkingFollowupParcel.xml">Yes</answer> -->
+<!-- <!--             <answer id = "1" triggerFile="DualFollowupParcel.xml">Yes</answer> --> -->
+<!--             <answer id = "2" skip = "6q67">No</answer> -->
+<!--         </question> -->
+<!--     </category> -->
+
+<!--     <category> -->
+<!--         <description>ALCOHOL EFFECT ITEMS</description> -->
+<!--         <questionblock type="radio"> -->
+<!--             <answer id = "1">1 - Strongly disagree</answer> -->
+<!--             <answer id = "2">2 - Disagree</answer> -->
+<!--             <answer id = "3">3 - Uncertain</answer> -->
+<!--             <answer id = "4">4 - Agree</answer> -->
+<!--             <answer id = "5">5 - Strongly agree</answer> -->
+<!--             <text id = "6q55">Since I drank alcohol, my physical pain has decreased.</text> -->
+<!-- 			<text id = "6q56">Since I drank alcohol, I feel happier.</text> -->
+<!-- 			<text id = "6q57">Since I drank alcohol, it has been harder to think or perform a task.</text> -->
+<!-- 			<text id = "6q58">Since I drank alcohol, my unpleasant feelings have been relieved.</text> -->
+<!-- 			<text id = "6q59">Since I drank alcohol, I have had pleasant feelings.</text> -->
+<!-- 			<text id = "6q60">Since I drank alcohol, I feel more relaxed or calm.</text> -->
+<!-- 			<text id = "6q61">Since I drank alcohol, I feel worse.</text> -->
+<!-- 			<text id = "6q62">Since I drank alcohol, I have been able to get through my work or activities.</text> -->
+<!-- 			<text id = "6q63">Since I drank alcohol, I forgot about my problems.</text> -->
+<!-- 			<text id = "6q64">Since I drank alcohol, I feel less depressed.</text> -->
+<!--         </questionblock> -->
+        
+<!--         <question id = "6q65" type = "number"> -->
+<!--             <text>HOW MANY DRINKS did you consume SINCE the last survey you answered?</text> -->
+<!--             <answer id = "item">drink(s)</answer> -->
+<!--             <answer id = "min">1</answer> -->
+<!--             <answer id = "max">24</answer> -->
+<!--         </question> -->
+        
+<!--         <question id = "6q66" type = "radio"> -->
+<!--             <text>When did you finish your first DRINK?</text> -->
+<!--             <answer id = "1">Just now</answer> -->
+<!--             <answer id = "2">15 minutes ago</answer> -->
+<!--             <answer id = "3">30 minutes ago</answer> -->
+<!--             <answer id = "4">45 minutes ago</answer> -->
+<!--             <answer id = "5">1 hour ago</answer> -->
+<!--             <answer id = "6">More than 1 hour ago</answer> -->
+<!--         </question> -->
+<!--     </category> -->
+
+    <category>
+        <description>RECENT SMOKING</description>
+        <question id = "6q67" type = "radio">
+            <text>Have you SMOKED A CIGARETTE since the last survey you answered?</text>
+            <answer id = "1">Yes</answer>
+            <answer id = "2" skip = "6q71">No</answer>
+        </question>
+        
+        <question id = "6q68" type = "number">
+            <text>How many CIGARETTES did you smoke SINCE LAST RECORDING?</text>
+            <answer id = "item">cigarette(s)</answer>
+            <answer id = "min">1</answer>
+            <answer id = "max">24</answer>
+        </question>
+        <question id = "6q69" type = "radio">
+            <text>Did you smoke a cigarette because you expected it to reduce your physical pain?</text>
+            <answer id = "1">Yes</answer>
+            <answer id = "2">No</answer>
+        </question>
+        <question id = "6q70" type = "radio">
+            <text>What was the effect of smoking on your physical pain?</text>
+            <answer id = "1">Made worse</answer>
+            <answer id = "2">No effect</answer>
+            <answer id = "3">Improved</answer>
+        </question>
+    </category>
+
+    <category>
+        <description>RECENT MARIJUANA USE</description>
+        <question id = "6q71" type = "radio">
+            <text>Have you USED MARIJUANA since the last survey you answered?</text>
+            <answer id = "1">Yes</answer>
+            <answer id = "2" skip = "6q74">No</answer>
+        </question>
+        
+        <question id = "6q72" type = "radio">
+            <text>Did you use marijuana because you expected it to reduce your physical pain?</text>
+            <answer id = "1">Yes</answer>
+            <answer id = "2">No</answer>
+        </question>
+        <question id = "6q73" type = "radio">
+            <text>What was the effect of using marijuana on your physical pain?</text>
+            <answer id = "1">Made worse</answer>
+            <answer id = "2">No effect</answer>
+            <answer id = "3">Improved</answer>
+        </question>
+    </category>
+
+
+<!-- MOOD Items and IMPULSIVITY Items -->
+    <category type="random">
+        <description>SENSORY/AROUSAL</description>
+        <questionblock type = "radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Moderately</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">Extremely</answer>
+            
+            <text id = "6q74">How much have you felt the following IN THE PAST 15 MINUTES?  ||anxious</text>
+            <text id = "6q75">How much have you felt the following IN THE PAST 15 MINUTES?  ||on edge</text>
+            <text id = "6q76">How much have you felt the following IN THE PAST 15 MINUTES?  ||uneasy</text>
+            <text id = "6q77">How much have you felt the following IN THE PAST 15 MINUTES?  ||sad</text>
+            <text id = "6q78">How much have you felt the following IN THE PAST 15 MINUTES?  ||hopeless</text>
+            <text id = "6q79">How much have you felt the following IN THE PAST 15 MINUTES?  ||discouraged</text>
+            <text id = "6q80">How much have you felt the following IN THE PAST 15 MINUTES?  ||angry</text>
+            <text id = "6q81">How much have you felt the following IN THE PAST 15 MINUTES?  ||resentful</text>
+            <text id = "6q82">How much have you felt the following IN THE PAST 15 MINUTES?  ||annoyed</text>
+            <text id = "6q83">How much have you felt the following IN THE PAST 15 MINUTES?  ||fatigued</text>
+            <text id = "6q84">How much have you felt the following IN THE PAST 15 MINUTES?  ||worn out</text>
+            <text id = "6q85">How much have you felt the following IN THE PAST 15 MINUTES?  ||exhausted</text>
+            <text id = "6q86">How much have you felt the following IN THE PAST 15 MINUTES?  ||vigorous</text>
+            <text id = "6q87">How much have you felt the following IN THE PAST 15 MINUTES?  ||cheerful</text>
+            <text id = "6q88">How much have you felt the following IN THE PAST 15 MINUTES?  ||lively</text>
+            <text id = "6q89">How much have you felt the following IN THE PAST 15 MINUTES?  ||calm</text>
+            <text id = "6q90">How much have you felt the following IN THE PAST 15 MINUTES?  ||at ease</text>
+            <text id = "6q91">How much have you felt the following IN THE PAST 15 MINUTES?  ||relaxed</text>
+            <text id = "6q92">How much have you felt the following IN THE PAST 15 MINUTES?  ||stressed</text>
+                        93
+            <text id = "6q94">How well does this describe you OVER THE LAST 15 MINUTES?  ||I felt and acted on a strong impulse.</text>
+            <text id = "6q95">How well does this describe you OVER THE LAST 15 MINUTES?  ||I did something without really thinking it through.</text>
+            <text id = "6q96">How well does this describe you OVER THE LAST 15 MINUTES?  ||I gave up easily.</text>
+            <text id = "6q97">How well does this describe you OVER THE LAST 15 MINUTES?  ||I did something for the thrill of it.</text>
+        </questionblock>
+    </category>
+
+    <category>
+        <description>AFFECTIVE/VALENCE</description>
+        <questionblock type = "radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Moderately</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">Extremely</answer>
+            <text id = "6q75">How unpleasant was your mood.</text>
+            <text id = "6q76">My mood was an annoyance to me.</text>
+            <text id = "6q77">I enjoyed how I was feeling.</text>
+        </questionblock>
+    </category>
+    
+    <category>
+        <description>COGNITIVE</description>
+        <questionblock type = "radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Moderately</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">Extremely</answer>
+            <text id = "6q78">I have felt in control of my mood.</text>
+            <text id = "6q79">I’m not sure what I was feeling.</text>
+            <text id = "6q80">I was not thinking about my mood.</text>
+        </questionblock>
+    </category>
+
+    <category>
+        <description>PAIN</description>
+        <question id = "6q81" type = "radio">
+            <text>How much PHYSICAL PAIN have you felt in the past 15 minutes:</text>
+            <answer id = "1" skip = "6q92">None</answer>
+            <answer id = "2">Mild</answer>
+            <answer id = "3">Moderate</answer>
+            <answer id = "4">Severe</answer>
+            <answer id = "5">Extreme</answer>
+        </question>
+    </category>
+
+    <category>
+        <description>LOCATION</description>
+        <question id = "6q82" type = "check">
+            <text>Where is your current physical pain located (please select all that apply):</text>
+            <answer id = "1">Lower back</answer>
+			<answer id = "2">Upper back</answer>
+			<answer id = "3">Left Leg</answer>
+			<answer id = "4">Right Leg</answer>
+			<answer id = "5">Buttocks</answer>
+			<answer id = "6">Chest</answer>
+			<answer id = "7">Left Arm</answer>
+			<answer id = "8">Right Arm</answer>
+			<answer id = "9">Shoulders</answer>
+			<answer id = "A">Neck</answer>
+			<answer id = "B">Head</answer>
+        </question>
+    </category>
+    
+    <category>
+        <description>SENSORY</description>
+        <question id = "6q83" type = "check">
+            <text>In the past 15 minutes, my physical pain was (please select all that apply):</text>
+            <answer id = "1">Aching</answer>
+		    <answer id = "2">Throbbing</answer>
+		    <answer id = "3">Shooting</answer>
+		    <answer id = "4">Stabbing</answer>
+		    <answer id = "5">Gnawing</answer>
+		    <answer id = "6">Sharp</answer>
+		    <answer id = "7">Tender</answer>
+		    <answer id = "8">Burning</answer>
+		    <answer id = "9">Penetrating</answer>
+		    <answer id = "A">Numbing</answer>
+        </question>
+    </category>
+
+    <category>
+        <description>AFFECTIVE</description>
+        <questionblock type = "radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Moderately</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">Extremely</answer>
+            <text id = "6q84">In the past 15 minutes, How unpleasant was the physical pain?</text>
+			<text id = "6q85">In the past 15 minutes, The physical pain I felt was unbearable.</text>
+			<text id = "6q86">In the past 15 minutes, I was scared about the physical pain I felt.</text>
+			<text id = "6q87">In the past 15 minutes, My physical pain was an annoyance to me.</text>
+			<text id = "6q88">In the past 15 minutes, Physical pain was stopping me from enjoying life.</text>
+        </questionblock>
+    </category>
+    
+    <category>
+        <description>COGNITIVE</description>
+        <questionblock type = "radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Moderately</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">Extremely</answer>
+            <text id = "6q89">I have felt in control of my physical pain.</text>
+			<text id = "6q90">I thought that I couldn't stand the physical pain any more.</text>
+			<text id = "6q91">I was not thinking about my physical pain.</text>
+        </questionblock>
+    </category>
+
+    <category>
+        <description>SLEEP/CAFFEINE</description>
+        <question id = "6q92" type = "radio">
+            <text>SINCE THE LAST PROMPT HAVE YOU SLEPT?</text>
+            <answer id = "1">Yes</answer>
+            <answer id = "2" skip = "6q94">No</answer>
+        </question>
+        <question id = "6q93" type = "number">
+            <text>How many hour did you sleep?</text>
+            <answer id = "item">hour(s)</answer>
+            <answer id = "min">1</answer>
+            <answer id = "max">24</answer>
+        </question>
+        
+        <question id = "6q94" type = "radio">
+            <text>SINCE THE LAST PROMPT HAVE YOU USED CAFFEINE?</text>
+            <answer id = "1">Yes</answer>
+            <answer id = "2" skip = "6q96">No</answer>
+        </question>
+        <question id = "6q95" type = "number">
+            <text>How many CUPS did you drink?</text>
+            <answer id = "item">cup(s)</answer>
+            <answer id = "min">1</answer>
+            <answer id = "max">24</answer>
+        </question>
+    </category>
+    
+    <category>
+        <description>OPIOID URGE/CRAVING</description>
+        <question id = "6q96" type = "radio">
+            <text>In the PAST 15 MINUTES, How strong was your urge to take more opioid pain medication than prescribed?</text>
+            <answer id = "1">Very slight or none</answer>
+            <answer id = "2"></answer>
+            <answer id = "3"></answer>
+            <answer id = "4"></answer>
+            <answer id = "5">Extremely strong</answer>
+        </question>
+        <question id = "6q97" type = "radio">
+            <text>In the PAST 15 MINUTES, How often have you found yourself thinking about the next dose of opioid pain medication?</text>
+            <answer id = "1">Not at all</answer>
+            <answer id = "2">Seldom</answer>
+            <answer id = "3">Sometimes</answer>
+            <answer id = "4">Frequently</answer>
+            <answer id = "5">Constantly</answer>
+        </question>
+    </category>
+    
+    <category>
+        <description>ALCOHOL URGE/CRAVING</description>
+        <question id = "6q98" type = "radio">
+            <text>In the PAST 15 MINUTES, How strong was your urge to drink?</text>
+            <answer id = "1">Very slight or none</answer>
+            <answer id = "2"></answer>
+            <answer id = "3"></answer>
+            <answer id = "4"></answer>
+            <answer id = "5">Extremely strong</answer>
+        </question>
+        <question id = "6q99" type = "radio">
+            <text>In the PAST 15 MINUTES, How often have you found yourself thinking about the next drink?</text>
+            <answer id = "1">Not at all</answer>
+            <answer id = "2">Seldom</answer>
+            <answer id = "3">Sometimes</answer>
+            <answer id = "4">Frequently</answer>
+            <answer id = "5">Constantly</answer>
+        </question>
+    </category>
+    
+
+<!-- SITUATION AND SETTING -->
+
+    <category>
+        <description>SITUATION AND SETTING</description>
+        <question id = "6q100" type = "check">
+            <text>In the PAST 15 MINUTES, WHO have you been with: (Check all that apply)</text>
+            <answer id = "1" action="uncheck">No one</answer>
+			<answer id = "2 ">Partner/spouse</answer>
+			<answer id = "3 ">Co-worker</answer>
+			<answer id = "4 ">Child</answer>
+			<answer id = "5 ">Parent</answer>
+			<answer id = "6 ">Other family</answer>
+			<answer id = "7 ">Friend</answer>
+			<answer id = "8 ">Acquaintance</answer>
+			<answer id = "9 ">Stranger(s)</answer>
+			<answer id = "10">Other</answer>
+        </question>
+        
+        <question id = "6q101" type = "check">
+            <text>In the PAST 15 MINUTES, WHERE is your current location? (Check all that apply)</text>
+            <answer id = "1 ">Home</answer>
+			<answer id = "2 ">Someone else’s home</answer>
+			<answer id = "3 ">Work/School</answer>
+			<answer id = "4 ">Party</answer>
+			<answer id = "5 ">Bar</answer>
+			<answer id = "6 ">Restaurant</answer>
+			<answer id = "7 ">Outside</answer>
+			<answer id = "8 ">Store</answer>
+			<answer id = "9 ">Other public place</answer>
+			<answer id = "10">Vehicle</answer>
+			<answer id = "11">Other</answer>
+        </question>
+        
+	   <question id = "6q102" type = "check">
+            <text>In the PAST 15 MINUTES, WHAT are you currently doing? (Check all that apply)</text>
+			<answer id = "1">Socializing</answer>
+			<answer id = "2">Housework</answer>
+			<answer id = "3">Recreational activity or hobby</answer>
+			<answer id = "4">Working, Reading, or Studying</answer>
+			<answer id = "5">Watching TV/Movies or listening to Music</answer>
+			<answer id = "6">Using computer or electronic device (do not include study phone!)</answer>
+			<answer id = "7">Sex</answer>
+        </question>
+			
+		<question id = "6q103" type = "radio">
+            <text>In the past 15 minutes, how much was your physical pain limiting the activities you just listed?</text>
+            <answer id = "1">None</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Some</answer>
+            <answer id = "4">A lot</answer>
+        </question>
+        
+		<question id = "6q104" type = "check">
+            <text>In the PAST 15 MINUTES, WHAT are you currently doing? (Check all that apply)</text>
+            <answer id = "1">Eating</answer>
+			<answer id = "2">Grooming</answer>
+			<answer id = "3">Walking</answer>
+			<answer id = "4">Sleeping/Lying down</answer>
+			<answer id = "5">Standing upright</answer>
+			<answer id = "6">Ascending stairs</answer>
+			<answer id = "7">Lifting objects</answer>
+			<answer id = "8">Sitting still</answer>
+			<answer id = "9">Other activity</answer>
+        </question>
+		
+		<question id = "6q105" type = "radio">
+            <text>In the past 15 minutes, how much was your physical pain limiting the activities you just listed?</text>
+            <answer id = "1">None</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Some</answer>
+            <answer id = "4">A lot</answer>
+        </question>
+    </category>
+    
+</root>
