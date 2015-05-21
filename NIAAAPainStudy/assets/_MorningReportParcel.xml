@@ -32,7 +32,7 @@
             <answer id = "max">24</answer>
         </question>
         <question id = "1q05" type = "radio">
-            <text>How would you rate the quality of you sleep?</text>
+            <text>How would you rate the quality of your sleep?</text>
             <answer id = "1">Very bad</answer>
             <answer id = "2">Fairly bad</answer>
             <answer id = "3">Fairly good</answer>
@@ -49,9 +49,9 @@
             <text>How much did your physical pain interfere with your sleep last night?</text>
             <answer id = "1">Very slightly or not at all</answer>
             <answer id = "2">A little</answer>
-            <answer id = "3">Moderately</answer>
+            <answer id = "3">A moderate amount</answer>
             <answer id = "4">Quite a bit</answer>
-            <answer id = "5">Extremely</answer>
+            <answer id = "5">An extreme amount</answer>
         </question>
         <question id = "1q09" type = "radio">
             <text>Did you use any sleep medication last night?</text>
@@ -60,29 +60,7 @@
         </question>
     </category>
 
-    <category>
-        <description>PAIN MEDICATION EXPECTANCY ITEMS</description>
-        <questionblock type="radio">
-            <answer id = "1">Very slightly or not at all</answer>
-            <answer id = "2">A little</answer>
-            <answer id = "3">Moderately</answer>
-            <answer id = "4">Quite a bit</answer>
-            <answer id = "5">Extremely</answer>
-            <text id = "1q11">If I take my opioid pain medication today, I expect it would decrease my physical pain.</text>
-			<text id = "1q12">If I take my opioid pain medication today, I expect it would make me feel happier.</text>
-			<text id = "1q13">If I take my opioid pain medication today, I expect it would make it harder to think or perform a task.</text>
-			<text id = "1q14">If I take my opioid pain medication today, I expect it would relieve unpleasant feelings.</text>
-			<text id = "1q15">If I take my opioid pain medication today, I expect it would give me a pleasant feeling.</text>
-			<text id = "1q16">If I take my opioid pain medication today, I expect it would make me feel more relaxed or calm.</text>
-			<text id = "1q17">If I take my opioid pain medication today, I expect it would make me feel worse.</text>
-			<text id = "1q18">If I take my opioid pain medication today, I expect it would help me to get through my work or activities.</text>
-			<text id = "1q19">If I take my opioid pain medication today, I expect it would make me forget my problems.</text>
-			<text id = "1q20">If I take my opioid pain medication today, I expect it would make me feel less depressed.</text>
-
-        </questionblock>
-    </category>
-
-    <category>
+       <category>
         <description>PAIN MEDICATION USE</description>
         <question id = "1q21" type = "radio">
             <text>Have you taken any OPIOID PAIN MEDICATION since wake-up?</text>
@@ -96,9 +74,9 @@
         <questionblock type="radio">
             <answer id = "1">Very slightly or not at all</answer>
             <answer id = "2">A little</answer>
-            <answer id = "3">Moderately</answer>
+            <answer id = "3">Somewhat</answer>
             <answer id = "4">Quite a bit</answer>
-            <answer id = "5">Extremely</answer>
+            <answer id = "5">An extreme amount</answer>
             <text id = "1q22">Since I took my opioid pain medication, my physical pain has decreased.</text>
 			<text id = "1q23">Since I took my opioid pain medication, I feel happier.</text>
 			<text id = "1q24">Since I took my opioid pain medication, it has been harder to think or perform a task.</text>
@@ -126,7 +104,7 @@
             <answer id = "2">Different than my prescribed dose</answer>
         </question>
         <question id = "1q34" type = "number">
-            <text>Please enter the number of milligrams you took for your opioid pain medication.</text>
+            <text>Please enter the number of milligrams you took of your opioid pain medication.</text>
             <answer id = "item">milligram(s)</answer>
             <answer id = "min">1</answer>
             <answer id = "max">500</answer>
@@ -140,7 +118,7 @@
             <answer id = "2">Different than my prescribed dose</answer>
         </question>
         <question id = "1q36" type = "number">
-            <text>Please enter the number of milligrams you took for your opioid pain medication.</text>
+            <text>Please enter the number of milligrams you took of your opioid pain medication.</text>
             <answer id = "item">milligram(s)</answer>
             <answer id = "min">1</answer>
             <answer id = "max">500</answer>
@@ -153,7 +131,7 @@
             <answer id = "2">Different than my prescribed dose</answer>
         </question>
         <question id = "1q38" type = "number">
-            <text>Please enter the number of milligrams you took for your opioid pain medication.</text>
+            <text>Please enter the number of milligrams you took of your opioid pain medication.</text>
             <answer id = "item">milligram(s)</answer>
             <answer id = "min">1</answer>
             <answer id = "max">500</answer>
@@ -191,8 +169,9 @@
         
         <question id = "1q42" type = "radio">
             <text>What OTHER pain medication did you take?</text>
-            <answer id = "1">nonopioid PRESCRIPTION pain medication</answer>
-            <answer id = "2">OVER-THE-COUNTER pain medication</answer>
+            <answer id = "1"  option = "Please make a note of what you took in your medication log.">nonopioid PRESCRIPTION pain medication</answer>
+            <answer id = "2"  option = "Please make a note of what you took in your medication log.">OVER-THE-COUNTER pain medication</answer>
+            <answer id = "3"  option = "Please make a note of what you took in your medication log.">OTHER pain medication</answer>
         </question>
         <question id = "1q43" type = "number">
             <text>Please enter the number of milligrams of pain medication you took.</text>
@@ -202,27 +181,6 @@
         </question>
     </category>
 
-    <category>
-        <description>ALCOHOL EFFECT ITEMS</description>
-        <questionblock type="radio">
-            <answer id = "1">Very slightly or not at all</answer>
-            <answer id = "2">A little</answer>
-            <answer id = "3">Moderately</answer>
-            <answer id = "4">Quite a bit</answer>
-            <answer id = "5">Extremely</answer>
-			<text id = "1q44">If I drink alcohol today, I expect it would decrease my physical pain.</text>
-			<text id = "1q45">If I drink alcohol today, I expect it would make me feel happier.</text>
-			<text id = "1q46">If I drink alcohol today, I expect it would make it harder to think or perform a task.</text>
-			<text id = "1q47">If I drink alcohol today, I expect it would relieve unpleasant feelings.</text>
-			<text id = "1q48">If I drink alcohol today, I expect it would give me a pleasant feeling.</text>
-			<text id = "1q49">If I drink alcohol today, I expect it would make me feel more relaxed or calm.</text>
-			<text id = "1q50">If I drink alcohol today, I expect it would make me feel worse.</text>
-			<text id = "1q51">If I drink alcohol today, I expect it would help me to get through my work or activities.</text>
-			<text id = "1q52">If I drink alcohol today, I expect it would make me forget my problems.</text>
-			<text id = "1q53">If I drink alcohol today, I expect it would make me feel less depressed.</text>
-        </questionblock>
-    </category>
-    
     <category>
         <description>RECENT DRINKING</description>
         <question id = "1q54" type = "radio">
@@ -254,13 +212,13 @@
         </questionblock>
         
         <question id = "1q65" type = "number">
-            <text>HOW MANY DRINKS did you consume SINCE the last survey you answered?</text>
+            <text>HOW MANY DRINKS did you consume SINCE the last survey you answered? Please remember to answer in STANDARD drinks.</text>
             <answer id = "item">drink(s)</answer>
             <answer id = "min">1</answer>
             <answer id = "max">24</answer>
         </question>
         <question id = "1q66" type = "radio">
-            <text>When did you finish your first DRINK?</text>
+            <text>When did you finish your FIRST drink?</text>
             <answer id = "1">Just now</answer>
             <answer id = "2">15 minutes ago</answer>
             <answer id = "3">30 minutes ago</answer>
@@ -269,6 +227,84 @@
             <answer id = "6">More than 1 hour ago</answer>
         </question>
     </category>
+
+    <category>
+        <description>PAIN</description>
+        <question id = "1q81" type = "radio">
+            <text>How much PHYSICAL PAIN have you felt in the past 15 minutes:</text>
+            <answer id = "1" skip = "1q92">None</answer>
+            <answer id = "2">Mild</answer>
+            <answer id = "3">Moderate</answer>
+            <answer id = "4">Severe</answer>
+            <answer id = "5">Extreme</answer>
+        </question>
+    </category>
+
+    <category>
+        <description>LOCATION</description>
+        <question id = "1q82" type = "check">
+            <text>Where is your current physical pain located (please select all that apply):</text>
+            <answer id = "1">Lower back</answer>
+			<answer id = "2">Upper back</answer>
+			<answer id = "3">Left Leg</answer>
+			<answer id = "4">Right Leg</answer>
+			<answer id = "5">Buttocks</answer>
+			<answer id = "6">Chest</answer>
+			<answer id = "7">Left Arm</answer>
+			<answer id = "8">Right Arm</answer>
+			<answer id = "9">Shoulders</answer>
+			<answer id = "A">Neck</answer>
+			<answer id = "B">Head</answer>
+        </question>
+    </category>
+    
+    <category>
+        <description>SENSORY</description>
+        <question id = "1q83" type = "check">
+            <text>In the past 15 minutes, my physical pain was (please select all that apply):</text>
+            <answer id = "1">Aching</answer>
+		    <answer id = "2">Throbbing</answer>
+		    <answer id = "3">Shooting</answer>
+		    <answer id = "4">Stabbing</answer>
+		    <answer id = "5">Gnawing</answer>
+		    <answer id = "6">Sharp</answer>
+		    <answer id = "7">Tender</answer>
+		    <answer id = "8">Burning</answer>
+		    <answer id = "9">Penetrating</answer>
+		    <answer id = "A">Numbing</answer>
+        </question>
+    </category>
+
+    <category>
+        <description>AFFECTIVE</description>
+        <questionblock type = "radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Moderately</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">Extremely</answer>
+            <text id = "1q84">In the past 15 minutes, How unpleasant was the physical pain?</text>
+			<text id = "1q85">In the past 15 minutes, The physical pain I felt was unbearable.</text>
+			<text id = "1q86">In the past 15 minutes, I was scared about the physical pain I felt.</text>
+			<text id = "1q87">In the past 15 minutes, My physical pain was an annoyance to me.</text>
+			<text id = "1q88">In the past 15 minutes, Physical pain was stopping me from enjoying life.</text>
+        </questionblock>
+    </category>
+    
+    <category>
+        <description>COGNITIVE</description>
+        <questionblock type = "radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Moderately</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">Extremely</answer>
+            <text id = "1q89">I have felt in control of my physical pain.</text>
+			<text id = "1q90">I thought that I couldn't stand the physical pain any more.</text>
+			<text id = "1q91">I was not thinking about my physical pain.</text>
+        </questionblock>
+    </category>
+
 
     <category>
         <description>RECENT SMOKING</description>
@@ -381,83 +417,6 @@
             <text id = "1q78">I have felt in control of my mood.</text>
             <text id = "1q79">I’m not sure what I was feeling.</text>
             <text id = "1q80">I was not thinking about my mood.</text>
-        </questionblock>
-    </category>
-
-    <category>
-        <description>PAIN</description>
-        <question id = "1q81" type = "radio">
-            <text>How much PHYSICAL PAIN have you felt in the past 15 minutes:</text>
-            <answer id = "1" skip = "1q92">None</answer>
-            <answer id = "2">Mild</answer>
-            <answer id = "3">Moderate</answer>
-            <answer id = "4">Severe</answer>
-            <answer id = "5">Extreme</answer>
-        </question>
-    </category>
-
-    <category>
-        <description>LOCATION</description>
-        <question id = "1q82" type = "check">
-            <text>Where is your current physical pain located (please select all that apply):</text>
-            <answer id = "1">Lower back</answer>
-			<answer id = "2">Upper back</answer>
-			<answer id = "3">Left Leg</answer>
-			<answer id = "4">Right Leg</answer>
-			<answer id = "5">Buttocks</answer>
-			<answer id = "6">Chest</answer>
-			<answer id = "7">Left Arm</answer>
-			<answer id = "8">Right Arm</answer>
-			<answer id = "9">Shoulders</answer>
-			<answer id = "A">Neck</answer>
-			<answer id = "B">Head</answer>
-        </question>
-    </category>
-    
-    <category>
-        <description>SENSORY</description>
-        <question id = "1q83" type = "check">
-            <text>In the past 15 minutes, my physical pain was (please select all that apply):</text>
-            <answer id = "1">Aching</answer>
-		    <answer id = "2">Throbbing</answer>
-		    <answer id = "3">Shooting</answer>
-		    <answer id = "4">Stabbing</answer>
-		    <answer id = "5">Gnawing</answer>
-		    <answer id = "6">Sharp</answer>
-		    <answer id = "7">Tender</answer>
-		    <answer id = "8">Burning</answer>
-		    <answer id = "9">Penetrating</answer>
-		    <answer id = "A">Numbing</answer>
-        </question>
-    </category>
-
-    <category>
-        <description>AFFECTIVE</description>
-        <questionblock type = "radio">
-            <answer id = "1">Very slightly or not at all</answer>
-            <answer id = "2">A little</answer>
-            <answer id = "3">Moderately</answer>
-            <answer id = "4">Quite a bit</answer>
-            <answer id = "5">Extremely</answer>
-            <text id = "1q84">In the past 15 minutes, How unpleasant was the physical pain?</text>
-			<text id = "1q85">In the past 15 minutes, The physical pain I felt was unbearable.</text>
-			<text id = "1q86">In the past 15 minutes, I was scared about the physical pain I felt.</text>
-			<text id = "1q87">In the past 15 minutes, My physical pain was an annoyance to me.</text>
-			<text id = "1q88">In the past 15 minutes, Physical pain was stopping me from enjoying life.</text>
-        </questionblock>
-    </category>
-    
-    <category>
-        <description>COGNITIVE</description>
-        <questionblock type = "radio">
-            <answer id = "1">Very slightly or not at all</answer>
-            <answer id = "2">A little</answer>
-            <answer id = "3">Moderately</answer>
-            <answer id = "4">Quite a bit</answer>
-            <answer id = "5">Extremely</answer>
-            <text id = "1q89">I have felt in control of my physical pain.</text>
-			<text id = "1q90">I thought that I couldn't stand the physical pain any more.</text>
-			<text id = "1q91">I was not thinking about my physical pain.</text>
         </questionblock>
     </category>
 
@@ -602,8 +561,51 @@
             <answer id = "4">A lot</answer>
         </question>
     </category>
+    
+ <category>
+        <description>PAIN MEDICATION EXPECTANCY ITEMS</description>
+        <questionblock type="radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Moderately</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">Extremely</answer>
+            <text id = "1q11">If I take my opioid pain medication today, I expect it would decrease my physical pain.</text>
+			<text id = "1q12">If I take my opioid pain medication today, I expect it would make me feel happier.</text>
+			<text id = "1q13">If I take my opioid pain medication today, I expect it would make it harder to think or perform a task.</text>
+			<text id = "1q14">If I take my opioid pain medication today, I expect it would relieve unpleasant feelings.</text>
+			<text id = "1q15">If I take my opioid pain medication today, I expect it would give me a pleasant feeling.</text>
+			<text id = "1q16">If I take my opioid pain medication today, I expect it would make me feel more relaxed or calm.</text>
+			<text id = "1q17">If I take my opioid pain medication today, I expect it would make me feel worse.</text>
+			<text id = "1q18">If I take my opioid pain medication today, I expect it would help me to get through my work or activities.</text>
+			<text id = "1q19">If I take my opioid pain medication today, I expect it would make me forget my problems.</text>
+			<text id = "1q20">If I take my opioid pain medication today, I expect it would make me feel less depressed.</text>
 
+        </questionblock>
+    </category>
     <category>
+    	
+<category>
+        <description>ALCOHOL EXPECTANCY ITEMS</description>
+        <questionblock type="radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Moderately</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">Extremely</answer>
+			<text id = "1q44">If I drink alcohol today, I expect it would decrease my physical pain.</text>
+			<text id = "1q45">If I drink alcohol today, I expect it would make me feel happier.</text>
+			<text id = "1q46">If I drink alcohol today, I expect it would make it harder to think or perform a task.</text>
+			<text id = "1q47">If I drink alcohol today, I expect it would relieve unpleasant feelings.</text>
+			<text id = "1q48">If I drink alcohol today, I expect it would give me a pleasant feeling.</text>
+			<text id = "1q49">If I drink alcohol today, I expect it would make me feel more relaxed or calm.</text>
+			<text id = "1q50">If I drink alcohol today, I expect it would make me feel worse.</text>
+			<text id = "1q51">If I drink alcohol today, I expect it would help me to get through my work or activities.</text>
+			<text id = "1q52">If I drink alcohol today, I expect it would make me forget my problems.</text>
+			<text id = "1q53">If I drink alcohol today, I expect it would make me feel less depressed.</text>
+        </questionblock>
+    </category>
+    	
         <description>DRINKING PLAN</description>
         <question id = "1q106" type = "radio">
             <text>Do you plan on drinking today or tonight?</text>
