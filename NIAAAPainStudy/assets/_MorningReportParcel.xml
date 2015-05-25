@@ -73,16 +73,16 @@
             <answer id = "3">Somewhat</answer>
             <answer id = "4">Quite a bit</answer>
             <answer id = "5">An extreme amount</answer>
-            <text id = "1q22">Since I took my opioid pain medication, my physical pain has decreased.</text>
-			<text id = "1q23">Since I took my opioid pain medication, I feel happier.</text>
-			<text id = "1q24">Since I took my opioid pain medication, it has been harder to think or perform a task.</text>
-			<text id = "1q25">Since I took my opioid pain medication, my unpleasant feelings have been relieved.</text>
-			<text id = "1q26">Since I took my opioid pain medication, I have had pleasant feelings.</text>
-			<text id = "1q27">Since I took my opioid pain medication, I feel more relaxed or calm.</text>
-			<text id = "1q28">Since I took my opioid pain medication, I feel worse.</text>
-			<text id = "1q29">Since I took my opioid pain medication, my physical pain has felt less unpleasant.</text>
-			<text id = "1q30">Since I took my opioid pain medication, I forgot about my problems.</text>
-			<text id = "1q31">Since I took my opioid pain medication, I feel less depressed.</text>
+            <text id = "1q22">Since I took opioid pain medication, my physical pain has decreased.</text>
+			<text id = "1q23">Since I took opioid pain medication, I feel happier.</text>
+			<text id = "1q24">Since I took opioid pain medication, it has been harder to think or perform a task.</text>
+			<text id = "1q25">Since I took opioid pain medication, my unpleasant feelings have been relieved.</text>
+			<text id = "1q26">Since I took opioid pain medication, I have had pleasant feelings.</text>
+			<text id = "1q27">Since I took opioid pain medication, I feel more relaxed or calm.</text>
+			<text id = "1q28">Since I took opioid pain medication, I feel worse.</text>
+			<text id = "1q29">Since I took opioid pain medication, my physical pain has felt less unpleasant.</text>
+			<text id = "1q30">Since I took opioid pain medication, I forgot about my problems.</text>
+			<text id = "1q31">Since I took opioid pain medication, I feel less depressed.</text>
 		</questionblock>
         
 <!--         //1 -->
@@ -96,8 +96,8 @@
 <!--         //2 -->
         <question id = "1q33" type = "radio">
             <text>How much of your OPIOID PAIN MEDICATION did you take SINCE the last survey you answered?</text>
-            <answer id = "1" skip = "1q39">My prescribed dose</answer>
-            <answer id = "2">Different than my prescribed dose</answer>
+            <answer id = "1" skip = "1q39">My typical dose</answer>
+            <answer id = "2">Different than my typical dose</answer>
         </question>
         <question id = "1q34" type = "number">
             <text>Please enter the number of milligrams you took of your opioid pain medication.</text>
@@ -110,8 +110,8 @@
 <!--         //2a -->
         <question id = "1q35" type = "radio">
             <text>How much of your PRIMARY opioid pain medication did you take SINCE the last survey you answered?</text>
-            <answer id = "1" skip = "1q37">My prescribed dose</answer>
-            <answer id = "2">Different than my prescribed dose</answer>
+            <answer id = "1" skip = "1q37">My typical dose</answer>
+            <answer id = "2">Different than my typical dose</answer>
         </question>
         <question id = "1q36" type = "number">
             <text>Please enter the number of milligrams you took of your opioid pain medication.</text>
@@ -123,8 +123,8 @@
 <!--         //2b -->
         <question id = "1q37" type = "radio">
             <text>How much of your SECONDARY opioid pain medication did you take SINCE the last survey you answered?</text>
-            <answer id = "1" skip = "1q39">My prescribed dose</answer>
-            <answer id = "2">Different than my prescribed dose</answer>
+            <answer id = "1" skip = "1q39">My typical dose</answer>
+            <answer id = "2">Different than my typical dose</answer>
         </question>
         <question id = "1q38" type = "number">
             <text>Please enter the number of milligrams you took of your opioid pain medication.</text>
@@ -156,7 +156,7 @@
         
         <question id = "1q42" type = "radio">
             <text>What OTHER pain medication did you take?</text>
-            <answer id = "1"  option = "Please make a note of what you took in your medication log.">nonopioid PRESCRIPTION pain medication</answer>
+            <answer id = "1"  option = "Please make a note of what you took in your medication log.">Nonopioid PRESCRIPTION pain medication</answer>
             <answer id = "2"  option = "Please make a note of what you took in your medication log.">OVER-THE-COUNTER pain medication</answer>
             <answer id = "3"  option = "Please make a note of what you took in your medication log.">OTHER pain medication</answer>
         </question>
@@ -216,7 +216,9 @@
     </category>
 
     <category>
-    	<!--Chen, I would like to change this question to have a discrete seekbar, with values between 0 and 10.-->
+    	<!--Chen, I would like to change this question to have a discrete seekbar, with values between 0 and 10.
+    	Also, the participant needs to touch a number to make a selection, just like for other questions. 
+    	It shouldn't have a default value- Let me know if that doesn't make sense.-->
         <description>PAIN</description>
         <question id = "1q81" type = "radio">
             <text>How much PHYSICAL PAIN have you felt in the past 15 minutes:</text>
@@ -231,7 +233,7 @@
         <description>SENSORY</description>
         <question id = "1q83" type = "check">
             <text>In the past 15 minutes, my physical pain was (please select all that apply):</text>
-            <answer id = "1">Aching</answer>
+            	    <answer id = "1">Aching</answer>
 		    <answer id = "2">Throbbing</answer>
 		    <answer id = "3">Shooting</answer>
 		    <answer id = "4">Stabbing</answer>
@@ -241,6 +243,7 @@
 		    <answer id = "8">Burning</answer>
 		    <answer id = "9">Penetrating</answer>
 		    <answer id = "A">Numbing</answer><!--Chen, I don't know, but should this be "10" instead of "A"? RWC-->
+                    <answer id = "11" action="uncheck">None</answer>
         </question>
     </category>
 
@@ -375,7 +378,7 @@
     <category>
         <description>SLEEP</description>
         <question id = "1q92" type = "radio">
-            <text>Since the last prompt, have yo slept?</text>
+            <text>Since the last prompt, have you slept?</text>
             <answer id = "1">Yes</answer>
             <answer id = "2" skip = "1q96">No</answer>
         </question>
@@ -468,9 +471,9 @@
 			<answer id = "3">Recreational activity or hobby</answer>
 			<answer id = "4">Working or Studying</answer>
 			<answer id = "5">Watching TV/Movies or listening to Music</answer>
-			<answer id = "6">Using computer or electronic device (do not include study phone!)</answer>
-			<answer id = "7">Walking</answer>
-			<answer id = "8">Having sex</answer>
+			<answer id = "6">Walking</answer>
+			<answer id = "7">Having sex</answer>
+			<answer id = "8" action="uncheck">Nothing</answer>
         </question>
         
            <question id = "1q104" type = "radio">
@@ -501,16 +504,16 @@
             <answer id = "3">Somewhat</answer>
             <answer id = "4">Quite a bit</answer>
             <answer id = "5">An extreme amount</answer>
-            <text id = "1q11">If I take my opioid pain medication today, I expect it would decrease my physical pain.</text>
-			<text id = "1q12">If I take my opioid pain medication today, I expect it would make me feel happier.</text>
-			<text id = "1q13">If I take my opioid pain medication today, I expect it would make it harder to think or perform a task.</text>
-			<text id = "1q14">If I take my opioid pain medication today, I expect it would relieve unpleasant feelings.</text>
-			<text id = "1q15">If I take my opioid pain medication today, I expect it would give me a pleasant feeling.</text>
-			<text id = "1q16">If I take my opioid pain medication today, I expect it would make me feel more relaxed or calm.</text>
-			<text id = "1q17">If I take my opioid pain medication today, I expect it would make me feel worse.</text>
-			<text id = "1q18">If I take my opioid pain medication today, I expect it would make my physical pain less unpleasant.</text>
-			<text id = "1q19">If I take my opioid pain medication today, I expect it would make me forget my problems.</text>
-			<text id = "1q20">If I take my opioid pain medication today, I expect it would make me feel less depressed.</text>
+            <text id = "1q11">If I take opioid pain medication today, I expect it would decrease my physical pain.</text>
+			<text id = "1q12">If I take opioid pain medication today, I expect it would make me feel happier.</text>
+			<text id = "1q13">If I take opioid pain medication today, I expect it would make it harder to think or perform a task.</text>
+			<text id = "1q14">If I take opioid pain medication today, I expect it would relieve unpleasant feelings.</text>
+			<text id = "1q15">If I take opioid pain medication today, I expect it would give me a pleasant feeling.</text>
+			<text id = "1q16">If I take opioid pain medication today, I expect it would make me feel more relaxed or calm.</text>
+			<text id = "1q17">If I take opioid pain medication today, I expect it would make me feel worse.</text>
+			<text id = "1q18">If I take opioid pain medication today, I expect it would make my physical pain less unpleasant.</text>
+			<text id = "1q19">If I take opioid pain medication today, I expect it would make me forget my problems.</text>
+			<text id = "1q20">If I take opioid pain medication today, I expect it would make me feel less depressed.</text>
 
         </questionblock>
     </category>
