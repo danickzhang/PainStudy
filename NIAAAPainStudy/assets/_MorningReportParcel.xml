@@ -95,7 +95,7 @@
         
 <!--         //2 -->
         <question id = "1q33" type = "radio">
-            <text>How much of your OPIOID PAIN MEDICATION did you take SINCE the last survey you answered?</text>
+            <text>How much of your OPIOID PAIN MEDICATION did you take SINCE wake-up?</text>
             <answer id = "1" skip = "1q39">My typical dose</answer>
             <answer id = "2">Different than my typical dose</answer>
         </question>
@@ -109,7 +109,7 @@
         
 <!--         //2a -->
         <question id = "1q35" type = "radio">
-            <text>How much of your PRIMARY opioid pain medication did you take SINCE the last survey you answered?</text>
+            <text>How much of your PRIMARY opioid pain medication did you take SINCE wake-up?</text>
             <answer id = "1" skip = "1q37">My typical dose</answer>
             <answer id = "2">Different than my typical dose</answer>
         </question>
@@ -122,7 +122,7 @@
         
 <!--         //2b -->
         <question id = "1q37" type = "radio">
-            <text>How much of your SECONDARY opioid pain medication did you take SINCE the last survey you answered?</text>
+            <text>How much of your SECONDARY opioid pain medication did you take SINCE wake-up?</text>
             <answer id = "1" skip = "1q39">My typical dose</answer>
             <answer id = "2">Different than my typical dose</answer>
         </question>
@@ -149,7 +149,7 @@
     <category>
         <description>OTHER PAIN MEDICATION USE</description>
         <question id = "1q41" type = "radio">
-            <text>In addition to your OPIOID PAIN MEDICATION, have you taken any other PAIN medications since the last survey you answered?</text>
+            <text>In addition to your OPIOID PAIN MEDICATION, have you taken any other PAIN medications since wake-up?</text>
             <answer id = "1">Yes</answer>
             <answer id = "2" skip = "1q44">No</answer>
         </question>
@@ -185,7 +185,7 @@
     <category>
         <description>RECENT DRINKING</description>
         <question id = "1q54" type = "radio">
-            <text>Have you CONSUMED ALCOHOL since the last survey you answered?</text>
+            <text>Have you CONSUMED ALCOHOL since wake-up?</text>
             <answer id = "1" triggerFile="DrinkingFollowupParcel.xml">Yes</answer>
 <!--             <answer id = "1" triggerFile="DualFollowupParcel.xml">Yes</answer> -->
             <answer id = "2" skip = "1q67">No</answer>
@@ -213,7 +213,7 @@
         </questionblock>
         
         <question id = "1q65" type = "number">
-            <text>HOW MANY DRINKS did you consume SINCE the last survey you answered? Please remember to answer in STANDARD drinks.</text>
+            <text>HOW MANY DRINKS did you consume SINCE wake-up? Please remember to answer in STANDARD drinks.</text>
             <answer id = "item">drink(s)</answer>
             <answer id = "min">1</answer>
             <answer id = "max">24</answer>
@@ -298,9 +298,9 @@
             <answer id = "3">Moderately</answer>
             <answer id = "4">Quite a bit</answer>
             <answer id = "5">Extremely</answer>
-            <text id = "1q89">I have felt in control of my physical pain.</text>
-			<text id = "1q90">I thought that I couldn't stand the physical pain any more.</text>
-			<text id = "1q91">I was not thinking about my physical pain.</text>
+            <text id = "1q89">In the past 15 minutes, I have felt in control of my physical pain.</text>
+			<text id = "1q90">In the past 15 minutes, I thought that I couldn't stand the physical pain any more.</text>
+			<text id = "1q91">In the past 15 minutes, I was not thinking about my physical pain.</text>
         </questionblock>
     </category>
 
@@ -308,13 +308,13 @@
     <category>
         <description>RECENT SMOKING</description>
         <question id = "1q67" type = "radio">
-            <text>Have you SMOKED A CIGARETTE since the last survey you answered?</text>
+            <text>Have you SMOKED A CIGARETTE since wake-up?</text>
             <answer id = "1">Yes</answer>
             <answer id = "2" skip = "1q71">No</answer>
         </question>
         
         <question id = "1q68" type = "number">
-            <text>How many CIGARETTES did you smoke SINCE LAST RECORDING?</text>
+            <text>How many CIGARETTES did you smoke SINCE wake-up?</text>
             <answer id = "item">cigarette(s)</answer>
             <answer id = "min">1</answer>
             <answer id = "max">24</answer>
@@ -325,7 +325,7 @@
     <category>
         <description>RECENT MARIJUANA USE</description>
         <question id = "1q71" type = "radio">
-            <text>Have you USED MARIJUANA since the last survey you answered?</text>
+            <text>Have you USED MARIJUANA since wake-up?</text>
             <answer id = "1">Yes</answer>
             <answer id = "2" skip = "1q74">No</answer>
         </question>
@@ -401,22 +401,6 @@
             <text id = "1q79">In the past 15 minutes, I’m not sure what I was feeling.</text>
             <text id = "1q80">In the past 15 minutes, I was not thinking about my mood.</text>
         </questionblock>
-    </category>
-
-    <category>
-        <description>SLEEP</description>
-        <question id = "1q92" type = "radio">
-            <text>Since the last prompt, have you slept?</text>
-            <answer id = "1">Yes</answer>
-            <answer id = "2" skip = "1q96">No</answer>
-        </question>
-        <question id = "1q93" type = "number">
-            <text>How many hours did you sleep?</text>
-            <answer id = "item">hour(s)</answer>
-            <answer id = "min">1</answer>
-            <answer id = "max">24</answer>
-        </question>
-
     </category>
     
     <category>
