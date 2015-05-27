@@ -163,7 +163,21 @@
         
     </category>
 
-    <category>
+	<category>
+		<description>Opioid Intoxication Effects</description>
+		<questionblock type="radio">
+			<answer id = "1">1 - Very Slightly or Not At All</answer>
+			<answer id = "2">2 - A little</answer>
+			<answer id = "3">3 - Somewhat</answer>
+			<answer id = "4">4 - Quite a bit</answer>
+			<answer id = "5">5 - Extremely</answer>
+			<text id="1qXX">In the past 15 minutes, did you feel |Dreamy?</text>
+			<text id="1qXX">In the past 15 minutes, did you feel |High?</text>
+			<text id="1qXX">In the past 15 minutes, did you feel |Lightheaded?</text>
+		</questionblock>
+	</category>
+	
+    <category><!--Skip to here if no opioid use reported-->
         <description>OTHER PAIN MEDICATION USE</description>
         <question id = "1q41" type = "radio">
             <text>In addition to your OPIOID PAIN MEDICATION, have you taken any other PAIN medications since wake-up?</text>
@@ -184,21 +198,7 @@
             <answer id = "max">500</answer>
         </question>
     </category>
-    
-	<category>
-		<description>Opioid Intoxication Effects</description>
-		<questionblock type="radio">
-			<answer id = "1">1 - Very Slightly or Not At All</answer>
-			<answer id = "2">2 - A little</answer>
-			<answer id = "3">3 - Somewhat</answer>
-			<answer id = "4">4 - Quite a bit</answer>
-			<answer id = "5">5 - Extremely</answer>
-			<text id="1qXX">In the past 15 minutes, did you feel |Dreamy?</text>
-			<text id="1qXX">In the past 15 minutes, did you feel |High?</text>
-			<text id="1qXX">In the past 15 minutes, did you feel |Lightheaded?</text>
-		</questionblock>
-	</category>
-	
+
     <category>
         <description>RECENT DRINKING</description>
         <question id = "1q54" type = "radio">
