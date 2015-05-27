@@ -2,76 +2,79 @@
 <root>
     
 <!--     same -->
-	    <category>
+ <category>
         <description>PAIN MEDICATION EFFECT ITEMS</description>
         <questionblock type="radio">
-            <answer id = "1">1 - Strongly disagree</answer>
-            <answer id = "2">2 - Disagree</answer>
-            <answer id = "3">3 - Uncertain</answer>
-            <answer id = "4">4 - Agree</answer>
-            <answer id = "5">5 - Strongly agree</answer>
-            <text id = "3q02">Since I took my opioid pain medication, my physical pain has decreased.</text>
-			<text id = "3q03">Since I took my opioid pain medication, I feel happier.</text>
-			<text id = "3q04">Since I took my opioid pain medication, it has been harder to think or perform a task.</text>
-			<text id = "3q05">Since I took my opioid pain medication, my unpleasant feelings have been relieved.</text>
-			<text id = "3q06">Since I took my opioid pain medication, I have had pleasant feelings.</text>
-			<text id = "3q07">Since I took my opioid pain medication, I feel more relaxed or calm.</text>
-			<text id = "3q08">Since I took my opioid pain medication, I feel worse.</text>
-			<text id = "3q09">Since I took my opioid pain medication, I have been able to get through my work or activities.</text>
-			<text id = "3q10">Since I took my opioid pain medication, I forgot about my problems.</text>
-			<text id = "3q11">Since I took my opioid pain medication, I feel less depressed.</text>
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Somewhat</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">An extreme amount</answer>
+            <text id = "3q02">Since I took opioid pain medication, my physical pain has decreased.</text>
+			<text id = "3q03">Since I took opioid pain medication, I feel happier.</text>
+			<text id = "3q04">Since I took opioid pain medication, it has been harder to think or perform a task.</text>
+			<text id = "3q05">Since I took opioid pain medication, my unpleasant feelings have been relieved.</text>
+			<text id = "3q06">Since I took opioid pain medication, I have had pleasant feelings.</text>
+			<text id = "3q07">Since I took opioid pain medication, I feel more relaxed or calm.</text>
+			<text id = "3q08">Since I took opioid pain medication, I feel worse.</text>
+			<text id = "3q09">Since I took opioid pain medication, my physical pain has felt less unpleasant.</text>
+			<text id = "3q10">Since I took opioid pain medication, I forgot about my problems.</text>
+			<text id = "3q11">Since I took opioid pain medication, I feel less depressed.</text>
 		</questionblock>
-        
+
+<!--Chen, you said in the ReadMe that the question numbers don't matter right now. From here on, I copied questions from the morning report and then modified them, so the item numbers are the same (1q32). It was easier this way to make sure I don't miss any changes I made in the morning report. I hope this is okay. I'd be happy to go through and label the questions, but I don't want to do it until I know how they should be numbered.
+Related, for the questions that are identical across survey type, should they have the same question id anyway? We want them to go into the same column in the csv file.-->
+	
 <!--         //1 -->
-        <question id = "3q12" type = "radio">
+       <question id = "1q32" type = "radio">
             <text>Which OPIOID PAIN MEDICATION did you take?</text>
             <answer id = "1">Primary (the medication you take regularly)</answer>
             <answer id = "2">Secondary (the medication you take as needed)</answer>
-            <answer id = "3" skip = "3q15">Both</answer>
+            <answer id = "3" skip = "1q35">Both</answer>
         </question>
         
 <!--         //2 -->
-        <question id = "3q13" type = "radio">
+        <question id = "1q33" type = "radio">
             <text>How much of your OPIOID PAIN MEDICATION did you take SINCE the last survey you answered?</text>
-            <answer id = "1" skip = "3q19">My prescribed dose</answer>
-            <answer id = "2">Different than my prescribed dose</answer>
+            <answer id = "1" skip = "1q39">My typical dose</answer>
+            <answer id = "2">Different than my typical dose</answer>
         </question>
-        <question id = "3q14" type = "number">
-            <text>Please enter the number of milligrams you took for your opioid pain medication.</text>
+        <question id = "1q34" type = "number">
+            <text>Please enter the number of milligrams you took of your opioid pain medication.</text>
             <answer id = "item">milligram(s)</answer>
             <answer id = "min">1</answer>
             <answer id = "max">500</answer>
-<!--             <answer skip = "3q39"></answer>skip -->
+<!--             <answer skip = "1q39"></answer>skip -->
         </question>
         
 <!--         //2a -->
-        <question id = "3q15" type = "radio">
+        <question id = "1q35" type = "radio">
             <text>How much of your PRIMARY opioid pain medication did you take SINCE the last survey you answered?</text>
-            <answer id = "1" skip = "3q37">My prescribed dose</answer>
-            <answer id = "2">Different than my prescribed dose</answer>
+            <answer id = "1" skip = "1q37">My typical dose</answer>
+            <answer id = "2">Different than my typical dose</answer>
         </question>
-        <question id = "3q6" type = "number">
-            <text>Please enter the number of milligrams you took for your opioid pain medication.</text>
+        <question id = "1q36" type = "number">
+            <text>Please enter the number of milligrams you took of your opioid pain medication.</text>
             <answer id = "item">milligram(s)</answer>
             <answer id = "min">1</answer>
             <answer id = "max">500</answer>
         </question>
         
 <!--         //2b -->
-        <question id = "3q17" type = "radio">
+        <question id = "1q37" type = "radio">
             <text>How much of your SECONDARY opioid pain medication did you take SINCE the last survey you answered?</text>
-            <answer id = "1" skip = "3q19">My prescribed dose</answer>
-            <answer id = "2">Different than my prescribed dose</answer>
+            <answer id = "1" skip = "1q39">My typical dose</answer>
+            <answer id = "2">Different than my typical dose</answer>
         </question>
-        <question id = "3q18" type = "number">
-            <text>Please enter the number of milligrams you took for your opioid pain medication.</text>
+        <question id = "1q38" type = "number">
+            <text>Please enter the number of milligrams you took of your opioid pain medication.</text>
             <answer id = "item">milligram(s)</answer>
             <answer id = "min">1</answer>
             <answer id = "max">500</answer>
         </question>
         
 <!--         //3 -->
-        <question id = "3q19" type = "radio">
+        <question id = "1q39" type = "radio">
             <text>When did you take your OPIOID PAIN MEDICATION?</text>
             <answer id = "1">Just now</answer>
 			<answer id = "2">15 minutes ago</answer>
@@ -81,31 +84,23 @@
 			<answer id = "6">More than 1 hour ago</answer>
         </question>
         
-		<question id = "3q20" type = "check">
-            <text>I took my opioid pain medication because” (check all that apply)</text>
-			<answer id = "1">This is when I normally take my pain medication.</answer>
-			<answer id = "2">My pain increased or I had breakthrough pain.</answer>
-			<answer id = "3">I forgot to take my pain medication until now.</answer>
-			<answer id = "4">I am taking my pain medication early.</answer>
-			<answer id = "5">The pain medication I took earlier did not sufficiently reduce my pain.</answer>
-			<answer id = "6">I wanted to take my pain medication for other reasons.</answer>
-        </question>
     </category>
 
     <category>
         <description>OTHER PAIN MEDICATION USE</description>
-        <question id = "3q21" type = "radio">
+        <question id = "1q41" type = "radio">
             <text>In addition to your OPIOID PAIN MEDICATION, have you taken any other PAIN medications since the last survey you answered?</text>
             <answer id = "1">Yes</answer>
-            <answer id = "2" skip = "3q24">No</answer>
+            <answer id = "2" skip = "1q44">No</answer>
         </question>
         
-        <question id = "3q22" type = "radio">
+        <question id = "1q42" type = "radio">
             <text>What OTHER pain medication did you take?</text>
-            <answer id = "1">nonopioid PRESCRIPTION pain medication</answer>
-            <answer id = "2">OVER-THE-COUNTER pain medication</answer>
+            <answer id = "1"  option = "Please make a note of what you took in your medication log.">Nonopioid PRESCRIPTION pain medication</answer>
+            <answer id = "2"  option = "Please make a note of what you took in your medication log.">OVER-THE-COUNTER pain medication</answer>
+            <answer id = "3"  option = "Please make a note of what you took in your medication log.">OTHER pain medication</answer>
         </question>
-        <question id = "3q23" type = "number">
+        <question id = "1q43" type = "number">
             <text>Please enter the number of milligrams of pain medication you took.</text>
             <answer id = "item">milligram(s)</answer>
             <answer id = "min">1</answer>
@@ -113,6 +108,19 @@
         </question>
     </category>
     
+	<category>
+		<description>Opioid Intoxication Effects</description>
+		<questionblock type="radio">
+			<answer id = "1">1 - Very Slightly or Not At All</answer>
+			<answer id = "2">2 - A little</answer>
+			<answer id = "3">3 - Somewhat</answer>
+			<answer id = "4">4 - Quite a bit</answer>
+			<answer id = "5">5 - Extremely</answer>
+			<text id="1qXX">In the past 15 minutes, did you feel |Dreamy?</text>
+			<text id="1qXX">In the past 15 minutes, did you feel |High?</text>
+			<text id="1qXX">In the past 15 minutes, did you feel |Lightheaded?</text>
+		</questionblock>
+	</category> <!--stopped-->
 <!--     same -->
 
     <category>
