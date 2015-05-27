@@ -5,33 +5,35 @@
         <description>PAIN MEDICATION USE</description>
         <question id = "2q01" type = "radio">
             <text>Have you taken any OPIOID PAIN MEDICATION since the last survey you answered?</text>
-            <answer id = "1"  option="Please remember to use the initial pain medication report to log all primary opioid pain medication use." triggerFile="PainFollowupParcel.xml">Yes</answer>
+            <answer id = "1"  triggerFile="PainFollowupParcel.xml">Yes</answer>
             <answer id = "2" skip = "2q24">No</answer>
         </question>
     </category>
     
 <!--     same -->
-
-    <category>
+ <category>
         <description>PAIN MEDICATION EFFECT ITEMS</description>
         <questionblock type="radio">
-            <answer id = "1">1 - Strongly disagree</answer>
-            <answer id = "2">2 - Disagree</answer>
-            <answer id = "3">3 - Uncertain</answer>
-            <answer id = "4">4 - Agree</answer>
-            <answer id = "5">5 - Strongly agree</answer>
-            <text id = "2q02">Since I took my opioid pain medication, my physical pain has decreased.</text>
-			<text id = "2q03">Since I took my opioid pain medication, I feel happier.</text>
-			<text id = "2q04">Since I took my opioid pain medication, it has been harder to think or perform a task.</text>
-			<text id = "2q05">Since I took my opioid pain medication, my unpleasant feelings have been relieved.</text>
-			<text id = "2q06">Since I took my opioid pain medication, I have had pleasant feelings.</text>
-			<text id = "2q07">Since I took my opioid pain medication, I feel more relaxed or calm.</text>
-			<text id = "2q08">Since I took my opioid pain medication, I feel worse.</text>
-			<text id = "2q09">Since I took my opioid pain medication, I have been able to get through my work or activities.</text>
-			<text id = "2q10">Since I took my opioid pain medication, I forgot about my problems.</text>
-			<text id = "2q11">Since I took my opioid pain medication, I feel less depressed.</text>
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Somewhat</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">An extreme amount</answer>
+            <text id = "2q02">Since I took opioid pain medication, my physical pain has decreased.</text>
+			<text id = "2q03">Since I took opioid pain medication, I feel happier.</text>
+			<text id = "2q04">Since I took opioid pain medication, it has been harder to think or perform a task.</text>
+			<text id = "2q05">Since I took opioid pain medication, my unpleasant feelings have been relieved.</text>
+			<text id = "2q06">Since I took opioid pain medication, I have had pleasant feelings.</text>
+			<text id = "2q07">Since I took opioid pain medication, I feel more relaxed or calm.</text>
+			<text id = "2q08">Since I took opioid pain medication, I feel worse.</text>
+			<text id = "2q09">Since I took opioid pain medication, my physical pain has felt less unpleasant.</text>
+			<text id = "2q10">Since I took opioid pain medication, I forgot about my problems.</text>
+			<text id = "2q11">Since I took opioid pain medication, I feel less depressed.</text>
 		</questionblock>
-        
+
+<!--Chen, you said in the ReadMe that the question numbers don't matter right now. From here on, I copied questions from the morning report and then modified them, so the item numbers are the same (1q32). It was easier this way to make sure I don't miss any changes I made in the morning report.
+Related, for the questions that are identical across survey type, should they have the same question id anyway? We want them to go into the same column in the csv file.-->
+	
 <!--         //1 -->
         <question id = "2q12" type = "radio">
             <text>Which OPIOID PAIN MEDICATION did you take?</text>
@@ -43,11 +45,11 @@
 <!--         //2 -->
         <question id = "2q13" type = "radio">
             <text>How much of your OPIOID PAIN MEDICATION did you take SINCE the last survey you answered?</text>
-            <answer id = "1" skip = "2q19">My prescribed dose</answer>
-            <answer id = "2">Different than my prescribed dose</answer>
+            <answer id = "1" skip = "2q19">My typical dose</answer>
+            <answer id = "2">Different than my typical dose</answer>
         </question>
         <question id = "2q14" type = "number">
-            <text>Please enter the number of milligrams you took for your opioid pain medication.</text>
+            <text>Please enter the number of milligrams you took of your opioid pain medication.</text>
             <answer id = "item">milligram(s)</answer>
             <answer id = "min">1</answer>
             <answer id = "max">500</answer>
