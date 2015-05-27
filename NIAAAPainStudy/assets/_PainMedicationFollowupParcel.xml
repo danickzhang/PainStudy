@@ -144,7 +144,7 @@ Related, for the questions that are identical across survey type, should they ha
         <description>RECENT DRINKING</description>
         <question id = "1q54" type = "radio">
             <text>Have you CONSUMED ALCOHOL since the last survey you answered?</text>
-            <answer id = "1" triggerFile="DrinkingFollowupParcel.xml">Yes</answer>
+            <answer id = "1" triggerFile="DualFollowupParcel.xml">Yes</answer><!--This should trigger Dual, because opioid use already reported-->
 <!--             <answer id = "1" triggerFile="DualFollowupParcel.xml">Yes</answer> -->
             <answer id = "2" skip = "1q67">No</answer>
         </question>
