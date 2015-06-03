@@ -99,16 +99,12 @@
             <answer id = "1" skip = "1q39">My typical dose</answer>
             <answer id = "2">Different than my typical dose</answer>
         </question>
-        <question id = "1q34a" type = "number"><!--Chen, would it be possible to have this question and the next (a and b) appear on the same page of the survey? One above the other?-->
+        <question id = "1q34" type = "number"><!--Chen, would it be possible to have this question and the next (a and b) appear on the same page of the survey? One above the other?-->
             <text>Please enter the number of pills you took of your OPIOID PAIN MEDICATION.</text>
             <answer id = "item">pill(s)</answer>
             <answer id = "min">1</answer><!-- Chen, is it possible to have a decimal place? It would only need to be .5. So .5, 1, 1.5, 2 and so forth-->
             <answer id = "max">10</answer>
-        <question id = "1q34b" type = "number">
-            <text>Please enter the number of milligrams in the pill(s) you took of your opioid pain medication.</text>
-            <answer id = "item">milligram(s)</answer>
-            <answer id = "min">1</answer>
-            <answer id = "max">500</answer>
+
 <!--             <answer skip = "1q39"></answer>skip -->
         </question>
         
@@ -118,16 +114,12 @@
             <answer id = "1" skip = "1q37">My typical dose</answer>
             <answer id = "2">Different than my typical dose</answer>
         </question>
-        <question id = "1q36a" type = "number"><!--Chen, would it be possible to have this question and the next (a and b) appear on the same page of the survey? One above the other?-->
+        <question id = "1q36" type = "number"><!--Chen, would it be possible to have this question and the next (a and b) appear on the same page of the survey? One above the other?-->
             <text>Please enter the number of pills you took of your PRIMARY opioid pain medication.</text>
             <answer id = "item">pill(s)</answer>
             <answer id = "min">1</answer><!-- Chen, is it possible to have a decimal place? It would only need to be .5. So .5, 1, 1.5, 2 and so forth-->
             <answer id = "max">10</answer>
-        <question id = "1q36b" type = "number">
-            <text>Please enter the number of milligrams in the pill(s) you took of your PRIMARY opioid pain medication.</text>
-            <answer id = "item">milligram(s)</answer>
-            <answer id = "min">1</answer>
-            <answer id = "max">500</answer>
+ 
 <!--             <answer skip = "1q39"></answer>skip -->
         </question>
         
@@ -137,16 +129,12 @@
             <answer id = "1" skip = "1q39">My typical dose</answer>
             <answer id = "2">Different than my typical dose</answer>
         </question>
-        <question id = "1q38a" type = "number"><!--Chen, would it be possible to have this question and the next (a and b) appear on the same page of the survey? One above the other?-->
+        <question id = "1q38" type = "number"><!--Chen, would it be possible to have this question and the next (a and b) appear on the same page of the survey? One above the other?-->
             <text>Please enter the number of pills you took of your SECONDARY opioid pain medication.</text>
             <answer id = "item">pill(s)</answer>
             <answer id = "min">1</answer><!-- Chen, is it possible to have a decimal place? It would only need to be .5. So .5, 1, 1.5, 2 and so forth-->
             <answer id = "max">10</answer>
-        <question id = "1q38b" type = "number">
-            <text>Please enter the number of milligrams in the pill(s) you took of your SECONDARY opioid pain medication.</text>
-            <answer id = "item">milligram(s)</answer>
-            <answer id = "min">1</answer>
-            <answer id = "max">500</answer>
+ 
 <!--             <answer skip = "1q39"></answer>skip -->
         </question>
         
@@ -191,12 +179,7 @@
             <answer id = "2"  option = "Please make a note of what you took in your medication log.">OVER-THE-COUNTER pain medication</answer>
             <answer id = "3"  option = "Please make a note of what you took in your medication log.">OTHER pain medication</answer>
         </question>
-        <question id = "1q43" type = "number">
-            <text>Please enter the number of milligrams of pain medication you took.</text>
-            <answer id = "item">milligram(s)</answer>
-            <answer id = "min">1</answer>
-            <answer id = "max">500</answer>
-        </question>
+
     </category>
 
     <category>
