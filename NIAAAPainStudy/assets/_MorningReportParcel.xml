@@ -56,7 +56,7 @@
 
     </category>
 
-       <category>
+    <category>
         <description>PAIN MEDICATION USE</description>
         <question id = "1q21" type = "radio">
             <text>Have you taken any OPIOID PAIN MEDICATION since wake-up?</text>
@@ -94,7 +94,7 @@
         </question>
         
 <!--         //2 -->
-            <question id = "1q33" type = "radio">
+        <question id = "1q33" type = "radio">
             <text>How much of your OPIOID PAIN MEDICATION did you take SINCE the last survey you answered?</text>
             <answer id = "1" skip = "1q39">My typical dose</answer>
             <answer id = "2">Different than my typical dose</answer>
@@ -244,7 +244,7 @@
             <answer id = "5">1 hour ago</answer>
             <answer id = "6">More than 1 hour ago</answer>
         </question>
-   
+    </category>
 
 	<category>
 		<description>Alcohol Intoxication Effects</description>
@@ -267,6 +267,17 @@
         <description>PAIN</description>
         <question id = "1q81" type = "radio">
             <text>How much PHYSICAL PAIN have you felt in the past 15 minutes:</text>
+            <answer id = "1">0 - No pain</answer>
+            <answer id = "2">1</answer>
+            <answer id = "3">2</answer>
+            <answer id = "4">3</answer>
+            <answer id = "5">4</answer>
+            <answer id = "6">5</answer>
+            <answer id = "7">6</answer>
+            <answer id = "8">7</answer>
+            <answer id = "9">8</answer>
+            <answer id = "A">9</answer>
+            <answer id = "B">10 - Worst Possible</answer>
 <!-- I don't know how this would be coded but the final result should look like:
 	0      1    2    3    4    5    6    7   8    9    10
      No pain						Worst possible
@@ -407,7 +418,7 @@
     </category>
     
     <category>
-        <description>COGNITIVE</description>
+        <description>COGNITIVE MOOD</description>
         <questionblock type = "radio">
             <answer id = "1">Very slightly or not at all</answer>
             <answer id = "2">A little</answer>
@@ -543,12 +554,10 @@
 			<text id = "1q18">If I take opioid pain medication today, I expect it would make my physical pain less unpleasant.</text>
 			<text id = "1q19">If I take opioid pain medication today, I expect it would make me forget my problems.</text>
 			<text id = "1q20">If I take opioid pain medication today, I expect it would make me feel less depressed.</text>
-
         </questionblock>
     </category>
-    <category>
-    	
-<category>
+    
+    <category>	
         <description>ALCOHOL EXPECTANCY ITEMS</description>
         <questionblock type="radio">
             <answer id = "1">Very slightly or not at all</answer>
@@ -568,7 +577,8 @@
 			<text id = "1q53">If I drink alcohol today, I expect it would make me feel less depressed.</text>
         </questionblock>
     </category>
-    	
+    
+    <category>
         <description>DRINKING PLAN</description>
         <question id = "1q106" type = "radio">
             <text>Do you plan on drinking today or tonight?</text>
@@ -581,6 +591,17 @@
         <description>PAIN DAY</description>
         <question id = "1q107" type = "radio">
             <text>How much pain do you expect to feel today?</text>
+            <answer id = "1">0 - No pain</answer>
+            <answer id = "2">1</answer>
+            <answer id = "3">2</answer>
+            <answer id = "4">3</answer>
+            <answer id = "5">4</answer>
+            <answer id = "6">5</answer>
+            <answer id = "7">6</answer>
+            <answer id = "8">7</answer>
+            <answer id = "9">8</answer>
+            <answer id = "A">9</answer>
+            <answer id = "B">10 - Worst Possible</answer>
 <!-- I don't know how this would be coded but the final result should look like:
 	0      1    2    3    4    5    6    7   8    9    10
      No pain						Worst possible
