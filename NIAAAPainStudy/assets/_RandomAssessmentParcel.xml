@@ -33,6 +33,12 @@
 
 <!--Chen, you said in the ReadMe that the question numbers don't matter right now. From here on, I copied questions from the morning report and then modified them, so the item numbers are the same (1q32). It was easier this way to make sure I don't miss any changes I made in the morning report. I hope this is okay. I'd be happy to go through and label the questions, but I don't want to do it until I know how they should be numbered.
 Related, for the questions that are identical across survey type, should they have the same question id anyway? We want them to go into the same column in the csv file.-->
+        <question id = "1q32" type = "radio">
+            <text>Which OPIOID PAIN MEDICATION did you take?</text>
+            <answer id = "1">Primary (the medication you take regularly)</answer>
+            <answer id = "2">Secondary (the medication you take as needed)</answer>
+            <answer id = "3" skip = "1q35">Both</answer>
+        </question>
 	
 <!--         //1 -->
         <question id = "1q33" type = "radio">

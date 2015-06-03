@@ -81,6 +81,12 @@
 			<text id = "2q11">Since I took opioid pain medication, I feel less depressed.</text>
 		</questionblock>
 
+        <question id = "1q32" type = "radio">
+            <text>Which OPIOID PAIN MEDICATION did you take?</text>
+            <answer id = "1">Primary (the medication you take regularly)</answer>
+            <answer id = "2">Secondary (the medication you take as needed)</answer>
+            <answer id = "3" skip = "1q35">Both</answer>
+        </question>
 
 <!--         //1 -->
         <question id = "1q33" type = "radio">
