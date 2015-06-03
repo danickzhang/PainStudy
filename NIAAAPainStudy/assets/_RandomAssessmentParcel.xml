@@ -89,6 +89,7 @@ Related, for the questions that are identical across survey type, should they ha
             <answer id = "item">pill(s)</answer>
             <answer id = "min">1</answer><!-- Chen, is it possible to have a decimal place? It would only need to be .5. So .5, 1, 1.5, 2 and so forth-->
             <answer id = "max">10</answer>
+        </question>
         <question id = "1q38b" type = "number">
             <text>Please enter the number of milligrams in the pill(s) you took of your SECONDARY opioid pain medication.</text>
             <answer id = "item">milligram(s)</answer>
@@ -194,7 +195,7 @@ Related, for the questions that are identical across survey type, should they ha
             <answer id = "5">1 hour ago</answer>
             <answer id = "6">More than 1 hour ago</answer>
         </question>
- 
+    </category>
  
 	<category>
 		<description>Alcohol Intoxication Effects</description>
@@ -217,6 +218,17 @@ Related, for the questions that are identical across survey type, should they ha
         <description>PAIN</description>
         <question id = "1q81" type = "radio">
             <text>How much PHYSICAL PAIN have you felt in the past 15 minutes:</text>
+            <answer id = "1">0 - No pain</answer>
+            <answer id = "2">1</answer>
+            <answer id = "3">2</answer>
+            <answer id = "4">3</answer>
+            <answer id = "5">4</answer>
+            <answer id = "6">5</answer>
+            <answer id = "7">6</answer>
+            <answer id = "8">7</answer>
+            <answer id = "9">8</answer>
+            <answer id = "A">9</answer>
+            <answer id = "B">10 - Worst Possible</answer>
 <!-- I don't know how this would be coded but the final result should look like:
 	0      1    2    3    4    5    6    7   8    9    10
      No pain						Worst possible
@@ -357,7 +369,7 @@ Related, for the questions that are identical across survey type, should they ha
     </category>
     
     <category>
-        <description>COGNITIVE</description>
+        <description>COGNITIVE MOOD</description>
         <questionblock type = "radio">
             <answer id = "1">Very slightly or not at all</answer>
             <answer id = "2">A little</answer>
