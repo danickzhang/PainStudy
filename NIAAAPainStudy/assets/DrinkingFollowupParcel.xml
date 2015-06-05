@@ -1,15 +1,57 @@
-<?xml version="1.0"?>
 <root>
+
+    <category>
+        <description>ALCOHOL EFFECT ITEMS</description>
+        <questionblock type="radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Somewhat</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">An extreme amount</answer>
+            <text id = "1q55">Since I drank alcohol, my physical pain has decreased.</text>
+            <text id = "1q56">Since I drank alcohol, I feel happier.</text>
+            <text id = "1q57">Since I drank alcohol, it has been harder to think or perform a task.</text>
+            <text id = "1q58">Since I drank alcohol, my unpleasant feelings have been relieved.</text>
+            <text id = "1q59">Since I drank alcohol, I have had pleasant feelings.</text>
+            <text id = "1q60">Since I drank alcohol, I feel more relaxed or calm.</text>
+            <text id = "1q61">Since I drank alcohol, I feel worse.</text>
+            <text id = "1q62">Since I drank alcohol, my physical pain has felt less unpleasant.</text>
+            <text id = "1q63">Since I drank alcohol, I forgot about my problems.</text>
+            <text id = "1q64">Since I drank alcohol, I feel less depressed.</text>
+        </questionblock>
+
+        <question id = "1q65" type = "number">
+            <text>HOW MANY DRINKS did you consume SINCE the last survey you answered? Please remember to answer in STANDARD drinks.</text>
+            <answer id = "item">drink(s)</answer>
+            <answer id = "min">1</answer>
+            <answer id = "max">24</answer>
+        </question>
+    </category>
+
+    <category>
+        <description>Alcohol Intoxication Effects</description>
+        <questionblock type="radio">
+            <answer id = "1">1 - Very Slightly or Not At All</answer>
+            <answer id = "2">2 - A little</answer>
+            <answer id = "3">3 - Somewhat</answer>
+            <answer id = "4">4 - Quite a bit</answer>
+            <answer id = "5">5 - Extremely</answer>
+            <text id="1qXX">In the past 15 minutes, did you feel |Sluggish?</text>
+            <text id="1qXX">In the past 15 minutes, did you feel |Buzzed?</text>
+            <text id="1qXX">In the past 15 minutes, did you feel |Dizzy?</text>
+        </questionblock>
+    </category>   
     
     <category>
         <description>PAIN MEDICATION USE</description>
         <question id = "2q01" type = "radio">
             <text>Have you taken any OPIOID PAIN MEDICATION since the last survey you answered?</text>
-            <answer id = "1"  triggerFile="PainFollowupParcel.xml">Yes</answer>
+            <answer id = "1"  triggerFile="DualFollowupParcel.xml">Yes</answer>
             <answer id = "2" skip = "1q41">No</answer>
         </question>
     </category>
-
+    
+<!--     same -->
     <category>
         <description>PAIN MEDICATION EFFECT ITEMS</description>
         <questionblock type="radio">
@@ -30,15 +72,13 @@
             <text id = "2q11">Since I took opioid pain medication, I feel less depressed.</text>
         </questionblock>
 
-<!--Chen, you said in the ReadMe that the question numbers don't matter right now. From here on, I copied questions from the morning report and then modified them, so the item numbers are the same (1q32). It was easier this way to make sure I don't miss any changes I made in the morning report. I hope this is okay. I'd be happy to go through and label the questions, but I don't want to do it until I know how they should be numbered.
-Related, for the questions that are identical across survey type, should they have the same question id anyway? We want them to go into the same column in the csv file.-->
         <question id = "1q32" type = "radio">
             <text>Which OPIOID PAIN MEDICATION did you take?</text>
             <answer id = "1">Primary (the medication you take regularly)</answer>
             <answer id = "2">Secondary (the medication you take as needed)</answer>
             <answer id = "3" skip = "1q35">Both</answer>
         </question>
-    
+
 <!--         //1 -->
         <question id = "1q33" type = "radio">
             <text>How much of your OPIOID PAIN MEDICATION did you take SINCE the last survey you answered?</text>
@@ -80,7 +120,7 @@ Related, for the questions that are identical across survey type, should they ha
             <answer id = "item">pill(s)</answer>
             <answer id = "min">1</answer><!-- Chen, is it possible to have a decimal place? It would only need to be .5. So .5, 1, 1.5, 2 and so forth-->
             <answer id = "max">10</answer>
- 
+
 <!--             <answer skip = "1q39"></answer>skip -->
         </question>
         
@@ -95,7 +135,7 @@ Related, for the questions that are identical across survey type, should they ha
             <answer id = "6">More than 1 hour ago</answer>
         </question>
     </category>
-
+         
     <category>
         <description>Opioid Intoxication Effects</description>
         <questionblock type="radio">
@@ -127,67 +167,6 @@ Related, for the questions that are identical across survey type, should they ha
 
     </category>
     
-<!--     same -->
-    <category>
-        <description>RECENT DRINKING</description>
-        <question id = "1q54" type = "radio">
-            <text>Have you CONSUMED ALCOHOL since the last survey you answered?</text>
-            <answer id = "1" triggerFile="DrinkingFollowupParcel.xml">Yes</answer>
-<!--             <answer id = "1" triggerFile="DualFollowupParcel.xml">Yes</answer> -->
-            <answer id = "2" skip = "1q67">No</answer>
-        </question>
-    </category>
-
-    <category>
-        <description>ALCOHOL EFFECT ITEMS</description>
-        <questionblock type="radio">
-            <answer id = "1">Very slightly or not at all</answer>
-            <answer id = "2">A little</answer>
-            <answer id = "3">Somewhat</answer>
-            <answer id = "4">Quite a bit</answer>
-            <answer id = "5">An extreme amount</answer>
-            <text id = "1q55">Since I drank alcohol, my physical pain has decreased.</text>
-            <text id = "1q56">Since I drank alcohol, I feel happier.</text>
-            <text id = "1q57">Since I drank alcohol, it has been harder to think or perform a task.</text>
-            <text id = "1q58">Since I drank alcohol, my unpleasant feelings have been relieved.</text>
-            <text id = "1q59">Since I drank alcohol, I have had pleasant feelings.</text>
-            <text id = "1q60">Since I drank alcohol, I feel more relaxed or calm.</text>
-            <text id = "1q61">Since I drank alcohol, I feel worse.</text>
-            <text id = "1q62">Since I drank alcohol, my physical pain has felt less unpleasant.</text>
-            <text id = "1q63">Since I drank alcohol, I forgot about my problems.</text>
-            <text id = "1q64">Since I drank alcohol, I feel less depressed.</text>
-        </questionblock>
-        
-        <question id = "1q65" type = "number">
-            <text>HOW MANY DRINKS did you consume SINCE the last survey you answered? Please remember to answer in STANDARD drinks.</text>
-            <answer id = "item">drink(s)</answer>
-            <answer id = "min">1</answer>
-            <answer id = "max">24</answer>
-        </question>
-        <question id = "1q66" type = "radio">
-            <text>When did you finish your FIRST drink?</text>
-            <answer id = "1">Just now</answer>
-            <answer id = "2">15 minutes ago</answer>
-            <answer id = "3">30 minutes ago</answer>
-            <answer id = "4">45 minutes ago</answer>
-            <answer id = "5">1 hour ago</answer>
-            <answer id = "6">More than 1 hour ago</answer>
-        </question>
-    </category>
-
-    <category>
-        <description>Alcohol Intoxication Effects</description>
-        <questionblock type="radio">
-            <answer id = "1">1 - Very Slightly or Not At All</answer>
-            <answer id = "2">2 - A little</answer>
-            <answer id = "3">3 - Somewhat</answer>
-            <answer id = "4">4 - Quite a bit</answer>
-            <answer id = "5">5 - Extremely</answer>
-            <text id="1qXX">In the past 15 minutes, did you feel |Sluggish?</text>
-            <text id="1qXX">In the past 15 minutes, did you feel |Buzzed?</text>
-            <text id="1qXX">In the past 15 minutes, did you feel |Dizzy?</text>
-        </questionblock>
-    </category>
     
     <category>
         <!--Chen, I would like to change this question to have a discrete seekbar, with values between 0 and 10.
@@ -227,8 +206,8 @@ Related, for the questions that are identical across survey type, should they ha
             <answer id = "7">Tender</answer>
             <answer id = "8">Burning</answer>
             <answer id = "9">Penetrating</answer>
-            <answer id = "A">Numbing</answer>
-            <answer id = "B" action="uncheck">None</answer>
+            <answer id = "A">Numbing</answer><!--Chen, I don't know, but should this be "10" instead of "A"? RWC-->
+            <answer id = "11" action="uncheck">None</answer>
         </question>
     </category>
 

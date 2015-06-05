@@ -1,0 +1,277 @@
+<?xml version="1.0"?>
+<root>
+
+    <category>
+        <description>LAST NIGHT’S DRINKING</description>
+        <question id = "1q01" type = "radio">
+            <text>If you drank alcohol last night, do you have a HANGOVER?</text>
+            <answer id = "1">Yes</answer>
+            <answer id = "2" skip = "1q04">No</answer>
+        </question>
+    </category>
+    
+    <category>
+        <description>HANGOVER/HANGOVER SYMPTOMS</description>
+        <questionblock type="radio">
+            <answer id = "1">1 - Very Slightly or Not At All</answer>
+            <answer id = "2">2 - A little</answer>
+            <answer id = "3">3 - Somewhat</answer>
+            <answer id = "4">4 - Quite a bit</answer>
+            <answer id = "5">5 - Extremely</answer>
+            <text id = "1q02">In the past 15 minutes, did you feel HEADACHE?</text>
+            <text id = "1q03">In the past 15 minutes, did you feel NAUSEOUS?</text>
+        </questionblock>
+    </category>
+
+    <category>
+        <description>SLEEP</description>
+        <question id = "1q04" type = "number">
+            <text>How many hours did you sleep last night?</text>
+            <answer id = "item">hour(s)</answer>
+            <answer id = "min">1</answer>
+            <answer id = "max">24</answer>
+        </question>
+        <question id = "1q05" type = "radio">
+            <text>How would you rate the quality of your sleep?</text>
+            <answer id = "1">Very bad</answer>
+            <answer id = "2">Fairly bad</answer>
+            <answer id = "3">Fairly good</answer>
+            <answer id = "4">Very good</answer>
+        </question>
+        <question id = "1q06" type = "radio">
+            <text>How rested do you currently feel?</text>
+            <answer id = "1">Not at all rested</answer>
+            <answer id = "2">Fairly not rested</answer>
+            <answer id = "3">Fairly rested</answer>
+            <answer id = "4">Well rested</answer>
+        </question>
+        <question id = "1q07" type = "radio">
+            <text>How much did your physical pain interfere with your sleep last night?</text>
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">A moderate amount</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">An extreme amount</answer>
+        </question>
+    </category>
+
+    
+<!--     ## -->
+    <category>
+        <description>PAIN MEDICATION USE</description>
+        <question id = "1q21" type = "radio">
+            <text>Have you taken any OPIOID PAIN MEDICATION since wake-up?</text>
+            <answer id = "1" triggerFile="PainFollowupParcel.xml">Yes</answer>
+            <answer id = "2" skip = "1q41">No</answer>
+        </question>
+    </category>
+
+    <category>
+        <description>PAIN MEDICATION EFFECT ITEMS</description>
+        <questionblock type="radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Somewhat</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">An extreme amount</answer>
+            <text id = "1q22">Since I took opioid pain medication, my physical pain has decreased.</text>
+            <text id = "1q23">Since I took opioid pain medication, I feel happier.</text>
+            <text id = "1q24">Since I took opioid pain medication, it has been harder to think or perform a task.</text>
+            <text id = "1q25">Since I took opioid pain medication, my unpleasant feelings have been relieved.</text>
+            <text id = "1q26">Since I took opioid pain medication, I have had pleasant feelings.</text>
+            <text id = "1q27">Since I took opioid pain medication, I feel more relaxed or calm.</text>
+            <text id = "1q28">Since I took opioid pain medication, I feel worse.</text>
+            <text id = "1q29">Since I took opioid pain medication, my physical pain has felt less unpleasant.</text>
+            <text id = "1q30">Since I took opioid pain medication, I forgot about my problems.</text>
+            <text id = "1q31">Since I took opioid pain medication, I feel less depressed.</text>
+        </questionblock>
+        
+<!--         //1 -->
+        <question id = "1q32" type = "radio">
+            <text>Which OPIOID PAIN MEDICATION did you take?</text>
+            <answer id = "1">Primary (the medication you take regularly)</answer>
+            <answer id = "2">Secondary (the medication you take as needed)</answer>
+            <answer id = "3" skip = "1q35">Both</answer>
+        </question>
+        
+<!--         //2 -->
+        <question id = "1q33" type = "radio">
+            <text>How much of your OPIOID PAIN MEDICATION did you take SINCE the last survey you answered?</text>
+            <answer id = "1" skip = "1q39">My typical dose</answer>
+            <answer id = "2">Different than my typical dose</answer>
+        </question>
+        <question id = "1q34" type = "number"><!--Chen, would it be possible to have this question and the next (a and b) appear on the same page of the survey? One above the other?-->
+            <text>Please enter the number of pills you took of your OPIOID PAIN MEDICATION.</text>
+            <answer id = "item">pill(s)</answer>
+            <answer id = "min">1</answer><!-- Chen, is it possible to have a decimal place? It would only need to be .5. So .5, 1, 1.5, 2 and so forth-->
+            <answer id = "max">10</answer>
+
+<!--             <answer skip = "1q39"></answer>skip -->
+        </question>
+        
+<!--         //2a -->
+        <question id = "1q35" type = "radio">
+            <text>How much of your PRIMARY opioid pain medication did you take SINCE the last survey you answered?</text>
+            <answer id = "1" skip = "1q37">My typical dose</answer>
+            <answer id = "2">Different than my typical dose</answer>
+        </question>
+        <question id = "1q36" type = "number"><!--Chen, would it be possible to have this question and the next (a and b) appear on the same page of the survey? One above the other?-->
+            <text>Please enter the number of pills you took of your PRIMARY opioid pain medication.</text>
+            <answer id = "item">pill(s)</answer>
+            <answer id = "min">1</answer><!-- Chen, is it possible to have a decimal place? It would only need to be .5. So .5, 1, 1.5, 2 and so forth-->
+            <answer id = "max">10</answer>
+
+<!--             <answer skip = "1q39"></answer>skip -->
+        </question>
+        
+<!--         //2b -->
+        <question id = "1q37" type = "radio">
+            <text>How much of your SECONDARY opioid pain medication did you take SINCE the last survey you answered?</text>
+            <answer id = "1" skip = "1q39">My typical dose</answer>
+            <answer id = "2">Different than my typical dose</answer>
+        </question>
+        <question id = "1q38" type = "number"><!--Chen, would it be possible to have this question and the next (a and b) appear on the same page of the survey? One above the other?-->
+            <text>Please enter the number of pills you took of your SECONDARY opioid pain medication.</text>
+            <answer id = "item">pill(s)</answer>
+            <answer id = "min">1</answer><!-- Chen, is it possible to have a decimal place? It would only need to be .5. So .5, 1, 1.5, 2 and so forth-->
+            <answer id = "max">10</answer>
+
+<!--             <answer skip = "1q39"></answer>skip -->
+        </question>
+        
+<!--         //3 -->
+        <question id = "1q39" type = "radio">
+            <text>When did you take your OPIOID PAIN MEDICATION?</text>
+            <answer id = "1">Just now</answer>
+            <answer id = "2">15 minutes ago</answer>
+            <answer id = "3">30 minutes ago</answer>
+            <answer id = "4">45 minutes ago</answer>
+            <answer id = "5">1 hour ago</answer>
+            <answer id = "6">More than 1 hour ago</answer>
+        </question>
+    </category>
+
+    <category>
+        <description>Opioid Intoxication Effects</description>
+        <questionblock type="radio">
+            <answer id = "1">1 - Very Slightly or Not At All</answer>
+            <answer id = "2">2 - A little</answer>
+            <answer id = "3">3 - Somewhat</answer>
+            <answer id = "4">4 - Quite a bit</answer>
+            <answer id = "5">5 - Extremely</answer>
+            <text id="1qXX">In the past 15 minutes, did you feel |Dreamy?</text>
+            <text id="1qXX">In the past 15 minutes, did you feel |High?</text>
+            <text id="1qXX">In the past 15 minutes, did you feel |Lightheaded?</text>
+        </questionblock>
+    </category>
+    
+    <category><!--Skip to here if no opioid use reported-->
+        <description>OTHER PAIN MEDICATION USE</description>
+        <question id = "1q41" type = "radio">
+            <text>In addition to your OPIOID PAIN MEDICATION, have you taken any other PAIN medications since wake-up?</text>
+            <answer id = "1">Yes</answer>
+            <answer id = "2" skip = "1q44">No</answer>
+        </question>
+        
+        <question id = "1q42" type = "radio">
+            <text>What OTHER pain medication did you take?</text>
+            <answer id = "1"  option = "Please make a note of what you took in your medication log.">Nonopioid PRESCRIPTION pain medication</answer>
+            <answer id = "2"  option = "Please make a note of what you took in your medication log.">OVER-THE-COUNTER pain medication</answer>
+            <answer id = "3"  option = "Please make a note of what you took in your medication log.">OTHER pain medication</answer>
+        </question>
+
+    </category>
+    
+    
+<!--     ## -->
+
+
+    <!-- <RECENT DRINKING> -->
+    <category>
+        <description>RECENT DRINKING</description>
+        <question id = "1q9" type = "radio">
+            <text>Have you CONSUMED ALCOHOL since wake-up?</text>
+            <answer id = "1" triggerFile="DrinkingFollowupParcel.xml">Yes</answer>
+<!--             <answer id = "1" triggerFile="DualFollowupParcel.xml">Yes</answer> -->
+            <answer id = "2" skip = "13q1">No</answer>
+        </question>
+    </category>
+
+    <externalsource baseid="12q" filename="RecentDrinking.xml"></externalsource>
+
+    <externalsource baseid="13q" filename="SensoryAndCognitive.xml"></externalsource>
+
+    <!-- <SLEEP> -->
+
+    <externalsource baseid="14q" filename="SituationAndSetting.xml"></externalsource>
+
+    <category>
+        <description>PAIN MEDICATION EXPECTANCY ITEMS</description>
+        <questionblock type="radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Somewhat</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">An extreme amount</answer>
+            <text id = "1q11">If I take opioid pain medication today, I expect it would decrease my physical pain.</text>
+            <text id = "1q12">If I take opioid pain medication today, I expect it would make me feel happier.</text>
+            <text id = "1q13">If I take opioid pain medication today, I expect it would make it harder to think or perform a task.</text>
+            <text id = "1q14">If I take opioid pain medication today, I expect it would relieve unpleasant feelings.</text>
+            <text id = "1q15">If I take opioid pain medication today, I expect it would give me a pleasant feeling.</text>
+            <text id = "1q16">If I take opioid pain medication today, I expect it would make me feel more relaxed or calm.</text>
+            <text id = "1q17">If I take opioid pain medication today, I expect it would make me feel worse.</text>
+            <text id = "1q18">If I take opioid pain medication today, I expect it would make my physical pain less unpleasant.</text>
+            <text id = "1q19">If I take opioid pain medication today, I expect it would make me forget my problems.</text>
+            <text id = "1q20">If I take opioid pain medication today, I expect it would make me feel less depressed.</text>
+        </questionblock>
+    </category>
+    
+    <category>  
+        <description>ALCOHOL EXPECTANCY ITEMS</description>
+        <questionblock type="radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Somewhat</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">An extreme amount</answer>
+            <text id = "1q44">If I drink alcohol today, I expect it would decrease my physical pain.</text>
+            <text id = "1q45">If I drink alcohol today, I expect it would make me feel happier.</text>
+            <text id = "1q46">If I drink alcohol today, I expect it would make it harder to think or perform a task.</text>
+            <text id = "1q47">If I drink alcohol today, I expect it would relieve unpleasant feelings.</text>
+            <text id = "1q48">If I drink alcohol today, I expect it would give me a pleasant feeling.</text>
+            <text id = "1q49">If I drink alcohol today, I expect it would make me feel more relaxed or calm.</text>
+            <text id = "1q50">If I drink alcohol today, I expect it would make me feel worse.</text>
+            <text id = "1q51">If I drink alcohol today, I expect it would make my physical pain less unpleasant.</text>
+            <text id = "1q52">If I drink alcohol today, I expect it would make me forget my problems.</text>
+            <text id = "1q53">If I drink alcohol today, I expect it would make me feel less depressed.</text>
+        </questionblock>
+    </category>
+    
+    <category>
+        <description>DRINKING PLAN</description>
+        <question id = "1q106" type = "radio">
+            <text>Do you plan on drinking today or tonight?</text>
+            <answer id = "1">Yes</answer>
+            <answer id = "2">No</answer>
+        </question>
+    </category>
+
+    <category>
+        <description>PAIN DAY</description>
+        <question id = "1q107" type = "radio">
+            <text>How much pain do you expect to feel today?</text>
+            <answer id = "1">0 - No pain</answer>
+            <answer id = "2">1</answer>
+            <answer id = "3">2</answer>
+            <answer id = "4">3</answer>
+            <answer id = "5">4</answer>
+            <answer id = "6">5</answer>
+            <answer id = "7">6</answer>
+            <answer id = "8">7</answer>
+            <answer id = "9">8</answer>
+            <answer id = "A">9</answer>
+            <answer id = "B">10 - Worst Possible</answer>
+        </question>
+    </category>
+
+</root>

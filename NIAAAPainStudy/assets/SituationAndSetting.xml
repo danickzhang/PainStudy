@@ -1,23 +1,104 @@
 <root>
-	<category>
-		<description>Situation and setting</description>
-		<question id = "1" type = "check">
-			<text>In the past 15 minutes, WHO have you been with? (check all that apply)</text>
-			<answer id = "1" action="uncheck">No one</answer>
-			<answer id = "2">Partner/spouse</answer>
-			<answer id = "3">Other family member</answer>
-			<answer id = "4">Friend/acquaintance</answer>
-			<answer id = "5">Other</answer>
-		</question>
-		
-		<question id = "2" type = "check">
-			<text>In the past 15 minutes, WHERE is your location? (check all that apply)</text>
-			<answer id = "1">Home</answer>
-			<answer id = "2">Work</answer>
-			<answer id = "3">Bar/restaurant</answer>
-			<answer id = "4">Outside</answer>
-			<answer id = "5">Other public place</answer>
-			<answer id = "6">Other</answer>
-		</question>
-	</category>
+
+    <category>
+        <description>OPIOID URGE/CRAVING</description>
+        <question id = "1" type = "radio">
+            <text>In the PAST 15 MINUTES, How strong was your urge to take more opioid pain medication?</text>
+            <answer id = "1">Very slight or none</answer>
+            <answer id = "2">Slightly strong</answer>
+            <answer id = "3">Somewhat strong</answer>
+            <answer id = "4">Quite strong</answer>
+            <answer id = "5">Extremely strong</answer>
+        </question>
+        <question id = "2" type = "radio">
+            <text>In the PAST 15 MINUTES, How often have you found yourself thinking about the next dose of opioid pain medication?</text>
+            <answer id = "1">Not at all</answer>
+            <answer id = "2">Seldom</answer>
+            <answer id = "3">Sometimes</answer>
+            <answer id = "4">Frequently</answer>
+            <answer id = "5">Constantly</answer>
+        </question>
+    </category>
+    
+    <category>
+        <description>ALCOHOL URGE/CRAVING</description>
+        <question id = "3" type = "radio">
+            <text>In the PAST 15 MINUTES, How strong was your urge to drink?</text>
+            <answer id = "1">Very slight or none</answer>
+            <answer id = "2">Slightly strong</answer>
+            <answer id = "3">Somewhat strong</answer>
+            <answer id = "4">Quite strong</answer>
+            <answer id = "5">Extremely strong</answer>
+        </question>
+        <question id = "4" type = "radio">
+            <text>In the PAST 15 MINUTES, How often have you found yourself thinking about the next drink?</text>
+            <answer id = "1">Not at all</answer>
+            <answer id = "2">Seldom</answer>
+            <answer id = "3">Sometimes</answer>
+            <answer id = "4">Frequently</answer>
+            <answer id = "5">Constantly</answer>
+        </question>
+    </category>
+
+    <category>
+        <description>SITUATION AND SETTING</description>
+        <question id = "5" type = "check">
+            <text>In the PAST 15 MINUTES, WHO have you been with: (Check all that apply)</text>
+            <answer id = "1" action="uncheck">No one</answer>
+            <answer id = "2 ">Partner/spouse</answer>
+            <answer id = "3 ">Co-worker</answer>
+            <answer id = "4 ">Child</answer>
+            <answer id = "5 ">Parent</answer>
+            <answer id = "6 ">Other family</answer>
+            <answer id = "7 ">Friend</answer>
+            <answer id = "8 ">Acquaintance</answer>
+            <answer id = "9 ">Stranger(s)</answer>
+            <answer id = "A">Other</answer>
+        </question>
+        
+        <question id = "6" type = "check">
+            <text>In the PAST 15 MINUTES, WHERE is your current location? (Check all that apply)</text>
+            <answer id = "1 ">Home</answer>
+            <answer id = "2 ">Someone else’s home</answer>
+            <answer id = "3 ">Work/School</answer>
+            <answer id = "4 ">Party</answer>
+            <answer id = "5 ">Bar</answer>
+            <answer id = "6 ">Restaurant</answer>
+            <answer id = "7 ">Outside</answer>
+            <answer id = "8 ">Store or public place</answer>
+            <answer id = "9">Vehicle</answer>
+            <answer id = "A">Other</answer>
+        </question>
+        
+       <question id = "7" type = "check">
+            <text>In the PAST 15 MINUTES, WHAT are you currently doing? (Check all that apply)</text>
+            <answer id = "1">Socializing</answer>
+            <answer id = "2">Housework</answer>
+            <answer id = "3">Recreational activity or hobby</answer>
+            <answer id = "4">Working or Studying</answer>
+            <answer id = "5">Watching TV/Movies or listening to Music</answer>
+            <answer id = "6">Walking</answer>
+            <answer id = "7">Having sex</answer>
+            <answer id = "8" action="uncheck">Nothing</answer>
+        </question>
+        
+        <question id = "8" type = "radio">
+            <text>In the PAST 15 MINUTES, how physically active were you?</text>
+            <answer id = "1">Not at all</answer>
+            <answer id = "2">Somewhat</answer>
+            <answer id = "3">Moderately</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">Extremely</answer>
+        </question>
+            
+        <question id = "9" type = "radio">
+            <text>In the PAST 15 MINUTES, to what degree did your physical pain interfere with you being physically active?</text>
+            <answer id = "1">Very little or not at all</answer>
+            <answer id = "2">Somewhat</answer>
+            <answer id = "3">Moderately</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">An extreme amount</answer>
+        </question>
+    </category>
+
 </root>

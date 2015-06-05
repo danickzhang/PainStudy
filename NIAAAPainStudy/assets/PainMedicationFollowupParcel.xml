@@ -1,15 +1,5 @@
-<?xml version="1.0"?>
 <root>
     
-    <category>
-        <description>PAIN MEDICATION USE</description>
-        <question id = "2q01" type = "radio">
-            <text>Have you taken any OPIOID PAIN MEDICATION since the last survey you answered?</text>
-            <answer id = "1"  triggerFile="PainFollowupParcel.xml">Yes</answer>
-            <answer id = "2" skip = "1q41">No</answer>
-        </question>
-    </category>
-
     <category>
         <description>PAIN MEDICATION EFFECT ITEMS</description>
         <questionblock type="radio">
@@ -29,17 +19,29 @@
             <text id = "2q10">Since I took opioid pain medication, I forgot about my problems.</text>
             <text id = "2q11">Since I took opioid pain medication, I feel less depressed.</text>
         </questionblock>
-
-<!--Chen, you said in the ReadMe that the question numbers don't matter right now. From here on, I copied questions from the morning report and then modified them, so the item numbers are the same (1q32). It was easier this way to make sure I don't miss any changes I made in the morning report. I hope this is okay. I'd be happy to go through and label the questions, but I don't want to do it until I know how they should be numbered.
-Related, for the questions that are identical across survey type, should they have the same question id anyway? We want them to go into the same column in the csv file.-->
+    </category>
+        
+    <category>
+        <description>RECENT MEDICATION USE</description>
+        <question id = "4q67" type = "radio">
+            <text>Have you taken any additional OPIOID PAIN MEDICATION SINCE the last survey you answered?</text>
+            <answer id = "1">Yes</answer>
+            <answer id = "2" skip = "4q71">No</answer>
+        </question>
+    </category>
+    
+<!--    same -->
+    <!--         //1 -->
+    <category>
+<!-- 	<!!!!> -->
         <question id = "1q32" type = "radio">
             <text>Which OPIOID PAIN MEDICATION did you take?</text>
             <answer id = "1">Primary (the medication you take regularly)</answer>
             <answer id = "2">Secondary (the medication you take as needed)</answer>
             <answer id = "3" skip = "1q35">Both</answer>
         </question>
-    
-<!--         //1 -->
+        
+<!--         //2 -->
         <question id = "1q33" type = "radio">
             <text>How much of your OPIOID PAIN MEDICATION did you take SINCE the last survey you answered?</text>
             <answer id = "1" skip = "1q39">My typical dose</answer>
@@ -80,19 +82,8 @@ Related, for the questions that are identical across survey type, should they ha
             <answer id = "item">pill(s)</answer>
             <answer id = "min">1</answer><!-- Chen, is it possible to have a decimal place? It would only need to be .5. So .5, 1, 1.5, 2 and so forth-->
             <answer id = "max">10</answer>
- 
+
 <!--             <answer skip = "1q39"></answer>skip -->
-        </question>
-        
-<!--         //3 -->
-        <question id = "1q39" type = "radio">
-            <text>When did you take your OPIOID PAIN MEDICATION?</text>
-            <answer id = "1">Just now</answer>
-            <answer id = "2">15 minutes ago</answer>
-            <answer id = "3">30 minutes ago</answer>
-            <answer id = "4">45 minutes ago</answer>
-            <answer id = "5">1 hour ago</answer>
-            <answer id = "6">More than 1 hour ago</answer>
         </question>
     </category>
 
@@ -109,8 +100,8 @@ Related, for the questions that are identical across survey type, should they ha
             <text id="1qXX">In the past 15 minutes, did you feel |Lightheaded?</text>
         </questionblock>
     </category>
-    
-    <category><!--Skip to here if no opioid use reported-->
+
+    <category>
         <description>OTHER PAIN MEDICATION USE</description>
         <question id = "1q41" type = "radio">
             <text>In addition to your OPIOID PAIN MEDICATION, have you taken any other PAIN medications since the last survey you answered?</text>
@@ -124,7 +115,6 @@ Related, for the questions that are identical across survey type, should they ha
             <answer id = "2"  option = "Please make a note of what you took in your medication log.">OVER-THE-COUNTER pain medication</answer>
             <answer id = "3"  option = "Please make a note of what you took in your medication log.">OTHER pain medication</answer>
         </question>
-
     </category>
     
 <!--     same -->
@@ -132,7 +122,7 @@ Related, for the questions that are identical across survey type, should they ha
         <description>RECENT DRINKING</description>
         <question id = "1q54" type = "radio">
             <text>Have you CONSUMED ALCOHOL since the last survey you answered?</text>
-            <answer id = "1" triggerFile="DrinkingFollowupParcel.xml">Yes</answer>
+            <answer id = "1" triggerFile="DualFollowupParcel.xml">Yes</answer><!--This should trigger Dual, because opioid use already reported-->
 <!--             <answer id = "1" triggerFile="DualFollowupParcel.xml">Yes</answer> -->
             <answer id = "2" skip = "1q67">No</answer>
         </question>
@@ -157,7 +147,7 @@ Related, for the questions that are identical across survey type, should they ha
             <text id = "1q63">Since I drank alcohol, I forgot about my problems.</text>
             <text id = "1q64">Since I drank alcohol, I feel less depressed.</text>
         </questionblock>
-        
+
         <question id = "1q65" type = "number">
             <text>HOW MANY DRINKS did you consume SINCE the last survey you answered? Please remember to answer in STANDARD drinks.</text>
             <answer id = "item">drink(s)</answer>
@@ -227,8 +217,8 @@ Related, for the questions that are identical across survey type, should they ha
             <answer id = "7">Tender</answer>
             <answer id = "8">Burning</answer>
             <answer id = "9">Penetrating</answer>
-            <answer id = "A">Numbing</answer>
-            <answer id = "B" action="uncheck">None</answer>
+            <answer id = "A">Numbing</answer><!--Chen, I don't know, but should this be "10" instead of "A"? RWC-->
+            <answer id = "11" action="uncheck">None</answer>
         </question>
     </category>
 
