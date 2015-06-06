@@ -1,0 +1,52 @@
+<root>
+    <category>
+        <description>ALCOHOL EFFECT ITEMS</description>
+        <questionblock type="radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Somewhat</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">An extreme amount</answer>
+            <text id = "1">Since I drank alcohol, my physical pain has decreased.</text>
+            <text id = "2">Since I drank alcohol, I feel happier.</text>
+            <text id = "3">Since I drank alcohol, it has been harder to think or perform a task.</text>
+            <text id = "4">Since I drank alcohol, my unpleasant feelings have been relieved.</text>
+            <text id = "5">Since I drank alcohol, I have had pleasant feelings.</text>
+            <text id = "6">Since I drank alcohol, I feel more relaxed or calm.</text>
+            <text id = "7">Since I drank alcohol, I feel worse.</text>
+            <text id = "8">Since I drank alcohol, my physical pain has felt less unpleasant.</text>
+            <text id = "9">Since I drank alcohol, I forgot about my problems.</text>
+            <text id = "10">Since I drank alcohol, I feel less depressed.</text>
+        </questionblock>
+        
+        <question id = "11" type = "number">
+            <text>HOW MANY DRINKS did you consume SINCE wake-up? Please remember to answer in STANDARD drinks.</text>
+            <answer id = "item">drink(s)</answer>
+            <answer id = "min">1</answer>
+            <answer id = "max">24</answer>
+        </question>
+        <question id = "12" type = "radio">
+            <text>When did you finish your FIRST drink?</text>
+            <answer id = "1">Just now</answer>
+            <answer id = "2">15 minutes ago</answer>
+            <answer id = "3">30 minutes ago</answer>
+            <answer id = "4">45 minutes ago</answer>
+            <answer id = "5">1 hour ago</answer>
+            <answer id = "6">More than 1 hour ago</answer>
+        </question>
+    </category>
+
+    <category>
+        <description>Alcohol Intoxication Effects</description>
+        <questionblock type="radio">
+            <answer id = "1">1 - Very Slightly or Not At All</answer>
+            <answer id = "2">2 - A little</answer>
+            <answer id = "3">3 - Somewhat</answer>
+            <answer id = "4">4 - Quite a bit</answer>
+            <answer id = "5">5 - Extremely</answer>
+            <text id="13">In the past 15 minutes, did you feel |Sluggish?</text>
+            <text id="14">In the past 15 minutes, did you feel |Buzzed?</text>
+            <text id="15">In the past 15 minutes, did you feel |Dizzy?</text>
+        </questionblock>
+    </category>
+</root>

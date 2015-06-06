@@ -1,5 +1,5 @@
 <root>
-	<category>
+    <category>
         <description>ALCOHOL EFFECT ITEMS</description>
         <questionblock type="radio">
             <answer id = "1">Very slightly or not at all</answer>
@@ -20,7 +20,7 @@
         </questionblock>
         
         <question id = "11" type = "number">
-            <text>HOW MANY DRINKS did you consume SINCE wake-up? Please remember to answer in STANDARD drinks.</text>
+            <text>HOW MANY DRINKS did you consume SINCE the last survey you answered? Please remember to answer in STANDARD drinks.</text>
             <answer id = "item">drink(s)</answer>
             <answer id = "min">1</answer>
             <answer id = "max">24</answer>

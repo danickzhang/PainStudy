@@ -1,0 +1,281 @@
+<root>
+    <category>
+        <description>PAIN</description>
+        <question id = "1" type = "radio">
+            <text>How much PHYSICAL PAIN have you felt in the past 15 minutes:</text>
+            <answer id = "1">0 - No pain</answer>
+            <answer id = "2">1</answer>
+            <answer id = "3">2</answer>
+            <answer id = "4">3</answer>
+            <answer id = "5">4</answer>
+            <answer id = "6">5</answer>
+            <answer id = "7">6</answer>
+            <answer id = "8">7</answer>
+            <answer id = "9">8</answer>
+            <answer id = "A">9</answer>
+            <answer id = "B">10 - Worst Possible</answer>
+        </question>
+    </category>
+
+    <category>
+        <description>SENSORY</description>
+        <question id = "2" type = "check">
+            <text>In the past 15 minutes, my physical pain was (please select all that apply):</text>
+            <answer id = "1">Aching</answer>
+            <answer id = "2">Throbbing</answer>
+            <answer id = "3">Shooting</answer>
+            <answer id = "4">Stabbing</answer>
+            <answer id = "5">Gnawing</answer>
+            <answer id = "6">Sharp</answer>
+            <answer id = "7">Tender</answer>
+            <answer id = "8">Burning</answer>
+            <answer id = "9">Penetrating</answer>
+            <answer id = "A">Numbing</answer>
+            <answer id = "B" action="uncheck">None</answer>
+        </question>
+    </category>
+
+    <category>
+        <description>AFFECTIVE</description>
+        <questionblock type = "radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Moderately</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">Extremely</answer>
+            <text id = "3">In the past 15 minutes, the physical pain I felt was unpleasant.</text>
+            <text id = "4">In the past 15 minutes, I was scared about the physical pain I felt.</text>
+            <text id = "5">In the past 15 minutes, the physical pain was an annoyance to me.</text>
+            <text id = "6">In the past 15 minutes, the physical pain was stopping me from enjoying life.</text>
+        </questionblock>
+    </category>
+    
+    <category>
+        <description>COGNITIVE</description>
+        <questionblock type = "radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Moderately</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">Extremely</answer>
+            <text id = "7">In the past 15 minutes, I have felt in control of my physical pain.</text>
+            <text id = "8">In the past 15 minutes, I thought that I couldn't stand the physical pain any more.</text>
+            <text id = "9">In the past 15 minutes, I was not thinking about my physical pain.</text>
+        </questionblock>
+    </category>
+
+
+    <category>
+        <description>RECENT SMOKING</description>
+        <question id = "10" type = "radio">
+            <text>Have you SMOKED A CIGARETTE since wake-up?</text>
+            <answer id = "1">Yes</answer>
+            <answer id = "2" skip = "13q12">No</answer>
+        </question>
+        
+        <question id = "11" type = "number">
+            <text>How many CIGARETTES did you smoke SINCE wake-up?</text>
+            <answer id = "item">cigarette(s)</answer>
+            <answer id = "min">1</answer>
+            <answer id = "max">24</answer>
+        </question>
+    </category>
+
+    <category>
+        <description>RECENT MARIJUANA USE</description>
+        <question id = "12" type = "radio">
+            <text>Have you USED MARIJUANA since wake-up?</text>
+            <answer id = "1">Yes</answer>
+            <answer id = "2">No</answer>
+        </question>
+    </category>
+
+
+<!-- MOOD Items and IMPULSIVITY Items -->
+    <category type="random">
+        <description>SENSORY/AROUSAL</description>
+        <questionblock type = "radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Moderately</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">Extremely</answer>
+            
+            <text id = "13">How much have you felt the following IN THE PAST 15 MINUTES?  ||anxious</text>
+            <text id = "14">How much have you felt the following IN THE PAST 15 MINUTES?  ||on edge</text>
+            <text id = "15">How much have you felt the following IN THE PAST 15 MINUTES?  ||uneasy</text>
+            <text id = "16">How much have you felt the following IN THE PAST 15 MINUTES?  ||sad</text>
+            <text id = "17">How much have you felt the following IN THE PAST 15 MINUTES?  ||hopeless</text>
+            <text id = "18">How much have you felt the following IN THE PAST 15 MINUTES?  ||discouraged</text>
+            <text id = "19">How much have you felt the following IN THE PAST 15 MINUTES?  ||angry</text>
+            <text id = "20">How much have you felt the following IN THE PAST 15 MINUTES?  ||resentful</text>
+            <text id = "21">How much have you felt the following IN THE PAST 15 MINUTES?  ||annoyed</text>
+            <text id = "22">How much have you felt the following IN THE PAST 15 MINUTES?  ||fatigued</text>
+            <text id = "23">How much have you felt the following IN THE PAST 15 MINUTES?  ||worn out</text>
+            <text id = "24">How much have you felt the following IN THE PAST 15 MINUTES?  ||exhausted</text>
+            <text id = "25">How much have you felt the following IN THE PAST 15 MINUTES?  ||vigorous</text>
+            <text id = "26">How much have you felt the following IN THE PAST 15 MINUTES?  ||cheerful</text>
+            <text id = "27">How much have you felt the following IN THE PAST 15 MINUTES?  ||lively</text>
+            <text id = "28">How much have you felt the following IN THE PAST 15 MINUTES?  ||calm</text>
+            <text id = "29">How much have you felt the following IN THE PAST 15 MINUTES?  ||at ease</text>
+            <text id = "30">How much have you felt the following IN THE PAST 15 MINUTES?  ||relaxed</text>
+            <text id = "31">How much have you felt the following IN THE PAST 15 MINUTES?  ||stressed</text>
+            <text id = "32">How much have you felt the following IN THE PAST 15 MINUTES?  ||confused</text>
+            <text id = "33">How much have you felt the following IN THE PAST 15 MINUTES?  ||forgetful</text>
+            <text id = "34">How much have you felt the following IN THE PAST 15 MINUTES?  ||unable to concentrate</text>
+
+            <text id = "35">How well does this describe you OVER THE LAST 15 MINUTES?  ||I felt and acted on a strong impulse.</text>
+            <text id = "36">How well does this describe you OVER THE LAST 15 MINUTES?  ||I did something without really thinking it through.</text>
+            <text id = "37">How well does this describe you OVER THE LAST 15 MINUTES?  ||I gave up easily.</text>
+            <text id = "38">How well does this describe you OVER THE LAST 15 MINUTES?  ||I did something for the thrill of it.</text>
+        </questionblock>
+  <!--Chen, are these questions randomized like in the Craving app? I would like them to be and just wanted to check. RWC-->
+    </category>
+
+    <category>
+        <description>AFFECTIVE/VALENCE</description>
+        <questionblock type = "radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Moderately</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">Extremely</answer>
+            <text id = "39">In the past 15 minutes, my mood was unpleasant.</text>
+            <text id = "40">In the past 15 minutes, my mood was an annoyance to me.</text>
+            <text id = "41">In the past 15 minutes, I enjoyed how I was feeling.</text>
+        </questionblock>
+    </category>
+    
+    <category>
+        <description>COGNITIVE MOOD</description>
+        <questionblock type = "radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Moderately</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">Extremely</answer>
+            <text id = "42">In the past 15 minutes, I have felt in control of my mood.</text>
+            <text id = "43">In the past 15 minutes, I’m not sure what I was feeling.</text>
+            <text id = "44">In the past 15 minutes, I was not thinking about my mood.</text>
+        </questionblock>
+    </category>
+    
+<!--     ----------------------------------------------------------------------------- -->
+<!--     <category> -->
+<!--         <description>SLEEP</description> -->
+<!--         <question id = "45" type = "radio"> -->
+<!--             <text>SINCE THE LAST PROMPT HAVE YOU SLEPT?</text> -->
+<!--             <answer id = "1">Yes</answer> -->
+<!--             <answer id = "2" skip = "13q47">No</answer> -->
+<!--         </question> -->
+<!--         <question id = "46" type = "number"> -->
+<!--             <text>How many hours did you sleep?</text> -->
+<!--             <answer id = "item">hour(s)</answer> -->
+<!--             <answer id = "min">1</answer> -->
+<!--             <answer id = "max">24</answer> -->
+<!--         </question> -->
+<!--     </category> -->
+<!--     ----------------------------------------------------------------------------- -->
+    
+    <category>
+        <description>OPIOID URGE/CRAVING</description>
+        <question id = "47" type = "radio">
+            <text>In the PAST 15 MINUTES, How strong was your urge to take more opioid pain medication?</text>
+            <answer id = "1">Very slight or none</answer>
+            <answer id = "2">Slightly strong</answer>
+            <answer id = "3">Somewhat strong</answer>
+            <answer id = "4">Quite strong</answer>
+            <answer id = "5">Extremely strong</answer>
+        </question>
+        <question id = "48" type = "radio">
+            <text>In the PAST 15 MINUTES, How often have you found yourself thinking about the next dose of opioid pain medication?</text>
+            <answer id = "1">Not at all</answer>
+            <answer id = "2">Seldom</answer>
+            <answer id = "3">Sometimes</answer>
+            <answer id = "4">Frequently</answer>
+            <answer id = "5">Constantly</answer>
+        </question>
+    </category>
+    
+    <category>
+        <description>ALCOHOL URGE/CRAVING</description>
+        <question id = "49" type = "radio">
+            <text>In the PAST 15 MINUTES, How strong was your urge to drink?</text>
+            <answer id = "1">Very slight or none</answer>
+            <answer id = "2">Slightly strong</answer>
+            <answer id = "3">Somewhat strong</answer>
+            <answer id = "4">Quite strong</answer>
+            <answer id = "5">Extremely strong</answer>
+        </question>
+        <question id = "50" type = "radio">
+            <text>In the PAST 15 MINUTES, How often have you found yourself thinking about the next drink?</text>
+            <answer id = "1">Not at all</answer>
+            <answer id = "2">Seldom</answer>
+            <answer id = "3">Sometimes</answer>
+            <answer id = "4">Frequently</answer>
+            <answer id = "5">Constantly</answer>
+        </question>
+    </category>
+
+    <category>
+        <description>SITUATION AND SETTING</description>
+        <question id = "51" type = "check">
+            <text>In the PAST 15 MINUTES, WHO have you been with: (Check all that apply)</text>
+            <answer id = "1" action="uncheck">No one</answer>
+            <answer id = "2 ">Partner/spouse</answer>
+            <answer id = "3 ">Co-worker</answer>
+            <answer id = "4 ">Child</answer>
+            <answer id = "5 ">Parent</answer>
+            <answer id = "6 ">Other family</answer>
+            <answer id = "7 ">Friend</answer>
+            <answer id = "8 ">Acquaintance</answer>
+            <answer id = "9 ">Stranger(s)</answer>
+            <answer id = "A">Other</answer>
+        </question>
+        
+        <question id = "52" type = "check">
+            <text>In the PAST 15 MINUTES, WHERE is your current location? (Check all that apply)</text>
+            <answer id = "1 ">Home</answer>
+            <answer id = "2 ">Someone else’s home</answer>
+            <answer id = "3 ">Work/School</answer>
+            <answer id = "4 ">Party</answer>
+            <answer id = "5 ">Bar</answer>
+            <answer id = "6 ">Restaurant</answer>
+            <answer id = "7 ">Outside</answer>
+            <answer id = "8 ">Store or public place</answer>
+            <answer id = "9">Vehicle</answer>
+            <answer id = "A">Other</answer>
+        </question>
+        
+       <question id = "53" type = "check">
+            <text>In the PAST 15 MINUTES, WHAT are you currently doing? (Check all that apply)</text>
+            <answer id = "1">Socializing</answer>
+            <answer id = "2">Housework</answer>
+            <answer id = "3">Recreational activity or hobby</answer>
+            <answer id = "4">Working or Studying</answer>
+            <answer id = "5">Watching TV/Movies or listening to Music</answer>
+            <answer id = "6">Walking</answer>
+            <answer id = "7">Having sex</answer>
+            <answer id = "8" action="uncheck">Nothing</answer>
+        </question>
+        
+        <question id = "54" type = "radio">
+            <text>In the PAST 15 MINUTES, how physically active were you?</text>
+            <answer id = "1">Not at all</answer>
+            <answer id = "2">Somewhat</answer>
+            <answer id = "3">Moderately</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">Extremely</answer>
+        </question>
+            
+        <question id = "55" type = "radio">
+            <text>In the PAST 15 MINUTES, to what degree did your physical pain interfere with you being physically active?</text>
+            <answer id = "1">Very little or not at all</answer>
+            <answer id = "2">Somewhat</answer>
+            <answer id = "3">Moderately</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">An extreme amount</answer>
+        </question>
+    </category>
+
+</root>
