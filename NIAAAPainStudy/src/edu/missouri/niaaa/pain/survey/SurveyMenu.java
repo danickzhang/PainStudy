@@ -1,4 +1,4 @@
-package edu.missouri.niaaa.pain.activity;
+package edu.missouri.niaaa.pain.survey;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -22,9 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import edu.missouri.niaaa.pain.R;
 import edu.missouri.niaaa.pain.Utilities;
-import edu.missouri.niaaa.pain.survey.SurveyInfo;
-import edu.missouri.niaaa.pain.survey.XMLConfigParser;
-import edu.missouri.niaaa.pain.survey.XMLSurveyActivity;
+import edu.missouri.niaaa.pain.survey.parser.SurveyInfo;
+import edu.missouri.niaaa.pain.survey.parser.XMLConfigParser;
 
 public class SurveyMenu extends Activity {
 

@@ -1,4 +1,4 @@
-package edu.missouri.niaaa.pain.survey;
+package edu.missouri.niaaa.pain.survey.parser;
 
 import java.util.ArrayList;
 

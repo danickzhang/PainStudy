@@ -1,4 +1,4 @@
-package edu.missouri.niaaa.pain.survey;
+package edu.missouri.niaaa.pain.survey.parser;
 
 /* Author: Paul Baskett
  * Last Update: 9/25/2012
