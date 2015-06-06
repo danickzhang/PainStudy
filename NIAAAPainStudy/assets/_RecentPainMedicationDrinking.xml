@@ -36,13 +36,12 @@
             <answer id = "1" skip = "11q19">My typical dose</answer>
             <answer id = "2">Different than my typical dose</answer>
         </question>
-        <question id = "14" type = "number"><!--Chen, would it be possible to have this question and the next (a and b) appear on the same page of the survey? One above the other?-->
+        <question id = "14" type = "number">
             <text>Please enter the number of pills you took of your OPIOID PAIN MEDICATION.</text>
             <answer id = "item">pill(s)</answer>
             <answer id = "min">1</answer><!-- Chen, is it possible to have a decimal place? It would only need to be .5. So .5, 1, 1.5, 2 and so forth-->
             <answer id = "max">10</answer>
-
-<!--             <answer skip = "11q19"></answer>skip -->
+            <answer id = "skip">11q19</answer>
         </question>
         
 <!--         //2a -->
@@ -51,7 +50,7 @@
             <answer id = "1" skip = "11q17">My typical dose</answer>
             <answer id = "2">Different than my typical dose</answer>
         </question>
-        <question id = "16" type = "number"><!--Chen, would it be possible to have this question and the next (a and b) appear on the same page of the survey? One above the other?-->
+        <question id = "16" type = "number">
             <text>Please enter the number of pills you took of your PRIMARY opioid pain medication.</text>
             <answer id = "item">pill(s)</answer>
             <answer id = "min">1</answer><!-- Chen, is it possible to have a decimal place? It would only need to be .5. So .5, 1, 1.5, 2 and so forth-->
@@ -65,7 +64,7 @@
             <answer id = "1" skip = "11q19">My typical dose</answer>
             <answer id = "2">Different than my typical dose</answer>
         </question>
-        <question id = "18" type = "number"><!--Chen, would it be possible to have this question and the next (a and b) appear on the same page of the survey? One above the other?-->
+        <question id = "18" type = "number">
             <text>Please enter the number of pills you took of your SECONDARY opioid pain medication.</text>
             <answer id = "item">pill(s)</answer>
             <answer id = "min">1</answer><!-- Chen, is it possible to have a decimal place? It would only need to be .5. So .5, 1, 1.5, 2 and so forth-->
@@ -104,7 +103,7 @@
         <question id = "23" type = "radio">
             <text>In addition to your OPIOID PAIN MEDICATION, have you taken any other PAIN medications since the last survey you answered?</text>
             <answer id = "1">Yes</answer>
-            <answer id = "2" skip = "1q9">No</answer>
+            <answer id = "2" skip = "13q1">No</answer>
         </question>
         
         <question id = "24" type = "radio">

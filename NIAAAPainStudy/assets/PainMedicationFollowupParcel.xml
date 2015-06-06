@@ -1,7 +1,7 @@
+<?xml version="1.0"?>
 <root>
     
-    <externalsource baseid="11q" filename="RecentPainMedicationAdditional.xml"></externalsource>
-
+    <externalsource baseid="11q" filename="_RecentPainMedicationAdditionalPainFollowup.xml"></externalsource>
 
     <!-- <RECENT DRINKING> -->
     <category>
@@ -14,7 +14,8 @@
         </question>
     </category>
 
-    <externalsource baseid="12q" filename="RecentDrinking.xml"></externalsource>
+    <externalsource baseid="12q" filename="_RecentDrinking.xml"></externalsource>
 
-    <externalsource baseid="13q" filename="SituationAndSetting.xml"></externalsource>
+    <externalsource baseid="13q" filename="_SituationAndSetting.xml"></externalsource>
+
 </root>

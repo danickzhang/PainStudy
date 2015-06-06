@@ -129,7 +129,6 @@
             <text id = "37">How well does this describe you OVER THE LAST 15 MINUTES?  ||I gave up easily.</text>
             <text id = "38">How well does this describe you OVER THE LAST 15 MINUTES?  ||I did something for the thrill of it.</text>
         </questionblock>
-  <!--Chen, are these questions randomized like in the Craving app? I would like them to be and just wanted to check. RWC-->
     </category>
 
     <category>
@@ -159,8 +158,8 @@
             <text id = "44">In the past 15 minutes, I was not thinking about my mood.</text>
         </questionblock>
     </category>
-    
-<!--     ----------------------------------------------------------------------------- -->
+
+<!--     - -->
 <!--     <category> -->
 <!--         <description>SLEEP</description> -->
 <!--         <question id = "45" type = "radio"> -->
@@ -175,8 +174,8 @@
 <!--             <answer id = "max">24</answer> -->
 <!--         </question> -->
 <!--     </category> -->
-<!--     ----------------------------------------------------------------------------- -->
-    
+<!--     - -->
+
     <category>
         <description>OPIOID URGE/CRAVING</description>
         <question id = "47" type = "radio">
@@ -253,7 +252,7 @@
             <answer id = "2">Housework</answer>
             <answer id = "3">Recreational activity or hobby</answer>
             <answer id = "4">Working or Studying</answer>
-            <answer id = "5">Watching TV/Movies or listening to Music</answer>
+            <answer id = "5">TV /Movies /Music</answer>
             <answer id = "6">Walking</answer>
             <answer id = "7">Having sex</answer>
             <answer id = "8" action="uncheck">Nothing</answer>

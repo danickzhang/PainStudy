@@ -1,6 +1,7 @@
+<?xml version="1.0"?>
 <root>
 
-    <externalsource baseid="12q" filename="RecentDrinkingLess.xml"></externalsource>
+    <externalsource baseid="12q" filename="_RecentDrinkingLess.xml"></externalsource>
     
     <category>
         <description>RECENT PAIN MEDICATION USE</description>
@@ -11,8 +12,8 @@
         </question>
     </category>
     
-    <externalsource baseid="11q" filename="RecentPainMedication.xml"></externalsource>
+    <externalsource baseid="11q" filename="_RecentPainMedicationDrinking.xml"></externalsource>
  
-    <externalsource baseid="13q" filename="SituationAndSetting.xml"></externalsource>
+    <externalsource baseid="13q" filename="_SituationAndSetting.xml"></externalsource>
 
 </root>

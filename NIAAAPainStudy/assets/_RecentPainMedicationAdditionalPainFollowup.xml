@@ -20,7 +20,11 @@
         </questionblock>
         
 <!--         ADDITIONAL MEDICATION USE -->
-<!-- 11 -->
+        <question id = "11" type = "radio">
+            <text>Have you taken any additional OPIOID PAIN MEDICATION SINCE the last survey you answered?</text>
+            <answer id = "1">Yes</answer>
+            <answer id = "2" skip = "11q20">No</answer>
+        </question>
         
 <!--         //1 -->
         <question id = "12" type = "radio">
@@ -33,7 +37,7 @@
 <!--         //2 -->
         <question id = "13" type = "radio">
             <text>How much of your OPIOID PAIN MEDICATION did you take SINCE the last survey you answered?</text>
-            <answer id = "1" skip = "11q19">My typical dose</answer>
+            <answer id = "1" skip = "11q20">My typical dose</answer>
             <answer id = "2">Different than my typical dose</answer>
         </question>
         <question id = "14" type = "number">
@@ -41,7 +45,7 @@
             <answer id = "item">pill(s)</answer>
             <answer id = "min">1</answer><!-- Chen, is it possible to have a decimal place? It would only need to be .5. So .5, 1, 1.5, 2 and so forth-->
             <answer id = "max">10</answer>
-            <answer id = "skip">11q19</answer>
+            <answer id = "skip">11q20</answer>
         </question>
         
 <!--         //2a -->
@@ -61,7 +65,7 @@
 <!--         //2b -->
         <question id = "17" type = "radio">
             <text>How much of your SECONDARY opioid pain medication did you take SINCE the last survey you answered?</text>
-            <answer id = "1" skip = "11q19">My typical dose</answer>
+            <answer id = "1" skip = "11q20">My typical dose</answer>
             <answer id = "2">Different than my typical dose</answer>
         </question>
         <question id = "18" type = "number">
@@ -73,15 +77,7 @@
         </question>
         
 <!--         //3 -->
-        <question id = "19" type = "radio">
-            <text>When did you take your OPIOID PAIN MEDICATION?</text>
-            <answer id = "1">Just now</answer>
-            <answer id = "2">15 minutes ago</answer>
-            <answer id = "3">30 minutes ago</answer>
-            <answer id = "4">45 minutes ago</answer>
-            <answer id = "5">1 hour ago</answer>
-            <answer id = "6">More than 1 hour ago</answer>
-        </question>
+<!-- 19 -->
     </category>
 
     <category>
@@ -101,9 +97,9 @@
     <category><!--Skip to here if no opioid use reported-->
         <description>OTHER PAIN MEDICATION USE</description>
         <question id = "23" type = "radio">
-            <text>In addition to your OPIOID PAIN MEDICATION, have you taken any other PAIN medications since wake-up?</text>
+            <text>In addition to your OPIOID PAIN MEDICATION, have you taken any other PAIN medications since the last survey you answered?</text>
             <answer id = "1">Yes</answer>
-            <answer id = "2" skip = "1q9">No</answer>
+            <answer id = "2" skip = "4q1">No</answer>
         </question>
         
         <question id = "24" type = "radio">

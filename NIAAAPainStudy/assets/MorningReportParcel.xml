@@ -6,7 +6,7 @@
         <question id = "1q1" type = "radio">
             <text>If you drank alcohol last night, do you have a HANGOVER?</text>
             <answer id = "1">Yes</answer>
-            <answer id = "2" skip = "1q04">No</answer>
+            <answer id = "2" skip = "1q4">No</answer>
         </question>
     </category>
     
@@ -55,8 +55,8 @@
         </question>
     </category>
 
-    
 <!--     ## -->
+
     <category>
         <description>RECENT PAIN MEDICATION USE</description>
         <question id = "1q8" type = "radio">
@@ -66,8 +66,7 @@
         </question>
     </category>
     
-    <externalsource baseid="11q" filename="RecentPainMedicationMorning.xml"></externalsource>
-
+    <externalsource baseid="11q" filename="_RecentPainMedicationMorning.xml"></externalsource>
 
     <!-- <RECENT DRINKING> -->
     <category>
@@ -80,10 +79,12 @@
         </question>
     </category>
 
-    <externalsource baseid="12q" filename="RecentDrinkingMorning.xml"></externalsource>
+    <externalsource baseid="12q" filename="_RecentDrinkingMorning.xml"></externalsource>
 
-    <externalsource baseid="13q" filename="SituationAndSettingMorning.xml"></externalsource>
+    <externalsource baseid="13q" filename="_SituationAndSettingMorning.xml"></externalsource>
 
+<!--     ## -->
+    
     <category>
         <description>PAIN MEDICATION EXPECTANCY ITEMS</description>
         <questionblock type="radio">
