@@ -21,6 +21,7 @@ public class NumberQuestion extends SurveyQuestion {
 	String item = "number(s)";
 	int min = 0;
 	int max = 1;
+	String skipTo = null;
 
 	public NumberQuestion(String id){
 		this.questionId = id;
@@ -33,6 +34,9 @@ public class NumberQuestion extends SurveyQuestion {
 		this.item = this.answers.get(0).getAnswerText();
 		this.min = Integer.parseInt(this.answers.get(1).getAnswerText());
 		this.max = Integer.parseInt(this.answers.get(2).getAnswerText());
+		if(this.answers.size()>3){
+		    this.skipTo = this.answers.get(3).getAnswerText();
+		}
 		if(result == -1) {
 			result = this.min;
 		}
@@ -126,7 +130,7 @@ public class NumberQuestion extends SurveyQuestion {
 
 	@Override
 	public String getSkip(){
-		return null;
+		return this.skipTo;
 	}
 
 

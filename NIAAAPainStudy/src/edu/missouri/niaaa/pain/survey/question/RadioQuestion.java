@@ -63,10 +63,13 @@ public class RadioQuestion extends SurveyQuestion {
 
 			RadioButton radio = new RadioButton(c);
 			radio.setText(ans.getAnswerText());
-			int size = (ans.getAnswerText().length()<35? 25 : 22);
+			int size = (this.answers.size()>6 ? 17: (ans.getAnswerText().length()<35? 25 : 22)) ;
 			radio.setTextSize(TypedValue.COMPLEX_UNIT_DIP,size);
 			radio.setLayoutParams(radioLayout);
-			radio.setPadding(0, 10, 20, 10);
+			radio.setPadding(0, 10, 20, 0);
+			if(this.answers.size()>6){
+			    radio.setHeight(56);
+			}
 
 			radioGroup.addView(radio);
 
@@ -119,7 +122,7 @@ public class RadioQuestion extends SurveyQuestion {
 
 
 		LinearLayout.LayoutParams RGroupLayout = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-		RGroupLayout.setMargins(0, 40, 0, 0);
+		RGroupLayout.setMargins(0, 20, 0, 0);
 		radioGroup.setLayoutParams(RGroupLayout);
 
 		LinearLayout A_layout = new LinearLayout(c);

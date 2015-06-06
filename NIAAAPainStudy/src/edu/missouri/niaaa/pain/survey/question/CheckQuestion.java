@@ -59,7 +59,7 @@ public class CheckQuestion extends SurveyQuestion{
 			check.setText(ans.getAnswerText());
 			// different text size based on 1.how many checkboxes 2.how long each of the checkbox
 			// size<9 -> 25; size>9 -> 17; size==9 -> 20 but if single length>25 chars -> 16
-			int size = (this.answers.size()<9? 25: (this.answers.size()>9? 17: (ans.getAnswerText().length()<25? 20 : 16)));
+			int size = (this.answers.size()<9? 24: (this.answers.size()>9? 17: (ans.getAnswerText().length()<25? 20 : 16)));
 			check.setTextSize(TypedValue.COMPLEX_UNIT_DIP,size);//textSize
 			//temp.setGravity(Gravity.TOP);
 			//temp.setHeight(60);
