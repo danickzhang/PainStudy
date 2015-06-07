@@ -21,34 +21,34 @@ import org.xml.sax.XMLReader;
  */
 public class XMLConfigParser {
 
-	/*
-	 * Setup SAX Parser
-	 */
-	private XMLReader initializeReader() throws SAXException, ParserConfigurationException {
-		SAXParserFactory factory = SAXParserFactory.newInstance();
-		SAXParser parser = factory.newSAXParser();
-		XMLReader reader = parser.getXMLReader();
-		return reader;
-	}
+    /*
+     * Setup SAX Parser
+     */
+    private XMLReader initializeReader() throws SAXException, ParserConfigurationException {
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        SAXParser parser = factory.newSAXParser();
+        XMLReader reader = parser.getXMLReader();
+        return reader;
+    }
 
-	/*
-	 * Parse InputSource xml file to list of SurveyInfo
-	 * wrapper objects.
-	 */
-	public List<SurveyInfo> parseQuestion(InputSource XML){
-		try{
-			XMLReader reader = initializeReader();
+    /*
+     * Parse InputSource xml file to list of SurveyInfo
+     * wrapper objects.
+     */
+    public List<SurveyInfo> parseQuestion(InputSource XML){
+        try{
+            XMLReader reader = initializeReader();
 
-			XMLConfigHandler xmlHandler = new XMLConfigHandler();
+            XMLConfigHandler xmlHandler = new XMLConfigHandler();
 
-			reader.setContentHandler(xmlHandler);
-			reader.parse(XML);
+            reader.setContentHandler(xmlHandler);
+            reader.parse(XML);
 
-			return xmlHandler.getSurveyList();
-		}
-		catch(Exception e){
-			e.printStackTrace();
-			return null;
-		}
-	}
+            return xmlHandler.getSurveyList();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

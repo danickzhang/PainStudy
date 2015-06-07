@@ -10,6 +10,7 @@
         android:id="@+id/section_label1"
         style="@style/button_style"
         android:text="@string/section_1"
+        android:visibility="gone"
         />
     
     <Button
@@ -29,6 +30,7 @@
         android:id="@+id/section_label4"
         style="@style/button_style"
         android:text="@string/section_4"
+        android:visibility="gone"
         />
     
     <Button

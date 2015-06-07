@@ -15,143 +15,143 @@ import edu.missouri.niaaa.pain.survey.category.SurveyQuestion;
 
 public class NumberQuestion extends SurveyQuestion {
 
-	TextView counterText;
-	boolean answered = false;
-	int result = -1;
-	String item = "number(s)";
-	int min = 0;
-	int max = 1;
-	String skipTo = null;
+    TextView counterText;
+    boolean answered = false;
+    int result = -1;
+    String item = "number(s)";
+    int min = 0;
+    int max = 1;
+    String skipTo = null;
 
-	public NumberQuestion(String id){
-		this.questionId = id;
-		this.questionType = QuestionType.NUMBER;
-	}
-
-
-	@Override
-	public LinearLayout prepareLayout(Context c) {
-		this.item = this.answers.get(0).getAnswerText();
-		this.min = Integer.parseInt(this.answers.get(1).getAnswerText());
-		this.max = Integer.parseInt(this.answers.get(2).getAnswerText());
-		if(this.answers.size()>3){
-		    this.skipTo = this.answers.get(3).getAnswerText();
-		}
-		if(result == -1) {
-			result = this.min;
-		}
-
-		LinearLayout layout = new LinearLayout(c);
-		layout.setLayoutParams(new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT));
-		layout.setOrientation(LinearLayout.VERTICAL);
-
-		LinearLayout A_layout = new LinearLayout(c);
-		A_layout.setOrientation(LinearLayout.VERTICAL);
-		A_layout.setLayoutParams(new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 1));
-
-		TextView questionText = new TextView(c);
-		questionText.setText(getQuestion().replace("|", "\n"));
-		questionText.setTextAppearance(c, android.R.attr.textAppearanceLarge);
-		questionText.setTextSize(TypedValue.COMPLEX_UNIT_DIP,22);
-		questionText.setLines(4);
-
-		counterText = new TextView(c);
-		counterText.setText(result + " " + item);
-		counterText.setTextSize(TypedValue.COMPLEX_UNIT_DIP,22);
-
-		LinearLayout.LayoutParams layoutt = new LinearLayout.LayoutParams(
-				 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-		layoutt.setMargins(10,15,10,0);
-
-		questionText.setLayoutParams(layoutt);
-		counterText.setLayoutParams(layoutt);
+    public NumberQuestion(String id){
+        this.questionId = id;
+        this.questionType = QuestionType.NUMBER;
+    }
 
 
-		final NumberPickerMe np = new NumberPickerMe(c);
-		np.setLayoutParams(layoutt);
-		np.setMaxValue(max);
-		np.setMinValue(min);
-		np.setValue(result);
+    @Override
+    public LinearLayout prepareLayout(Context c) {
+        this.item = this.answers.get(0).getAnswerText();
+        this.min = Integer.parseInt(this.answers.get(1).getAnswerText());
+        this.max = Integer.parseInt(this.answers.get(2).getAnswerText());
+        if(this.answers.size()>3){
+            this.skipTo = this.answers.get(3).getAnswerText();
+        }
+        if(result == -1) {
+            result = this.min;
+        }
 
-		answered = true;
-		np.setOnValueChangedListener(new OnValueChangeListener(){
+        LinearLayout layout = new LinearLayout(c);
+        layout.setLayoutParams(new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT));
+        layout.setOrientation(LinearLayout.VERTICAL);
 
-			@Override
-			public void onValueChange(NumberPicker picker, int oldVal,
-					int newVal) {
-				// TODO Auto-generated method stub
-				Log.d("_________", "number picker");
-				result = newVal;
-				np.setValue(result);
-				counterText.setText(result + " " + item);
-			}
+        LinearLayout A_layout = new LinearLayout(c);
+        A_layout.setOrientation(LinearLayout.VERTICAL);
+        A_layout.setLayoutParams(new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 1));
 
+        TextView questionText = new TextView(c);
+        questionText.setText(getQuestion().replace("|", "\n"));
+        questionText.setTextAppearance(c, android.R.attr.textAppearanceLarge);
+        questionText.setTextSize(TypedValue.COMPLEX_UNIT_DIP,22);
+        questionText.setLines(4);
 
-		});
+        counterText = new TextView(c);
+        counterText.setText(result + " " + item);
+        counterText.setTextSize(TypedValue.COMPLEX_UNIT_DIP,22);
 
-//		SeekBar sb = new SeekBar(c);
-//		sb.setMax(15);
-//		sb.setProgress(result);
-//		sb.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
-//			public void onProgressChanged(SeekBar seekBar, int progress,
-//					boolean fromUser) {
-//				if(fromUser){
-//					result = progress;
-//					counterText.setText(progress + " drinks");
-//					answered = true;
-//				}
-//			}
-//			public void onStartTrackingTouch(SeekBar seekBar) {		}
-//			public void onStopTrackingTouch(SeekBar seekBar)  {		}
-//		});
+        LinearLayout.LayoutParams layoutt = new LinearLayout.LayoutParams(
+                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-		layout.addView(questionText);
+        layoutt.setMargins(10,15,10,0);
 
-		A_layout.addView(counterText);
-		A_layout.addView(np);
-		layout.addView(A_layout);
-
-//		layout.addView(counterText);
-//		layout.addView(sb);
-//		layout.addView(np);
-
-		return layout;
-	}
+        questionText.setLayoutParams(layoutt);
+        counterText.setLayoutParams(layoutt);
 
 
-	@Override
-	public boolean validateSubmit() {
-		if(answered && result >= 0) {
-			return true;
-		}
-		return false;
-	}
+        final NumberPickerMe np = new NumberPickerMe(c);
+        np.setLayoutParams(layoutt);
+        np.setMaxValue(max);
+        np.setMinValue(min);
+        np.setValue(result);
 
-	@Override
-	public String getSkip(){
-		return this.skipTo;
-	}
+        answered = true;
+        np.setOnValueChangedListener(new OnValueChangeListener(){
+
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal,
+                    int newVal) {
+                // TODO Auto-generated method stub
+                Log.d("_________", "number picker");
+                result = newVal;
+                np.setValue(result);
+                counterText.setText(result + " " + item);
+            }
 
 
-	@Override
-	public ArrayList<String> getSelectedAnswers(){
-		if(!validateSubmit()){
-			ArrayList<String> temp = new ArrayList<String>();
-			temp.add(Integer.valueOf(-1).toString());
-			return temp;
-		}
-		ArrayList<String> temp = new ArrayList<String>();
-		temp.add(Integer.valueOf(result).toString());
-		return temp;
-	}
+        });
 
-	@Override
-	public boolean clearSelectedAnswers(){
-//		Log.d("final 3", "clear");
-//		answers = null;
-		result = -1;
-		answered = false;
-		return true;
-	}
+//      SeekBar sb = new SeekBar(c);
+//      sb.setMax(15);
+//      sb.setProgress(result);
+//      sb.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
+//          public void onProgressChanged(SeekBar seekBar, int progress,
+//                  boolean fromUser) {
+//              if(fromUser){
+//                  result = progress;
+//                  counterText.setText(progress + " drinks");
+//                  answered = true;
+//              }
+//          }
+//          public void onStartTrackingTouch(SeekBar seekBar) {     }
+//          public void onStopTrackingTouch(SeekBar seekBar)  {     }
+//      });
+
+        layout.addView(questionText);
+
+        A_layout.addView(counterText);
+        A_layout.addView(np);
+        layout.addView(A_layout);
+
+//      layout.addView(counterText);
+//      layout.addView(sb);
+//      layout.addView(np);
+
+        return layout;
+    }
+
+
+    @Override
+    public boolean validateSubmit() {
+        if(answered && result >= 0) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public String getSkip(){
+        return this.skipTo;
+    }
+
+
+    @Override
+    public ArrayList<String> getSelectedAnswers(){
+        if(!validateSubmit()){
+            ArrayList<String> temp = new ArrayList<String>();
+            temp.add(Integer.valueOf(-1).toString());
+            return temp;
+        }
+        ArrayList<String> temp = new ArrayList<String>();
+        temp.add(Integer.valueOf(result).toString());
+        return temp;
+    }
+
+    @Override
+    public boolean clearSelectedAnswers(){
+//      Log.d("final 3", "clear");
+//      answers = null;
+        result = -1;
+        answered = false;
+        return true;
+    }
 }

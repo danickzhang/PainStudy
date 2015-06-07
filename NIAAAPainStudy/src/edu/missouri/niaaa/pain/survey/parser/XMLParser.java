@@ -24,35 +24,35 @@ import edu.missouri.niaaa.pain.survey.category.Category;
  */
 public class XMLParser {
 
-	/*
-	 * Setup SAX Parser
-	 */
-	private XMLReader initializeReader() throws SAXException, ParserConfigurationException {
-		SAXParserFactory factory = SAXParserFactory.newInstance();
-		SAXParser parser = factory.newSAXParser();
-		XMLReader reader = parser.getXMLReader();
-		return reader;
-	}
+    /*
+     * Setup SAX Parser
+     */
+    private XMLReader initializeReader() throws SAXException, ParserConfigurationException {
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        SAXParser parser = factory.newSAXParser();
+        XMLReader reader = parser.getXMLReader();
+        return reader;
+    }
 
-	/*
-	 * Parse InputSource xml file to list of SurveyInfo
-	 * wrapper objects.
-	 */
-	public ArrayList<Category> parseQuestion(InputSource XML,
-			Context c, boolean allowExternalXML, String baseId){
-		try{
-			XMLReader reader = initializeReader();
+    /*
+     * Parse InputSource xml file to list of SurveyInfo
+     * wrapper objects.
+     */
+    public ArrayList<Category> parseQuestion(InputSource XML,
+            Context c, boolean allowExternalXML, String baseId){
+        try{
+            XMLReader reader = initializeReader();
 
-			XMLHandler questionHandler = new XMLHandler(c, allowExternalXML, baseId);
+            XMLHandler questionHandler = new XMLHandler(c, allowExternalXML, baseId);
 
-			reader.setContentHandler(questionHandler);
-			reader.parse(XML);
+            reader.setContentHandler(questionHandler);
+            reader.parse(XML);
 
-			return questionHandler.getCategoryList();
-		}
-		catch(Exception e){
-			e.printStackTrace();
-			return null;
-		}
-	}
+            return questionHandler.getCategoryList();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Body Sensor Application</string>
+    <string name="app_name">Pain Medication Study</string>
 	<string name="yes">Yes</string>
 	<string name="no">No</string>
 	<string name="return_to_main">Return to Main Menu</string>

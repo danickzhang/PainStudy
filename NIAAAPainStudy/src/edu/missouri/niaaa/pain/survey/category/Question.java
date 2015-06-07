@@ -7,32 +7,32 @@ import android.widget.LinearLayout;
 
 public interface Question {
 
-	public String getQuestion();
+    public String getQuestion();
 
-	public void setQuestion(String questionText);
+    public void setQuestion(String questionText);
 
-	public QuestionType getQuestionType();
+    public QuestionType getQuestionType();
 
-	public void setQuestionType(QuestionType type);
+    public void setQuestionType(QuestionType type);
 
-	public void addAnswer(Answer answer);
+    public void addAnswer(Answer answer);
 
-	public void addAnswers(ArrayList<Answer> answers);
+    public void addAnswers(ArrayList<Answer> answers);
 
-	public void addAnswers(Answer[] answers);
+    public void addAnswers(Answer[] answers);
 
-	public ArrayList<Answer> getAnswers();
+    public ArrayList<Answer> getAnswers();
 
-	public LinearLayout prepareLayout(Context c);
+    public LinearLayout prepareLayout(Context c);
 
-	public boolean validateSubmit();
+    public boolean validateSubmit();
 
-	public String getSkip();
+    public String getSkip();
 
-	public String getId();
+    public String getId();
 
-	public ArrayList<String> getSelectedAnswers();
+    public ArrayList<String> getSelectedAnswers();
 
-	public boolean clearSelectedAnswers();
+    public boolean clearSelectedAnswers();
 
 }
