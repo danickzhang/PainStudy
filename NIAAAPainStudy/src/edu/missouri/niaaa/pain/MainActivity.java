@@ -1,34 +1,18 @@
 package edu.missouri.niaaa.pain;
 
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.RSAPublicKeySpec;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
 
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,12 +25,17 @@ import android.os.StrictMode;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
+import edu.missouri.niaaa.pain.survey.SurveyMenu;
 
 
 public class MainActivity extends Activity {
-    static String TAG = "MainActivity~~~";
+    String TAG = "MainActivity.java";
+    boolean logEnable = true;
+    
 
     Button section_1;
     Button section_2;
@@ -58,31 +47,95 @@ public class MainActivity extends Activity {
     Button section_8;
     Button section_9;
 
-    private BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+    /*adapter for bluetooth switch*/
+    BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /**
+     * 
+     */
+    BroadcastReceiver suspensionReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // TODO Auto-generated method stub
+            Uti.Log(TAG, "on receiver break suspension");
+
+//            section_6.setText(R.string.section_6);
+////          Utilities.getSP(MainActivity.this, Utilities.SP_SURVEY).edit().putBoolean(Utilities.SP_KEY_SURVEY_SUSPENSION, false).commit();
+//
+//            //write to server
+//            Calendar c = Calendar.getInstance();
+//            SharedPreferences sp = getSharedPreferences(Uti.SP_LOGIN, Context.MODE_PRIVATE);
+//            long startTimeStamp = sp.getLong(Uti.SP_KEY_SUSPENSION_TS, c.getTimeInMillis());
+//            c.setTimeInMillis(startTimeStamp);
+//
+//            try {
+//                Uti.writeEventToFile(MainActivity.this, Uti.CODE_SUSPENSION, "", "", "", "",
+//                        Uti.sdf.format(c.getTime()), Uti.sdf.format(Calendar.getInstance().getTime()));
+//            } catch (IOException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
+//            sp.edit().remove(Uti.SP_KEY_SUSPENSION_TS).commit();
+//
+//            Toast.makeText(getApplicationContext(), R.string.suspension_end, Toast.LENGTH_LONG).show();
+        }
+    };
+    
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Uti.LogSys_lifeC(TAG, "OnCreate~~~");
+        Uti.Log_lifeCycle(TAG, "OnCreate~~~");
         
+        /* thread policy
+         * help to check if there is misuse of threads, such as read large files or network communication, that 
+         * should not be in the main UI thread.
+         * Should be bypass when product released */
+        if(!Uti.RELEASE){
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+            .detectAll()
+            //.permitAll()
+            .build());
+        }
 
-        //threadpolicy, maybe changed later
-        StrictMode.ThreadPolicy policy =new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
+        
+        /* initialization
+         * set initial parameters, register broadcasts,
+         * but not time-consuming tasks such as animation or file reading cursor reading; 
+         * unregister broadcasts @onDestroy, put time-consuming tasks @onResume*/
+        
         setContentView(R.layout.activity_main);
 
+        setListeners();
 
+        this.registerReceiver(suspensionReceiver, new IntentFilter(Uti.BD_ACTION_SUSPENSION));
 
-//      setListeners();
-
+        
+        
+        
+        
+        
+        
+        
+        
 //      setSharedValue();
-
-        IntentFilter suspensionIntent = new IntentFilter(Uti.BD_ACTION_SUSPENSION);
-//      this.registerReceiver(suspensionReceiver, suspensionIntent);
-
 
         ////startSService();
         //
@@ -127,6 +180,199 @@ public class MainActivity extends Activity {
             Log.d(TAG, "onCreate is scheduling Monitor Recording");
 
         }
+
+
+    private void setListeners() {
+        // TODO Auto-generated method stub
+        
+        /*start/stop service*/
+        section_1 = (Button) findViewById(R.id.section_label1);
+        section_2 = (Button) findViewById(R.id.section_label2);
+        /*survey menu*/
+        section_3 = (Button) findViewById(R.id.section_label3);
+        /*sensor connection*/
+        section_4 = (Button) findViewById(R.id.section_label4);
+        /*bed time setting*/
+        section_5 = (Button) findViewById(R.id.section_label5);
+        /*suspension*/
+        section_6 = (Button) findViewById(R.id.section_label6);
+        /*support*/
+        section_7 = (Button) findViewById(R.id.section_label7);
+        /*test buttons for debugging*/
+        section_8 = (Button) findViewById(R.id.section_label8);
+        section_9 = (Button) findViewById(R.id.section_label9);
+
+//        setServiceText();
+        section_1.setOnClickListener(new OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                // TODO Auto-generated method stub
+                Uti.Log_debug(TAG, logEnable, "section 1 on click listener");
+                
+            }
+        });
+
+        section_2.setOnClickListener(new OnClickListener(){
+
+            @Override
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+                Uti.Log_debug(TAG, logEnable, "section 2 on click listener");
+
+            }
+        });
+
+        section_3.setOnClickListener(new OnClickListener(){
+
+            @Override
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+                Uti.Log_debug(TAG, logEnable, "section 3 on click listener");
+
+//                if(!getSuspension()){
+                    startActivity(new Intent(MainActivity.this, SurveyMenu.class));
+//                }else{
+//                    suspensionAlert();
+//                }
+
+            }
+        });
+
+        section_4.setOnClickListener(new OnClickListener(){
+
+            @Override
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+                Uti.Log(TAG, "section 4 on click listener");
+
+            }
+        });
+
+
+
+
+
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Uti.Log_lifeCycle(TAG, "OnResume~~~");
+        
+        /*implementation here*/
+        restoreCurrentStatus();
+        
+        
+    }
+    
+    
+    private void restoreCurrentStatus() {
+        // TODO Auto-generated method stub
+        
+        /*check suspension status*/
+        
+        
+        
+        
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -251,8 +497,8 @@ public class MainActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
-        Uti.LogSys_lifeC(TAG, "OnCreate~~~");
-        Uti.LogSys_lifeC(TAG, "~~~"+requestCode+" "+resultCode);
+        Uti.Log_lifeCycle(TAG, "OnCreate~~~");
+        Uti.Log_lifeCycle(TAG, "~~~"+requestCode+" "+resultCode);
 
     }
     
@@ -260,30 +506,22 @@ public class MainActivity extends Activity {
     protected void onRestart() {
         // TODO Auto-generated method stub
         super.onRestart();
-        Uti.LogSys_lifeC(TAG, "OnRestart~~~");
+        Uti.Log_lifeCycle(TAG, "OnRestart~~~");
     }
 
     @Override
     protected void onStart() {
         // TODO Auto-generated method stub
         super.onStart();
-        Uti.LogSys_lifeC(TAG, "OnStart~~~");
+        Uti.Log_lifeCycle(TAG, "OnStart~~~");
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Uti.LogSys_lifeC(TAG, "OnResume~~~");
-        
-        // implementation here
-        
-    }
 
     @Override
     protected void onPause() {
         // TODO Auto-generated method stub
         super.onPause();
-        Uti.LogSys_lifeC(TAG, "OnPause~~~");
+        Uti.Log_lifeCycle(TAG, "OnPause~~~");
         
     }
 
@@ -291,13 +529,13 @@ public class MainActivity extends Activity {
     protected void onStop() {
         // TODO Auto-generated method stub
         super.onStop();
-        Uti.LogSys_lifeC(TAG, "onStop~~~");
+        Uti.Log_lifeCycle(TAG, "onStop~~~");
         
     }
 
     @Override
     protected void onDestroy() {
-        Uti.LogSys_lifeC(TAG, "onDestroy~~~");
+        Uti.Log_lifeCycle(TAG, "onDestroy~~~");
         // implementation here
         
         super.onDestroy();
@@ -309,7 +547,7 @@ public class MainActivity extends Activity {
     public void onBackPressed() {
         // TODO Auto-generated method stub
         super.onBackPressed();
-        Uti.LogSys_lifeC(TAG, "onBackPressed~~~");
+        Uti.Log_lifeCycle(TAG, "onBackPressed~~~");
     }
 
 

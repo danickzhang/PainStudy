@@ -1,12 +1,12 @@
 <root>
 <menu>
-    <item type="select" file="_MorningReportParcel.xml" name="MORNING_REPORT">Morning Report</item>
-    <item type="select" file="_RandomAssessmentParcel.xml" name="RANDOM_ASSESSMENT">Random</item>
-    <item type="select" file="_InitialPainMedicationParcel.xml" name = "INITIAL_PAIN">Initial Pain</item>
-    <item type="select" file="_PainMedicationFollowupParcel.xml" name="PAIN_FOLLOWUP">Pain Followup</item>
-    <item type="select" file="_InitialDrinkingParcel.xml" name = "INITIAL_DRINKING">Initial Drinking</item>
-    <item type="select" file="_DrinkingFollowupParcel.xml" name="DRINKING_FOLLOWUP">Drinking Followup</item>
-    <item type="select" file="_DualFollowupParcel.xml" name="DUAL_FOLLOWUP">Dual Followup</item>
+    <item type="4" file="MorningReportParcel.xml" name="MORNING_REPORT">Morning Report</item>
+    <item type="1" file="RandomAssessmentParcel.xml" name="RANDOM_ASSESSMENT">Random</item>
+    <item type="3" file="InitialPainMedicationParcel.xml" name = "INITIAL_PAIN">Initial Pain</item>
+    <item type="1" file="PainMedicationFollowupParcel.xml" name="PAIN_FOLLOWUP">Pain Followup</item>
+    <item type="3" file="InitialDrinkingParcel.xml" name = "INITIAL_DRINKING">Initial Drinking</item>
+    <item type="1" file="DrinkingFollowupParcel.xml" name="DRINKING_FOLLOWUP">Drinking Followup</item>
+    <item type="2" file="DualFollowupParcel.xml" name="DUAL_FOLLOWUP">Dual Followup</item>
 </menu>
 
 <!-- <components>

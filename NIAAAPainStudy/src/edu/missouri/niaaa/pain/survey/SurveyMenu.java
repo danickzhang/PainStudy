@@ -1,7 +1,6 @@
 package edu.missouri.niaaa.pain.survey;
 
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,7 +11,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,11 +25,27 @@ import edu.missouri.niaaa.pain.survey.parser.XMLConfigParser;
 
 public class SurveyMenu extends Activity {
 
-
-    String TAG = "XML SurveyMenu";
+    String TAG = "SurveyMenu.java";
+    boolean logEnable = true;
+    
     List<SurveyInfo> surveys;
     HashMap<View, SurveyInfo> buttonMap;
 
+    /* (non-Javadoc)
+     * @see android.app.Activity#onCreate(android.os.Bundle)
+     */
+    /* (non-Javadoc)
+     * @see android.app.Activity#onCreate(android.os.Bundle)
+     */
+    /* (non-Javadoc)
+     * @see android.app.Activity#onCreate(android.os.Bundle)
+     */
+    /* (non-Javadoc)
+     * @see android.app.Activity#onCreate(android.os.Bundle)
+     */
+    /* (non-Javadoc)
+     * @see android.app.Activity#onCreate(android.os.Bundle)
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -57,7 +71,7 @@ public class SurveyMenu extends Activity {
 
         if(surveys == null){
             Toast.makeText(this, "Invalid configuration file", Toast.LENGTH_LONG).show();
-            Uti.Log_sys(TAG,"No surveys in config.xml");
+            Uti.Log_debug(TAG, logEnable, "No surveys in config.xml");
             finish();
         }
         else{
@@ -66,84 +80,35 @@ public class SurveyMenu extends Activity {
             tv.setText(R.string.survey_menu_select);
             linearLayout.addView(tv);
             for(SurveyInfo survey: surveys){
-                Uti.Log(TAG, survey.getDisplayName());
+                Uti.Log_debug(TAG, logEnable, survey.getDisplayName()+" "+survey.getType()+" "+SurveyInfo.TYPE_SHOWN_MAP.get(survey.getType()));
                 Button b = new Button(this);
                 b.setText(survey.getDisplayName());
                 b.setPadding(0, 30, 0, 30);
-                linearLayout.addView(b);
+                
+                /* only show surveys with type contains "manually"
+                 * bypass if debug mood */
+                if(SurveyInfo.TYPE_SHOWN_MAP.get(survey.getType()) || !Uti.RELEASE){
+                    linearLayout.addView(b);
+                }
 
                 b.setOnClickListener(new OnClickListener(){
 
                     @Override
                     public void onClick(View v) {
                         final SurveyInfo temp = buttonMap.get(v);
-                        Uti.Log(TAG, temp.getDisplayName());
-                        Uti.Log(TAG, temp.getDisplayName()+" "+temp.getFileName()+" "+temp.getName());
+                        Uti.Log_debug(TAG, logEnable, temp.getDisplayName());
+                        Uti.Log_debug(TAG, logEnable, temp.getDisplayName()+" "+temp.getFileName()+" "+temp.getName());
 
-                        // Morning Report
-                        // 1. only once per study day
-                        // 2. should be done before noon
-                        if(temp.getDisplayName().equals(getResources().getString(R.string.morning_report_name))){
-
-                            Calendar mT = Calendar.getInstance();
-                            Calendar noonT = Calendar.getInstance();
-                            noonT.set(Calendar.HOUR_OF_DAY, 12);
-                            noonT.set(Calendar.MINUTE, 20);
-                            noonT.set(Calendar.SECOND, 0);
-
-                            Calendar threeT = Calendar.getInstance();
-                            threeT.set(Calendar.HOUR_OF_DAY, 3);
-                            threeT.set(Calendar.MINUTE, 0);
-                            threeT.set(Calendar.SECOND, 0);
-
-                            if(Uti.completedMorningToday(SurveyMenu.this)){
-                                Alert(R.string.morning_report_title,R.string.morning_report_msg);
-                            }
-                            else if(mT.after(noonT)){
-                                Alert(R.string.morning_report_title2,R.string.morning_report_msg2);
-                            }
-                            else if(mT.before(threeT)){
-                                Alert(R.string.morning_report_title3, R.string.morning_report_msg3);
-                            }
-                            else {
-                                launchSurvey(temp.getName());
-                            }
-                        }
-
-                        //Confirm Initial Drinking
-                        else if (temp.getDisplayName().equals(getResources().getString(R.string.initial_drink_name))){
-                            SharedPreferences shp = Uti.getSP(SurveyMenu.this, Uti.SP_SURVEY);
-                            if (shp.getBoolean(Uti.SP_KEY_SURVEY_UNDERDRINKING, false)) {
-                                Alert(R.string.morning_report_title5, R.string.morning_report_msg5);
-                            } else {
-                                Dialog alertDialog = new AlertDialog.Builder(SurveyMenu.this)
-                                .setCancelable(true)
-                                .setTitle(R.string.first_drink_title)
-                                .setMessage(R.string.first_drink_msg)
-                                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        // TODO Auto-generated method stub
-                                        launchSurvey(temp.getName());
-                                    }
-                                })
-                                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        // TODO Auto-generated method stub
-
-                                            }
-                                })
-                                .create();
-                                alertDialog.show();
-                            }
-                        }
-
-                        else {
-                            launchSurvey(temp.getName());
-                        }
+                        /*Morning
+                         *      once per day
+                         *      after 3am before noon
+                         *      
+                         *confirm initial drinking
+                         *      check if morning finished
+                         *      check if suspension
+                         * */
+                        
+                        launchSurvey(temp.getName());
                     }
                 });
 
@@ -174,10 +139,12 @@ public class SurveyMenu extends Activity {
 
 
     private void launchSurvey(String Name){
-        Intent launchIntent = new Intent(getApplicationContext(), XMLSurveyActivity.class);
+        Intent launchIntent = new Intent(getApplicationContext(), SurveyActivity.class);
         launchIntent.putExtra(Uti.SV_NAME, Name);
 //      if (surveyName.equalsIgnoreCase("RANDOM_ASSESSMENT"))
 //          launchIntent.putExtra("random_sequence", randomSeq);
+        
+        //add timeout alarm here
         startActivityForResult(launchIntent, 0);
     }
 

@@ -59,7 +59,7 @@ import edu.missouri.niaaa.pain.survey.category.Question;
 import edu.missouri.niaaa.pain.survey.category.RandomCategory;
 import edu.missouri.niaaa.pain.survey.parser.XMLParser;
 
-public class XMLSurveyActivity extends Activity {
+public class SurveyActivity extends Activity {
 
     String TAG = "XML Survey Activity~~~~";
 
@@ -479,9 +479,9 @@ public class XMLSurveyActivity extends Activity {
                 pinDialog.show();
                 dialog.cancel();
 
-                Log.d("fffffffffffff", ""+Uti.getSP(XMLSurveyActivity.this, Uti.SP_SURVEY).getBoolean(Uti.SP_KEY_SURVEY_UNDERGOING, false) + " "+
-                        Uti.getSP(XMLSurveyActivity.this, Uti.SP_SURVEY).getString(Uti.SP_KEY_SURVEY_UNDERREMINDERING, "nothing")+ " "+
-                        Uti.getSP(XMLSurveyActivity.this, Uti.SP_SURVEY).getInt(Uti.SP_KEY_SURVEY_REMINDER_SEQ, -1)
+                Log.d("fffffffffffff", ""+Uti.getSP(SurveyActivity.this, Uti.SP_SURVEY).getBoolean(Uti.SP_KEY_SURVEY_UNDERGOING, false) + " "+
+                        Uti.getSP(SurveyActivity.this, Uti.SP_SURVEY).getString(Uti.SP_KEY_SURVEY_UNDERREMINDERING, "nothing")+ " "+
+                        Uti.getSP(SurveyActivity.this, Uti.SP_SURVEY).getInt(Uti.SP_KEY_SURVEY_REMINDER_SEQ, -1)
                         );
             }
         })
@@ -522,7 +522,7 @@ public class XMLSurveyActivity extends Activity {
                         //notify broadcast to set timeout
                         Intent it = new Intent(Uti.BD_REMINDER_MAP.get(surveyName));
                         it.putExtra(Uti.SV_NAME, surveyName);
-                        XMLSurveyActivity.this.sendBroadcast(it);
+                        SurveyActivity.this.sendBroadcast(it);
                     }
                     else{
                         //under manual
@@ -850,7 +850,7 @@ public class XMLSurveyActivity extends Activity {
                     setContentView(vg);
                 }
 
-                if(backButton.getText().equals(XMLSurveyActivity.this.getString(R.string.btn_cancel))){
+                if(backButton.getText().equals(SurveyActivity.this.getString(R.string.btn_cancel))){
                     onBackPressed();
                 }
 
@@ -1304,7 +1304,7 @@ public class XMLSurveyActivity extends Activity {
          else
          {
             Log.d("Sensor Data Point Info","No Network Connection:Data Point was not uploaded");
-            Toast.makeText(XMLSurveyActivity.this, "@#$", Toast.LENGTH_LONG).show();
+            Toast.makeText(SurveyActivity.this, "@#$", Toast.LENGTH_LONG).show();
             return false;
           }
 
@@ -1365,7 +1365,7 @@ public class XMLSurveyActivity extends Activity {
                     e.printStackTrace();
                 }
 
-                XMLSurveyActivity.super.onBackPressed();
+                SurveyActivity.super.onBackPressed();
             }
         }).create().show();
     }

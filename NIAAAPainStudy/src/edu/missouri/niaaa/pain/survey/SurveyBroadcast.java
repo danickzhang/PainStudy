@@ -2,6 +2,9 @@ package edu.missouri.niaaa.pain.survey;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
+
+import org.xml.sax.InputSource;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -16,6 +19,8 @@ import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Toast;
 import edu.missouri.niaaa.pain.Uti;
+import edu.missouri.niaaa.pain.survey.parser.SurveyInfo;
+import edu.missouri.niaaa.pain.survey.parser.XMLConfigParser;
 
 public class SurveyBroadcast extends BroadcastReceiver {
 
@@ -26,6 +31,15 @@ public class SurveyBroadcast extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         // TODO Auto-generated method stub
+        
+        XMLConfigParser configParser = new XMLConfigParser();
+        try {
+            List<SurveyInfo> surveys = configParser.parseQuestion(new InputSource(context.getAssets().open("config.xml")));
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        
         Uti.Log_sys(TAG, "broadcast on receive"+intent.getAction());
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
@@ -251,7 +265,7 @@ public class SurveyBroadcast extends BroadcastReceiver {
         else if(action.equals(Uti.BD_REMINDER_MAP.get(surveyName))){
             Uti.LogB("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^", ""+shp.getInt(Uti.SP_KEY_SURVEY_REMINDER_SEQ, 0)+" "+shp.getBoolean(Uti.SP_KEY_SURVEY_UNDERGOING, false));
 
-            Intent launchSurvey = new Intent(context, XMLSurveyActivity.class);
+            Intent launchSurvey = new Intent(context, SurveyActivity.class);
 //          launchSurvey.putExtra(Utilities.SV_FILE, Utilities.SV_MAP.get(surveyName));
             launchSurvey.putExtra(Uti.SV_NAME, surveyName);
             launchSurvey.putExtra(Uti.SV_AUTO_TRIGGERED, true);

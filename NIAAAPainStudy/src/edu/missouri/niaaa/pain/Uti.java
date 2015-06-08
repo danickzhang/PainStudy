@@ -54,12 +54,16 @@ import com.google.android.gms.location.DetectedActivity;
 
 public class Uti {
     
-    /* for debug */
-    public final static boolean DEBUG_lifeCycle = true;
+    /*for debug*/
+    public final static boolean DEBUG_LIFECYCLE = true;
+    public final static boolean DEBUG           = true;
+    public final static boolean RELEASE         = false;
     
+    /*broadcast actions*/
+    public final static String BD_ACTION_BASE = "edu.missouri.niaaa.pain.ACTION.";
+    public final static String BD_ACTION_SUSPENSION = BD_ACTION_BASE    +"SUSPENSION";
     
-    
-    
+    public static PublicKey publicKey = null;
     
     
     
@@ -82,11 +86,36 @@ public class Uti {
      * @param s1 Class name
      * @param s2 Name of life cycle function, this should contain "~~~" and so that easy for messages searching 
      */
-    public static void LogSys_lifeC(String s1, String s2){
-        if(DEBUG_lifeCycle) {
+    public static void Log_lifeCycle(String s1, String s2){
+        if(DEBUG_LIFECYCLE) {
             Log.d(s1,s2);
         }
     }
+    
+    public static void Log_debug(String s1, boolean enableByClass, String s2){
+        if(DEBUG && enableByClass) {
+            Log.d(s1,s2);
+        }
+    }
+    
+    public static void Log_debug(String s1, boolean enableByClass, String s2, boolean enable){
+        if(enable)
+            Log_debug(s1, enableByClass, s2);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -170,7 +199,7 @@ public class Uti {
     public final static int CODE_SCHEDULE_AUTOMATIC = 11;
     public final static int CODE_SKIP_BLOCK_SURVEY_RANDOM = 12;
     public final static int CODE_SKIP_BLOCK_SURVEY_DRINKING = 13;
-    public final static boolean RELEASE = true;
+    
 
 
     public final static HashMap<String, Integer> MAX_TRIGGER_MAP = new HashMap<String, Integer>() {
@@ -267,7 +296,7 @@ public class Uti {
 /*  broadcast*/
     public final static String BD_ACTION_SCHEDULE_ALL = "edu.missouri.niaaa.pain.ACTION_SCHEDULE_ALL";
     //  public final static String BD_ACTION_REMINDER_SURVEY = "edu.missouri.niaaa.pain.REMINDER";
-    public final static String BD_ACTION_SUSPENSION = "edu.missouri.niaaa.pain.SUSPENSION";
+    
     //  public final static String BD_ACTION_DAEMON_NOON = "edu.missouri.niaaa.pain.DAEMON_NOON";
     //  public final static String BD_ACTION_DAEMON_MIDN = "edu.missouri.niaaa.pain.DAEMON_MIDNIGHT";
     //  public final static String BD_ACTION_DAEMON_THRE = "edu.missouri.niaaa.pain.DAEMON_THREEOCLOCK";
@@ -356,7 +385,7 @@ public class Uti {
 
 
     //shared values
-    public static PublicKey publicKey = null;
+    
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //static Functions()                                                                                          //
