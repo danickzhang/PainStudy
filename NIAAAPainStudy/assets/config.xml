@@ -10,6 +10,6 @@
 </menu>
 
 <!-- <components>
-	<sensor type="internal" name="accelerometer" interval="1s"/>
+    <sensor type="internal" name="accelerometer" interval="1s"/>
 </components> -->
 </root>

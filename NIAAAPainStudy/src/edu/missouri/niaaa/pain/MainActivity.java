@@ -1,41 +1,73 @@
 package edu.missouri.niaaa.pain;
 
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.RSAPublicKeySpec;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.os.Vibrator;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+import edu.missouri.niaaa.pain.activity.AdminManageActivity;
+import edu.missouri.niaaa.pain.activity.MorningScheduler;
+import edu.missouri.niaaa.pain.activity.SupportActivity;
+import edu.missouri.niaaa.pain.activity.SuspensionTimePicker;
+import edu.missouri.niaaa.pain.location.LocationUtilities;
 import edu.missouri.niaaa.pain.survey.SurveyMenu;
 
 
 public class MainActivity extends Activity {
     String TAG = "MainActivity.java";
     boolean logEnable = true;
-    
+
+    /*onActivityResult Result Code*/
+    final static int INTENT_REQUEST_MAMAGE = 1;
+    final static int INTENT_REQUEST_SUSPENSION = 2;
+    final static int INTENT_REQUEST_BLUETOOTH = 3;
 
     Button section_1;
     Button section_2;
@@ -47,36 +79,41 @@ public class MainActivity extends Activity {
     Button section_8;
     Button section_9;
 
+    InputMethodManager imm;
+    SharedPreferences shp;
+    Editor editor;
+    String ID;
+    String PWD;
     /*adapter for bluetooth switch*/
     BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
-     * 
+     *
      */
     BroadcastReceiver suspensionReceiver = new BroadcastReceiver(){
 
         @Override
         public void onReceive(Context context, Intent intent) {
             // TODO Auto-generated method stub
-            Uti.Log(TAG, "on receiver break suspension");
+            Utilities.Log(TAG, "on receiver break suspension");
 
 //            section_6.setText(R.string.section_6);
-////          Utilities.getSP(MainActivity.this, Utilities.SP_SURVEY).edit().putBoolean(Utilities.SP_KEY_SURVEY_SUSPENSION, false).commit();
+////          Uti.getSP(MainActivity.this, Uti.SP_SURVEY).edit().putBoolean(Uti.SP_KEY_SURVEY_SUSPENSION, false).commit();
 //
 //            //write to server
 //            Calendar c = Calendar.getInstance();
@@ -96,95 +133,196 @@ public class MainActivity extends Activity {
 //            Toast.makeText(getApplicationContext(), R.string.suspension_end, Toast.LENGTH_LONG).show();
         }
     };
-    
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Uti.Log_lifeCycle(TAG, "OnCreate~~~");
-        
+        Utilities.Log_lifeCycle(TAG, "OnCreate~~~");
+
         /* thread policy
-         * help to check if there is misuse of threads, such as read large files or network communication, that 
+         * help to check if there is misuse of threads, such as read large files or network communication, that
          * should not be in the main UI thread.
          * Should be bypass when product released */
-        if(!Uti.RELEASE){
+        if(!Utilities.RELEASE){
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
             .detectAll()
             //.permitAll()
             .build());
         }
 
-        
+
         /* initialization
          * set initial parameters, register broadcasts,
-         * but not time-consuming tasks such as animation or file reading cursor reading; 
+         * but not time-consuming tasks such as animation or file reading cursor reading;
          * unregister broadcasts @onDestroy, put time-consuming tasks @onResume*/
-        
+
         setContentView(R.layout.activity_main);
 
         setListeners();
 
-        this.registerReceiver(suspensionReceiver, new IntentFilter(Uti.BD_ACTION_SUSPENSION));
+        setSharedValue();
+        this.registerReceiver(suspensionReceiver, new IntentFilter(Utilities.BD_ACTION_SUSPENSION));
 
-        
-        
-        
-        
-        
-        
-        
-        
-//      setSharedValue();
-
-        ////startSService();
-        //
         //check if device is assigned with an ID
-//        shp = getSharedPreferences(Utilities.SP_LOGIN, Context.MODE_PRIVATE);
-//        ID = shp.getString(Utilities.SP_KEY_LOGIN_USERID, "");
-        //for recording info
-        //end recording info
-//        PWD = shp.getString(Utilities.SP_KEY_LOGIN_USERPWD, "");
-//        editor = shp.edit();
+        shp = getSharedPreferences(Utilities.SP_LOGIN, Context.MODE_PRIVATE);
+        ID = shp.getString(Utilities.SP_KEY_LOGIN_USERID, "");
+        PWD = shp.getString(Utilities.SP_KEY_LOGIN_USERPWD, "");
+        editor = shp.edit();
 
-//        imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-//        Log.d(TAG,"id is "+ID);
+        Log.d(TAG,"id is "+ID);
 
-//        if(ID.equals("")){
-//          management();
-//
-//
-//            imm.toggleSoftInput(0, InputMethodManager.RESULT_HIDDEN);
-//
-//        }else if(PWD.equals("")){
+        if(ID.equals("")){
+            management();
+
+
+            imm.toggleSoftInput(0, InputMethodManager.RESULT_HIDDEN);
+
+        }else if(PWD.equals("")){
             //set password
 
-//          UserPWDSetDialog(this, ID).show();
-//
-//        }else{
-//          Log.d(TAG,"pwd is "+shp.getString(Utilities.SP_KEY_LOGIN_USERPWD, "get fail?"));
-////            startSService();
+            UserPWDSetDialog(this, ID).show();
+
+        }else{
+            Log.d(TAG,"pwd is "+shp.getString(Utilities.SP_KEY_LOGIN_USERPWD, "get fail?"));
+//          startSService();
 
             //set fun to 0
-//          sendBroadcast(new Intent(Utilities.BD_ACTION_DAEMON));
+//          sendBroadcast(new Intent(Uti.BD_ACTION_DAEMON));
 
             //restart gps
-//          if(Utilities.completedMorningToday(this) || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 3){
-//              sendBroadcast(new Intent(LocationUtilities.ACTION_START_LOCATION));
-//          }
+            if(Utilities.completedMorningToday(this) || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 3){
+                sendBroadcast(new Intent(LocationUtilities.ACTION_START_LOCATION));
+            }
+        }
+    }
 
 
-            // RECORDING
+    private void setSharedValue(){
 
-            Log.d(TAG, "onCreate is scheduling Monitor Recording");
-
+        //public key
+        try {
+            Utilities.publicKey = getPublicKey();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), R.string.public_key_lost, Toast.LENGTH_SHORT).show();
+            finish();
         }
 
+        //ID
+
+//      locationM = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    }
+
+
+    private Dialog UserPWDSetDialog(Context context, final String ID) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        final View textEntryView = inflater.inflate(R.layout.pin_input, null);
+        TextView pinText = (TextView) textEntryView.findViewById(R.id.pin_text);
+        pinText.setText(getString(R.string.user_setpwd_msg)+ID);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        builder.setTitle(R.string.user_setpwd_title);
+        builder.setView(textEntryView);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                EditText pinEdite = (EditText) textEntryView.findViewById(R.id.pin_edit);
+                String pinStr = pinEdite.getText().toString();
+                Utilities.Log("Pin Dialog", "pin String is "+pinStr);
+
+                String data = null;
+                try {
+                    data = Utilities.encryption(ID + "," + "3" + "," + pinStr);
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+
+/*              check network*/
+
+/*              prepare params for server*/
+                HttpPost request = new HttpPost(Utilities.VALIDATE_ADDRESS);
+
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+                params.add(new BasicNameValuePair("data", data));
+
+                //              //file_name
+                //              params.add(new BasicNameValuePair("userID",ID));
+                //              //function
+                //              params.add(new BasicNameValuePair("pre","3"));
+                //              //data
+                //              params.add(new BasicNameValuePair("password",pinStr));
+
+/*              check identity*/
+
+                try {
+                    request.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+
+                    HttpResponse response = new DefaultHttpClient().execute(request);
+                    if(response.getStatusLine().getStatusCode() == 200){
+                        String result = EntityUtils.toString(response.getEntity());
+                        Log.d("~~~~~~~~~~http post result3 ",result);
+
+                        if(result.equals("NewUserIsCreated")){
+                            //new pwd created
+                            //format check
+
+                            editor.putString(Utilities.SP_KEY_LOGIN_USERPWD, pinStr);
+                            editor.commit();
+                            PWD = shp.getString(Utilities.SP_KEY_LOGIN_USERPWD, "");
+
+
+                            Utilities.scheduleAll(MainActivity.this);
+                            Utilities.scheduleDaemon(MainActivity.this);
+//                          startSService();
+                        }else{
+                            //imm.toggleSoftInput(0, InputMethodManager.RESULT_SHOWN);
+                            //imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+                            Toast.makeText(getApplicationContext(), R.string.set_upin_failed, Toast.LENGTH_SHORT).show();
+                            //set return code
+
+                            finish();
+                        }
+                    }
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+
+                    imm.toggleSoftInput(0, InputMethodManager.RESULT_SHOWN);
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+                    Toast.makeText(getApplicationContext(), R.string.set_upin_error, Toast.LENGTH_SHORT).show();
+                    //set return code
+
+                    finish();
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                imm.toggleSoftInput(0, InputMethodManager.RESULT_SHOWN);
+                imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                finish();
+            }
+        });
+
+        return builder.create();
+    }
 
     private void setListeners() {
         // TODO Auto-generated method stub
-        
+
         /*start/stop service*/
         section_1 = (Button) findViewById(R.id.section_label1);
         section_2 = (Button) findViewById(R.id.section_label2);
@@ -208,8 +346,8 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 // TODO Auto-generated method stub
-                Uti.Log_debug(TAG, logEnable, "section 1 on click listener");
-                
+                Utilities.Log_debug(TAG, logEnable, "section 1 on click listener");
+
             }
         });
 
@@ -218,7 +356,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
-                Uti.Log_debug(TAG, logEnable, "section 2 on click listener");
+                Utilities.Log_debug(TAG, logEnable, "section 2 on click listener");
 
             }
         });
@@ -228,7 +366,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
-                Uti.Log_debug(TAG, logEnable, "section 3 on click listener");
+                Utilities.Log_debug(TAG, logEnable, "section 3 on click listener");
 
 //                if(!getSuspension()){
                     startActivity(new Intent(MainActivity.this, SurveyMenu.class));
@@ -244,100 +382,313 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
-                Uti.Log(TAG, "section 4 on click listener");
+                Utilities.Log(TAG, "section 4 on click listener");
 
             }
         });
 
+        section_5.setOnClickListener(new OnClickListener(){
 
+            @Override
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+                Utilities.Log(TAG, "section 5 on click listener");
 
+//                if(!getSuspension()){
+                    int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+                    if(hour >= 21 || hour <3){
+                        //verify user pin
+                        PinVerifyDialog(MainActivity.this).show();
+                    }else{
+                        //alert dialog
+                        bedTimeWrongDialog();
+                    }
+//                }
+//                else{
+//                suspensionAlert();
+//                }
 
+//              startActivity(new Intent(getApplicationContext(), MorningScheduler.class));
 
+            }
+        });
+        
+        setSuspensionText();
+        section_6.setOnClickListener(new OnClickListener(){
+
+            @Override
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+                Utilities.Log(TAG, "section 6 on click listener");
+
+                if(Utilities.completedMorningToday(MainActivity.this)){
+                    if(section_6.getText().equals(MainActivity.this.getString(R.string.section_6))){
+                        Log.d("test text 6", "suspension~~~~~~~~~~~");
+
+                        new AlertDialog.Builder(MainActivity.this)
+                        .setTitle(R.string.suspension_title)
+                        .setMessage(R.string.suspension_msg)
+                        .setCancelable(false)
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .setPositiveButton(android.R.string.ok, new android.content.DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                Intent intent = new Intent(getApplicationContext(), SuspensionTimePicker.class);
+                                startActivityForResult(intent, 2);
+                            }
+                        }).create().show();
+                    }
+                    else{
+                        Log.d("test text 6", "break suspension~~~~~~~~~~~");
+
+                        new AlertDialog.Builder(MainActivity.this)
+                        .setTitle(R.string.suspension_break_title)
+                        .setMessage(R.string.suspension_break_msg)
+                        .setCancelable(false)
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .setPositiveButton(android.R.string.ok, new android.content.DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                section_6.setText(R.string.section_6);
+                                Utilities.getSP(MainActivity.this, Utilities.SP_SURVEY).edit().putBoolean(Utilities.SP_KEY_SURVEY_SUSPENSION, false).commit();
+
+                                //cancel suspension alarm
+                                AlarmManager am = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+
+                                Intent breakIntent = new Intent(Utilities.BD_ACTION_SUSPENSION);
+                                PendingIntent breakPi = PendingIntent.getBroadcast(getApplicationContext(), 0, breakIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
+            //                  getApplicationContext().sendBroadcast(breakIntent);
+
+                                am.cancel(breakPi);
+
+                                //write to server
+                                Calendar c = Calendar.getInstance();
+                                SharedPreferences sp = getSharedPreferences(Utilities.SP_LOGIN, Context.MODE_PRIVATE);
+                                long startTimeStamp = sp.getLong(Utilities.SP_KEY_SUSPENSION_TS, c.getTimeInMillis());
+                                c.setTimeInMillis(startTimeStamp);
+
+                                try {
+                                    Utilities.writeEventToFile(MainActivity.this, Utilities.CODE_SUSPENSION, "", "", "", "",
+                                            Utilities.sdf.format(c.getTime()), Utilities.sdf.format(Calendar.getInstance().getTime()));
+                                } catch (IOException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+                                sp.edit().remove(Utilities.SP_KEY_SUSPENSION_TS).commit();
+
+                                //volume
+                                AudioManager audiom = (AudioManager) MainActivity.this.getSystemService(Context.AUDIO_SERVICE);
+                                audiom.setStreamVolume(AudioManager.STREAM_MUSIC, Utilities.VOLUME, AudioManager.FLAG_PLAY_SOUND);
+
+                                Vibrator v = (Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
+                                v.vibrate(500);
+                                Toast.makeText(getApplicationContext(), R.string.suspension_end, Toast.LENGTH_LONG).show();
+                            }
+                        }).create().show();
+                    }
+                }
+                else{
+                    Toast.makeText(MainActivity.this, R.string.morning_report_unfinished, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        section_7.setOnClickListener(new OnClickListener(){
+
+            @Override
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+                Utilities.Log(TAG, "section 7 on click listener");
+
+                startActivity(new Intent(MainActivity.this, SupportActivity.class));
+            }
+        });
+        
     }
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    private void setSuspensionText(){
+        section_6.setText(!Utilities.getSP(MainActivity.this, Utilities.SP_SURVEY).getBoolean(Utilities.SP_KEY_SURVEY_SUSPENSION, false)?R.string.section_6:R.string.section_62);
+    }
+
+
+    private boolean getSuspension(){
+        return Utilities.getSP(MainActivity.this, Utilities.SP_SURVEY).getBoolean(Utilities.SP_KEY_SURVEY_SUSPENSION, false);
+    }
+
+    private void suspensionAlert(){
+        Toast.makeText(getApplicationContext(), R.string.suspension_under, Toast.LENGTH_LONG).show();
+    }
+
+    private void bedTimeWrongDialog(){
+        new AlertDialog.Builder(MainActivity.this)
+        .setTitle(R.string.bedtime_title)
+        .setMessage(R.string.bedtime_message)
+        .setCancelable(false)
+        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        })
+        .create().show();
+    }
+
+    private Dialog PinVerifyDialog(final Context context) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        final View DialogView = inflater.inflate(R.layout.pin_input, null);
+        TextView pinText = (TextView) DialogView.findViewById(R.id.pin_text);
+        pinText.setText(R.string.pin_message);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        builder.setTitle(R.string.pin_title);
+        builder.setView(DialogView);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                EditText pinEdite = (EditText) DialogView.findViewById(R.id.pin_edit);
+                String pinStr = pinEdite.getText().toString();
+                Utilities.Log("Pin Dialog", "pin String is "+pinStr);
+
+                if (pinStr.equals(Utilities.getPWD(context))){
+                    //Send the intent and trigger new Survey Activity....
+                    bedAlertDialog();
+                    dialog.cancel();
+                }
+                else {
+                    //New AlertDialog to show instruction.
+                    new AlertDialog.Builder(MainActivity.this)
+                    .setTitle(R.string.pin_title_wrong)
+                    .setMessage(R.string.pin_message_wrong)
+                    .setPositiveButton(android.R.string.yes, null)
+                    .create().show();
+                }
+
+                dialog.cancel();
+
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+            }
+        });
+
+        return builder.create();
+    }
+
+    private void bedAlertDialog(){
+        new AlertDialog.Builder(MainActivity.this)
+        .setTitle(R.string.bedtime_title)
+        .setMessage(R.string.bedtime_message_confirm)
+        .setCancelable(false)
+        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                startActivity(new Intent(getApplicationContext(), MorningScheduler.class));
+
+                dialog.cancel();
+            }
+        })
+        .setNegativeButton(R.string.no, null)
+        .create().show();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Override
     protected void onResume() {
         super.onResume();
-        Uti.Log_lifeCycle(TAG, "OnResume~~~");
-        
+        Utilities.Log_lifeCycle(TAG, "OnResume~~~");
+
         /*implementation here*/
         restoreCurrentStatus();
-        
-        
+
+
     }
-    
-    
+
+
     private void restoreCurrentStatus() {
         // TODO Auto-generated method stub
-        
+
         /*check suspension status*/
-        
-        
-        
-        
+
+
+
+
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private void management(){
+        Intent serverIntent = new Intent(this, AdminManageActivity.class);
+        startActivityForResult(serverIntent, INTENT_REQUEST_MAMAGE);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -411,10 +762,8 @@ public class MainActivity extends Activity {
             else{
                 turnOnBt();
             }
-
             return true;
         }
-
 
         //DISABLE BLUETOOTH
         else if (item.getItemId() == R.id.Disable){
@@ -425,10 +774,10 @@ public class MainActivity extends Activity {
 
         //MANAGEMENT
         else if(item.getItemId() == R.id.manage){
-//          management();
+            management();
         }
 
-        // ABOUT
+        //ABOUT
         else if(item.getItemId() == R.id.about){
 
             //initial versionCode
@@ -448,7 +797,7 @@ public class MainActivity extends Activity {
             Dialog alertDialog = new AlertDialog.Builder(MainActivity.this)
             .setCancelable(false)
             .setTitle(getString(R.string.menu_about)+"  ver."+versionName+"."+versionCode)
-//          .setMessage("User ID: "+ID+"\n"+Utilities.getScheduleForToady(MainActivity.this))
+            .setMessage("User ID: "+ID+"\n"+Utilities.getScheduleForToady(MainActivity.this))
             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
                 @Override
@@ -468,7 +817,7 @@ public class MainActivity extends Activity {
     private void turnOnBt(){
         // TODO Auto-generated method stub
         Intent Enable_Bluetooth=new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//      startActivityForResult(Enable_Bluetooth, INTENT_REQUEST_BLUETOOTH);
+        startActivityForResult(Enable_Bluetooth, INTENT_REQUEST_BLUETOOTH);
     }
 
 
@@ -497,23 +846,50 @@ public class MainActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
-        Uti.Log_lifeCycle(TAG, "OnCreate~~~");
-        Uti.Log_lifeCycle(TAG, "~~~"+requestCode+" "+resultCode);
+        Utilities.Log_lifeCycle(TAG, "OnCreate~~~");
+        Utilities.Log_lifeCycle(TAG, "~~~"+requestCode+" "+resultCode);
+
+         switch (requestCode) {
+            case INTENT_REQUEST_MAMAGE:
+                if(resultCode == Activity.RESULT_CANCELED){
+//                  stopSService();
+                    finish();
+
+                }
+                else if(resultCode == Activity.RESULT_OK){
+                    ID = shp.getString(Utilities.SP_KEY_LOGIN_USERID, "");
+                    UserPWDSetDialog(this, ID).show();
+
+                }
+                else{
+
+                }
+
+                break;
+
+            case INTENT_REQUEST_SUSPENSION:
+                if(resultCode == 1){
+                    section_6.setText(R.string.section_62);
+                }
+
+                break;
+         }
+
 
     }
-    
+
     @Override
     protected void onRestart() {
         // TODO Auto-generated method stub
         super.onRestart();
-        Uti.Log_lifeCycle(TAG, "OnRestart~~~");
+        Utilities.Log_lifeCycle(TAG, "OnRestart~~~");
     }
 
     @Override
     protected void onStart() {
         // TODO Auto-generated method stub
         super.onStart();
-        Uti.Log_lifeCycle(TAG, "OnStart~~~");
+        Utilities.Log_lifeCycle(TAG, "OnStart~~~");
     }
 
 
@@ -521,23 +897,23 @@ public class MainActivity extends Activity {
     protected void onPause() {
         // TODO Auto-generated method stub
         super.onPause();
-        Uti.Log_lifeCycle(TAG, "OnPause~~~");
-        
+        Utilities.Log_lifeCycle(TAG, "OnPause~~~");
+
     }
 
     @Override
     protected void onStop() {
         // TODO Auto-generated method stub
         super.onStop();
-        Uti.Log_lifeCycle(TAG, "onStop~~~");
-        
+        Utilities.Log_lifeCycle(TAG, "onStop~~~");
+
     }
 
     @Override
     protected void onDestroy() {
-        Uti.Log_lifeCycle(TAG, "onDestroy~~~");
+        Utilities.Log_lifeCycle(TAG, "onDestroy~~~");
         // implementation here
-        
+
         super.onDestroy();
     }
 
@@ -547,7 +923,7 @@ public class MainActivity extends Activity {
     public void onBackPressed() {
         // TODO Auto-generated method stub
         super.onBackPressed();
-        Uti.Log_lifeCycle(TAG, "onBackPressed~~~");
+        Utilities.Log_lifeCycle(TAG, "onBackPressed~~~");
     }
 
 

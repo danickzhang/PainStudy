@@ -4,5 +4,5 @@
     android:layout_height="match_parent"
     android:paddingTop="@dimen/activity_top_margin"
     android:orientation="vertical" >
-    
+
 </LinearLayout>

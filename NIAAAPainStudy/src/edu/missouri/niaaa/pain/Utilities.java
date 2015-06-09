@@ -52,90 +52,90 @@ import android.widget.TextView;
 import com.google.android.gms.location.DetectedActivity;
 
 
-public class Uti {
-    
+public class Utilities {
+
     /*for debug*/
     public final static boolean DEBUG_LIFECYCLE = true;
     public final static boolean DEBUG           = true;
     public final static boolean RELEASE         = false;
-    
+
     /*broadcast actions*/
     public final static String BD_ACTION_BASE = "edu.missouri.niaaa.pain.ACTION.";
     public final static String BD_ACTION_SUSPENSION = BD_ACTION_BASE    +"SUSPENSION";
-    
+
     public static PublicKey publicKey = null;
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
-     * Logs to debug system life cycle, which is triggered by system inherently. 
-     * 
+     * Logs to debug system life cycle, which is triggered by system inherently.
+     *
      * @param s1 Class name
-     * @param s2 Name of life cycle function, this should contain "~~~" and so that easy for messages searching 
+     * @param s2 Name of life cycle function, this should contain "~~~" and so that easy for messages searching
      */
     public static void Log_lifeCycle(String s1, String s2){
         if(DEBUG_LIFECYCLE) {
             Log.d(s1,s2);
         }
     }
-    
+
     public static void Log_debug(String s1, boolean enableByClass, String s2){
         if(DEBUG && enableByClass) {
             Log.d(s1,s2);
         }
     }
-    
+
     public static void Log_debug(String s1, boolean enableByClass, String s2, boolean enable){
         if(enable)
             Log_debug(s1, enableByClass, s2);
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*  survey type*/
     public final static String SV_FILE = "survey_file";
@@ -199,7 +199,7 @@ public class Uti {
     public final static int CODE_SCHEDULE_AUTOMATIC = 11;
     public final static int CODE_SKIP_BLOCK_SURVEY_RANDOM = 12;
     public final static int CODE_SKIP_BLOCK_SURVEY_DRINKING = 13;
-    
+
 
 
     public final static HashMap<String, Integer> MAX_TRIGGER_MAP = new HashMap<String, Integer>() {
@@ -296,7 +296,7 @@ public class Uti {
 /*  broadcast*/
     public final static String BD_ACTION_SCHEDULE_ALL = "edu.missouri.niaaa.pain.ACTION_SCHEDULE_ALL";
     //  public final static String BD_ACTION_REMINDER_SURVEY = "edu.missouri.niaaa.pain.REMINDER";
-    
+
     //  public final static String BD_ACTION_DAEMON_NOON = "edu.missouri.niaaa.pain.DAEMON_NOON";
     //  public final static String BD_ACTION_DAEMON_MIDN = "edu.missouri.niaaa.pain.DAEMON_MIDNIGHT";
     //  public final static String BD_ACTION_DAEMON_THRE = "edu.missouri.niaaa.pain.DAEMON_THREEOCLOCK";
@@ -385,7 +385,7 @@ public class Uti {
 
 
     //shared values
-    
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //static Functions()                                                                                          //
@@ -401,24 +401,24 @@ public class Uti {
 /*  re-schedule     */
     /* startup */
     public static void scheduleAll(Context context){
-        Intent startScheduler = new Intent(Uti.BD_ACTION_SCHEDULE_ALL);
-        startScheduler.putExtra(Uti.SV_NAME, Uti.SV_NAME_MORNING);//useless
+        Intent startScheduler = new Intent(Utilities.BD_ACTION_SCHEDULE_ALL);
+        startScheduler.putExtra(Utilities.SV_NAME, Utilities.SV_NAME_MORNING);//useless
         context.sendBroadcast(startScheduler);
 
         // deal with suspension after reboot
-        SharedPreferences shp = Uti.getSP(context, Uti.SP_SURVEY);
+        SharedPreferences shp = Utilities.getSP(context, Utilities.SP_SURVEY);
 
-        if (shp.getBoolean(Uti.SP_KEY_SURVEY_SUSPENSION, false)) {
+        if (shp.getBoolean(Utilities.SP_KEY_SURVEY_SUSPENSION, false)) {
 
             // last suspension timestamp
             Calendar c = Calendar.getInstance();
-            SharedPreferences sp = context.getSharedPreferences(Uti.SP_LOGIN, Context.MODE_PRIVATE);
-            long lastStartTime = sp.getLong(Uti.SP_KEY_SUSPENSION_TS, c.getTimeInMillis());
+            SharedPreferences sp = context.getSharedPreferences(Utilities.SP_LOGIN, Context.MODE_PRIVATE);
+            long lastStartTime = sp.getLong(Utilities.SP_KEY_SUSPENSION_TS, c.getTimeInMillis());
             int choice = sp.getInt(SP_KEY_SUSPENSION_CHOICE, 0);
 
             AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            Intent breakIntent = new Intent(Uti.BD_ACTION_SUSPENSION);
-            breakIntent.putExtra(Uti.SV_NAME, Uti.SV_NAME_RANDOM);// useless
+            Intent breakIntent = new Intent(Utilities.BD_ACTION_SUSPENSION);
+            breakIntent.putExtra(Utilities.SV_NAME, Utilities.SV_NAME_RANDOM);// useless
             PendingIntent breakPi = PendingIntent.getBroadcast(context, 0, breakIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
             am.set(AlarmManager.RTC_WAKEUP, lastStartTime + choice * SUSPENSION_INTERVAL_IN_SECOND * 1000, breakPi);
 
@@ -426,8 +426,8 @@ public class Uti {
     }
 
     public static void scheduleDaemon(Context context){
-        Intent i = new Intent(Uti.BD_ACTION_DAEMON);
-        i.putExtra(Uti.BD_ACTION_DAEMON_FUNC, 0);
+        Intent i = new Intent(Utilities.BD_ACTION_DAEMON);
+        i.putExtra(Utilities.BD_ACTION_DAEMON_FUNC, 0);
         context.sendBroadcast(i);
     }
 
@@ -484,12 +484,12 @@ public class Uti {
             }
         }
 
-        Uti.getSP(context, Uti.SP_RANDOM_TIME).edit().putString(Uti.SP_KEY_RANDOM_TIME_SET, random_schedule).commit();
+        Utilities.getSP(context, Utilities.SP_RANDOM_TIME).edit().putString(Utilities.SP_KEY_RANDOM_TIME_SET, random_schedule).commit();
 
-        Uti.getSP(context, Uti.SP_SURVEY).edit().putInt(Uti.SP_KEY_SURVEY_TRIGGER_SEQ_RANDOM, 0).commit();
+        Utilities.getSP(context, Utilities.SP_SURVEY).edit().putInt(Utilities.SP_KEY_SURVEY_TRIGGER_SEQ_RANDOM, 0).commit();
 
-        Intent scheduleIntent = new Intent(Uti.BD_ACTION_SCHEDULE_RANDOM);
-        scheduleIntent.putExtra(Uti.SV_NAME, Uti.SV_NAME_RANDOM);
+        Intent scheduleIntent = new Intent(Utilities.BD_ACTION_SCHEDULE_RANDOM);
+        scheduleIntent.putExtra(Utilities.SV_NAME, Utilities.SV_NAME_RANDOM);
         if (!startFromNoon) {
             context.sendBroadcast(scheduleIntent);
         }
@@ -497,10 +497,10 @@ public class Uti {
 
 
     public static void triggerRandom(Context context, int seq){
-        Uti.getSP(context, Uti.SP_SURVEY).edit().putInt(Uti.SP_KEY_SURVEY_TRIGGER_SEQ_RANDOM, seq).commit();
+        Utilities.getSP(context, Utilities.SP_SURVEY).edit().putInt(Utilities.SP_KEY_SURVEY_TRIGGER_SEQ_RANDOM, seq).commit();
 
-        Intent scheduleIntent = new Intent(Uti.BD_ACTION_SCHEDULE_RANDOM);
-        scheduleIntent.putExtra(Uti.SV_NAME, Uti.SV_NAME_RANDOM);
+        Intent scheduleIntent = new Intent(Utilities.BD_ACTION_SCHEDULE_RANDOM);
+        scheduleIntent.putExtra(Utilities.SV_NAME, Utilities.SV_NAME_RANDOM);
         scheduleIntent.putExtra(SP_KEY_SURVEY_REMINDER_CANCEL, true);
         context.sendBroadcast(scheduleIntent);
     }
@@ -529,11 +529,11 @@ public class Uti {
     /* drinking */
     public static void triggerDrinkingFollowup(Context context){
 
-        Uti.getSP(context, Uti.SP_SURVEY).edit().putInt(Uti.SP_KEY_SURVEY_TRIGGER_SEQ_FOLLOWUP, 0).commit();
-        Uti.getSP(context, Uti.SP_SURVEY).edit().putBoolean(Uti.SP_KEY_SURVEY_TRIGGER_CONT_FOLLOWUP, false).commit();
+        Utilities.getSP(context, Utilities.SP_SURVEY).edit().putInt(Utilities.SP_KEY_SURVEY_TRIGGER_SEQ_FOLLOWUP, 0).commit();
+        Utilities.getSP(context, Utilities.SP_SURVEY).edit().putBoolean(Utilities.SP_KEY_SURVEY_TRIGGER_CONT_FOLLOWUP, false).commit();
 
-        Intent scheduleIntent = new Intent(Uti.BD_ACTION_SCHEDULE_FOLLOWUP);
-        scheduleIntent.putExtra(Uti.SV_NAME, Uti.SV_NAME_DRINKING_FOLLOWUP);
+        Intent scheduleIntent = new Intent(Utilities.BD_ACTION_SCHEDULE_FOLLOWUP);
+        scheduleIntent.putExtra(Utilities.SV_NAME, Utilities.SV_NAME_DRINKING_FOLLOWUP);
         scheduleIntent.putExtra(SP_KEY_SURVEY_REMINDER_CANCEL, true);
         context.sendBroadcast(scheduleIntent);
     }
@@ -546,8 +546,8 @@ public class Uti {
         getSP(context, SP_BED_TIME).edit().putLong(SP_KEY_BED_TIME_LONG, c.getTimeInMillis()).commit();
 
 
-        Intent scheduleIntent = new Intent(Uti.BD_ACTION_SCHEDULE_MORNING);
-        scheduleIntent.putExtra(Uti.SV_NAME, Uti.SV_NAME_MORNING);
+        Intent scheduleIntent = new Intent(Utilities.BD_ACTION_SCHEDULE_MORNING);
+        scheduleIntent.putExtra(Utilities.SV_NAME, Utilities.SV_NAME_MORNING);
         context.sendBroadcast(scheduleIntent);
     }
 
@@ -749,8 +749,8 @@ public class Uti {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         SharedPreferences shp = getSP(context, SP_SURVEY);
         for(String surveyName: BD_REMINDER_MAP.keySet()){
-            Intent itReminder = new Intent(Uti.BD_REMINDER_MAP.get(surveyName));
-            itReminder.putExtra(Uti.SV_NAME, surveyName);
+            Intent itReminder = new Intent(Utilities.BD_REMINDER_MAP.get(surveyName));
+            itReminder.putExtra(Utilities.SV_NAME, surveyName);
             PendingIntent piReminder = PendingIntent.getBroadcast(context, 0, itReminder, Intent.FLAG_ACTIVITY_NEW_TASK);
 
             //set undergoing and send reminder broadcast // an other way
@@ -758,10 +758,10 @@ public class Uti {
             //am.set(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis(), piReminder);
 
             //set reminder seq to 0
-            shp.edit().putInt(Uti.SP_KEY_SURVEY_REMINDER_SEQ, 0).commit();
-            shp.edit().putBoolean(Uti.SP_KEY_SURVEY_UNDERGOING, false).commit();
+            shp.edit().putInt(Utilities.SP_KEY_SURVEY_REMINDER_SEQ, 0).commit();
+            shp.edit().putBoolean(Utilities.SP_KEY_SURVEY_UNDERGOING, false).commit();
 
-            shp.edit().putString(Uti.SP_KEY_SURVEY_UNDERREMINDERING, "").commit();
+            shp.edit().putString(Utilities.SP_KEY_SURVEY_UNDERREMINDERING, "").commit();
             am.cancel(piReminder);
         }
     }
@@ -770,12 +770,12 @@ public class Uti {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         SharedPreferences shp = getSP(context, SP_SURVEY);
         for(String surveyName: BD_TRIGGER_MAP.keySet()){
-            Intent itSchedule = new Intent(Uti.BD_TRIGGER_MAP.get(surveyName));
-            itSchedule.putExtra(Uti.SV_NAME, surveyName);
+            Intent itSchedule = new Intent(Utilities.BD_TRIGGER_MAP.get(surveyName));
+            itSchedule.putExtra(Utilities.SV_NAME, surveyName);
             PendingIntent piSchedule = PendingIntent.getBroadcast(context, 0, itSchedule, Intent.FLAG_ACTIVITY_NEW_TASK);
 
             am.cancel(piSchedule);
-            String triggerSeq = Uti.SP_KEY_TRIGGER_SEQ_MAP.get(surveyName);
+            String triggerSeq = Utilities.SP_KEY_TRIGGER_SEQ_MAP.get(surveyName);
             shp.edit().putInt(triggerSeq, 0).commit();
         }
 
@@ -793,8 +793,8 @@ public class Uti {
 
     public static void cancelMorning(Context context){
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent itTrigger = new Intent(Uti.BD_TRIGGER_MAP.get(Uti.SV_NAME_MORNING));
-        itTrigger.putExtra(Uti.SV_NAME, Uti.SV_NAME_MORNING);
+        Intent itTrigger = new Intent(Utilities.BD_TRIGGER_MAP.get(Utilities.SV_NAME_MORNING));
+        itTrigger.putExtra(Utilities.SV_NAME, Utilities.SV_NAME_MORNING);
         PendingIntent piTrigger = PendingIntent.getBroadcast(context, 0, itTrigger, Intent.FLAG_ACTIVITY_NEW_TASK);
         am.cancel(piTrigger);
     }
@@ -826,7 +826,7 @@ public class Uti {
     public static String getPWD(Context context){// need modify
         SharedPreferences shp = context.getSharedPreferences(SP_LOGIN, Context.MODE_PRIVATE);
 //      ID = shp.getString(AdminManageActivity.ASID, "");
-        String PWD = shp.getString(Uti.SP_KEY_LOGIN_USERPWD, "");
+        String PWD = shp.getString(Utilities.SP_KEY_LOGIN_USERPWD, "");
         return PWD;
     }
 
@@ -891,7 +891,7 @@ public class Uti {
 
         String str =
                 "\nStudy Day: "+getStudyDay(context) +
-                (!getSP(context, Uti.SP_SURVEY).getBoolean(Uti.SP_KEY_SURVEY_SUSPENSION, false)?"\n":"\nUnder suspension.\n") +
+                (!getSP(context, Utilities.SP_SURVEY).getBoolean(Utilities.SP_KEY_SURVEY_SUSPENSION, false)?"\n":"\nUnder suspension.\n") +
                 (RELEASE? "" :
                 "\nMorning  survey at: " + (morning == -1 ? TIME_NONE : getTimeFromLong(morning))+
                 "\nFollowup survey at: " + follow +
@@ -961,10 +961,10 @@ public class Uti {
         int hour = defHour;
         int minute = defMinute;
 
-        boolean setDefault = (sp.getInt(Uti.SP_KEY_BED_TIME_HOUR, -1) == -1?false:true);
+        boolean setDefault = (sp.getInt(Utilities.SP_KEY_BED_TIME_HOUR, -1) == -1?false:true);
         if(setDefault){
-            hour = sp.getInt(Uti.SP_KEY_BED_TIME_HOUR, -1);
-            minute = sp.getInt(Uti.SP_KEY_BED_TIME_MINUTE, -1);
+            hour = sp.getInt(Utilities.SP_KEY_BED_TIME_HOUR, -1);
+            minute = sp.getInt(Utilities.SP_KEY_BED_TIME_MINUTE, -1);
         }
 
         return getMorningCal(hour, minute);
@@ -1002,9 +1002,9 @@ public class Uti {
 
                 EditText pinEdite = (EditText) DialogView.findViewById(R.id.pin_edit);
                 String pinStr = pinEdite.getText().toString();
-                Uti.Log("Pin Dialog", "pin String is "+pinStr);
+                Utilities.Log("Pin Dialog", "pin String is "+pinStr);
 
-                if (pinStr.equals(Uti.getPWD(context))){
+                if (pinStr.equals(Utilities.getPWD(context))){
                     //Send the intent and trigger new Survey Activity....
 //                  bedAlertDialog();
                     dialog.cancel();
@@ -1048,11 +1048,11 @@ public class Uti {
         SimpleDateFormat curFormater = new SimpleDateFormat("MMMMM_dd");
         String dateObj =curFormater.format(cl.getTime());
 
-        StringBuilder prefix_sb = new StringBuilder(Uti.PREFIX_LEN);
+        StringBuilder prefix_sb = new StringBuilder(Utilities.PREFIX_LEN);
         String prefix = "locations." + userID + "." + dateObj;
         prefix_sb.append(prefix);
 
-        for (int i = prefix.length(); i <= Uti.PREFIX_LEN; i++) {
+        for (int i = prefix.length(); i <= Utilities.PREFIX_LEN; i++) {
             prefix_sb.append(" ");
         }
 
@@ -1084,8 +1084,8 @@ public class Uti {
 
         Calendar endCal = Calendar.getInstance();
 
-        String userID = Uti.getSP(context, Uti.SP_LOGIN).getString(Uti.SP_KEY_LOGIN_USERID, "0000");
-        int studyDay = Uti.getStudyDay(context);
+        String userID = Utilities.getSP(context, Utilities.SP_LOGIN).getString(Utilities.SP_KEY_LOGIN_USERID, "0000");
+        int studyDay = Utilities.getStudyDay(context);
 
 
         StringBuilder sb = new StringBuilder(100);
@@ -1102,11 +1102,11 @@ public class Uti {
         SimpleDateFormat curFormater = new SimpleDateFormat("MMMMM_dd");
         String dateObj = curFormater.format(cl.getTime());
 
-        StringBuilder prefix_sb = new StringBuilder(Uti.PREFIX_LEN);
+        StringBuilder prefix_sb = new StringBuilder(Utilities.PREFIX_LEN);
         String prefix = "Excel." + userID + "." + dateObj;
         prefix_sb.append(prefix);
 
-        for (int i = prefix.length(); i <= Uti.PREFIX_LEN; i++) {
+        for (int i = prefix.length(); i <= Utilities.PREFIX_LEN; i++) {
             prefix_sb.append(" ");
         }
 
@@ -1236,84 +1236,6 @@ public class Uti {
 
     }
 
-    /* Nick added this for the monitor section on april 15 2015 for NIMH
-     * if the user closes the app, then the last encryption would fail because
-     * the variable publicKey would be null if MainActivity was destroyed.
-     * To get around that, I send the context to this method, call the
-     * getPublicKey() method like in MainActivity, when the publicKey is null.
-     * I have to send the context, because you can only call getResources() in
-     * an activity unless you have the context. Now package monitor works when the
-     * app is closed (MainActivity is destroyed). The getPublicKey() method will
-     * only be called when MainActivity is destroyed or publicKey is null.
-     */
-    public static String monitorEncryption(String string, Context context) throws Exception {
-
-        //generate symmetric key
-        KeyGenerator keygt = KeyGenerator.getInstance("AES");
-        keygt.init(128);
-        SecretKey symkey =keygt.generateKey();
-
-        //get it encoded
-        byte[] aes_ba = symkey.getEncoded();
-
-        //create cipher
-        SecretKeySpec skeySpec = new SecretKeySpec(aes_ba, "AES");
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.ENCRYPT_MODE,skeySpec);
-
-        //encryption
-        byte [] EncSymbyteArray =cipher.doFinal(string.getBytes());
-
-        //encrypt symKey with PublicKey
-//        Key pubKey = getPublicKey();
-
-
-        if(publicKey == null){
-            Log.d("Utilities", "publicKey was null!!");
-            try{
-                publicKey = getPublicKey(context);
-            } catch(Exception e){
-                Log.d("Utilties", "get public key failed for recording receiver to send to server");
-                e.printStackTrace();
-            }
-        }
-
-
-        Key pubKey = publicKey;
-
-        //RSA cipher
-        Cipher cipherAsm = Cipher.getInstance("RSA", "BC");
-        cipherAsm.init(Cipher.ENCRYPT_MODE, pubKey);
-
-        //RSA encryption
-        byte [] asymEncsymKey = cipherAsm.doFinal(aes_ba);
-
-//          File f3 = new File(BASE_PATH,"enc.txt");
-//          File f3key = new File(BASE_PATH,"enckey.txt");
-//          File f3file = new File(BASE_PATH,"encfile.txt");
-//          writeToFile2(f3,f3key,f3file, asymEncsymKey, EncSymbyteArray);
-
-        //byte != new String
-        //return new String(byteMerger(asymEncsymKey, EncSymbyteArray));
-        return Base64.encodeToString(byteMerger(asymEncsymKey, EncSymbyteArray),Base64.DEFAULT);
-
-    }
-    private static PublicKey getPublicKey(Context context) throws Exception {
-        // TODO Auto-generated method stub
-        InputStream is = context.getResources().openRawResource(R.raw.publickey);
-        ObjectInputStream ois = new ObjectInputStream(is);
-
-        BigInteger m = (BigInteger)ois.readObject();
-        BigInteger e = (BigInteger)ois.readObject();
-        RSAPublicKeySpec keySpec = new RSAPublicKeySpec(m, e);
-
-
-        KeyFactory fact = KeyFactory.getInstance("RSA", "BC");
-        PublicKey pubKey = fact.generatePublic(keySpec);
-
-        return pubKey;
-    }
-
     public static byte[] byteMerger(byte[] byte_1, byte[] byte_2){
         byte[] byte_3 = new byte[byte_1.length+byte_2.length];
         System.arraycopy(byte_1, 0, byte_3, 0, byte_1.length);
@@ -1336,7 +1258,7 @@ public class Uti {
     }
 
     public static void writeToFileEnc(String fileName, String toWrite) throws IOException{
-        Uti.Log("write to file", "enc");
+        Utilities.Log("write to file", "enc");
         File dir =new File(PHONE_BASE_PATH);
         if(!dir.exists()) {
             dir.mkdirs();

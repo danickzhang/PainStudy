@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
-    <TextView 
+
+    <TextView
         android:id="@+id/pin_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -52,7 +52,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import edu.missouri.niaaa.pain.R;
-import edu.missouri.niaaa.pain.Uti;
+import edu.missouri.niaaa.pain.Utilities;
 import edu.missouri.niaaa.pain.survey.category.Answer;
 import edu.missouri.niaaa.pain.survey.category.Category;
 import edu.missouri.niaaa.pain.survey.category.Question;
@@ -111,14 +111,14 @@ public class SurveyActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        Uti.Log_sys(TAG, "onCreate");
+        Utilities.Log_sys(TAG, "onCreate");
 
         context = this;
 
-        shp = Uti.getSP(this, Uti.SP_SURVEY);
-        surveyTitle = surveyName = getIntent().getStringExtra(Uti.SV_NAME);
+        shp = Utilities.getSP(this, Utilities.SP_SURVEY);
+        surveyTitle = surveyName = getIntent().getStringExtra(Utilities.SV_NAME);
         dialogTitle = getString(R.string.pin_title);
-        autoTriggered = getIntent().getBooleanExtra(Uti.SV_AUTO_TRIGGERED, false);
+        autoTriggered = getIntent().getBooleanExtra(Utilities.SV_AUTO_TRIGGERED, false);
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "Gank");
@@ -130,25 +130,25 @@ public class SurveyActivity extends Activity {
         t=new Timer();
 
 
-        Log.d("ssssssssss", "reminder last is "+getIntent().getBooleanExtra(Uti.SV_REMINDER_LAST, false));
-        if(getIntent().getBooleanExtra(Uti.SV_REMINDER_LAST, false)){
+        Log.d("ssssssssss", "reminder last is "+getIntent().getBooleanExtra(Utilities.SV_REMINDER_LAST, false));
+        if(getIntent().getBooleanExtra(Utilities.SV_REMINDER_LAST, false)){
             Toast.makeText(getApplicationContext(), R.string.survey_timeout, Toast.LENGTH_LONG).show();
             Toast.makeText(getApplicationContext(), "2", Toast.LENGTH_LONG).show();
 
             String[] reminder = getReminderTimeStamp(context);
             try {
                 String seq = "";
-                int surSeq = shp.getInt(Uti.SP_KEY_TRIGGER_SEQ_MAP.get(surveyName), -1);
+                int surSeq = shp.getInt(Utilities.SP_KEY_TRIGGER_SEQ_MAP.get(surveyName), -1);
                 if (surSeq == 0) {
-                    surSeq = Uti.MAX_TRIGGER_MAP.get(surveyName);
+                    surSeq = Utilities.MAX_TRIGGER_MAP.get(surveyName);
                 }
-                if (surveyName.equals(Uti.SV_NAME_RANDOM)) {
+                if (surveyName.equals(Utilities.SV_NAME_RANDOM)) {
                     seq = "," + surSeq;
                 }
 
-                Uti.writeEventToFile(context, getSurveyType(), getScheduleTimeStamp(),
+                Utilities.writeEventToFile(context, getSurveyType(), getScheduleTimeStamp(),
                         reminder[0], reminder[1], reminder[2],
-                        "", Uti.sdf.format(Calendar.getInstance().getTime()) + seq);
+                        "", Utilities.sdf.format(Calendar.getInstance().getTime()) + seq);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -160,7 +160,7 @@ public class SurveyActivity extends Activity {
         }
         else if(autoTriggered){
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            am.setStreamVolume(AudioManager.STREAM_MUSIC, Uti.VOLUME, AudioManager.FLAG_PLAY_SOUND);
+            am.setStreamVolume(AudioManager.STREAM_MUSIC, Utilities.VOLUME, AudioManager.FLAG_PLAY_SOUND);
 
             acquireLock();
 
@@ -171,13 +171,13 @@ public class SurveyActivity extends Activity {
 
             //prepare seq title and reminder title
             Log.d("!!!!!!!!!!!!!!!!", ""+surveyTitle);
-            if(Uti.SP_KEY_TRIGGER_SEQ_MAP.get(surveyName) != null){
-                int i = shp.getInt(Uti.SP_KEY_TRIGGER_SEQ_MAP.get(surveyName), 0);
+            if(Utilities.SP_KEY_TRIGGER_SEQ_MAP.get(surveyName) != null){
+                int i = shp.getInt(Utilities.SP_KEY_TRIGGER_SEQ_MAP.get(surveyName), 0);
 
                 randomSeq = i; //haidong
                 switch(i){
                 case 0:
-                    surveyTitle = num2seq(Uti.MAX_TRIGGER_MAP.get(surveyName))+surveyName;
+                    surveyTitle = num2seq(Utilities.MAX_TRIGGER_MAP.get(surveyName))+surveyName;
                     break;
                 default:
                     surveyTitle = num2seq(i)+surveyName;
@@ -192,11 +192,11 @@ public class SurveyActivity extends Activity {
                     String rsID = String.valueOf(randomSeq);
                     Calendar rsT = Calendar.getInstance();
                     String rsDate = (rsT.get(Calendar.MONTH)+1)+"/"+rsT.get(Calendar.DAY_OF_MONTH)+"/"+rsT.get(Calendar.YEAR);
-                    String uID = Uti.getSP(this, Uti.SP_LOGIN).getString(Uti.SP_KEY_LOGIN_USERID, "0000");
+                    String uID = Utilities.getSP(this, Utilities.SP_LOGIN).getString(Utilities.SP_KEY_LOGIN_USERID, "0000");
 
                     String data = null;
                     try {
-                        data = Uti.encryption(uID + "," + rsDate + "," + rsID + "," + "trigger");
+                        data = Utilities.encryption(uID + "," + rsDate + "," + rsID + "," + "trigger");
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -215,8 +215,8 @@ public class SurveyActivity extends Activity {
             //1. manually do morning survey
             //2. after bedreport && before 3am can do initial drinking !!
             Log.d("6666666666666666666", "before 3 is "+ (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)<3));
-            if(!Uti.completedMorningToday(this) && !surveyName.equals(Uti.SV_NAME_MORNING) && !surveyName.equals(Uti.SV_NAME_DRINKING)
-                    && !surveyName.equals(Uti.SV_NAME_DUAL_FOLLOWUP)  && !surveyName.equals(Uti.SV_NAME_DUAL_FOLLOWUP)
+            if(!Utilities.completedMorningToday(this) && !surveyName.equals(Utilities.SV_NAME_MORNING) && !surveyName.equals(Utilities.SV_NAME_DRINKING)
+                    && !surveyName.equals(Utilities.SV_NAME_DUAL_FOLLOWUP)  && !surveyName.equals(Utilities.SV_NAME_DUAL_FOLLOWUP)
                     ){
                 //give an alert to show morning survey should be done first today.
                 //or after 12:00 pm automatically cancel the restrict
@@ -226,8 +226,8 @@ public class SurveyActivity extends Activity {
                 finish();
             }
 
-            else if(surveyName.equals(Uti.SV_NAME_DRINKING) &&
-                    Calendar.getInstance().get(Calendar.HOUR_OF_DAY)>=3 && Calendar.getInstance().get(Calendar.HOUR_OF_DAY)<12 && !Uti.completedMorningToday(this)
+            else if(surveyName.equals(Utilities.SV_NAME_DRINKING) &&
+                    Calendar.getInstance().get(Calendar.HOUR_OF_DAY)>=3 && Calendar.getInstance().get(Calendar.HOUR_OF_DAY)<12 && !Utilities.completedMorningToday(this)
                     ){
 
                 setResult(2);
@@ -258,11 +258,11 @@ public class SurveyActivity extends Activity {
 //          }
         }
 
-        if(surveyName.equals(Uti.SV_NAME_MORNING)){
+        if(surveyName.equals(Utilities.SV_NAME_MORNING)){
 
         }
 
-        setTitle(Uti.RELEASE? surveyName: surveyTitle);
+        setTitle(Utilities.RELEASE? surveyName: surveyTitle);
 
 
 
@@ -273,9 +273,9 @@ public class SurveyActivity extends Activity {
         //Initialize map that will pass questions and answers to service
         answerMap = new LinkedHashMap<String, List<String>>();
         //Tell the parser which survey to use
-        surveyFile = Uti.SV_MAP.get(surveyName);
+        surveyFile = Utilities.SV_MAP.get(surveyName);
 
-        Uti.Log(TAG, "survey file is "+surveyFile);
+        Utilities.Log(TAG, "survey file is "+surveyFile);
 
         //Setup XML parser
         XMLParser parser = new XMLParser();
@@ -336,24 +336,24 @@ public class SurveyActivity extends Activity {
 
     private String getDialogTitle(){
 
-        int seq = shp.getInt(Uti.SP_KEY_SURVEY_REMINDER_SEQ, 1);
-        Editor ed = Uti.getSP(context, Uti.SP_REMINDER_INFO).edit();
-        String ts = Uti.sdf.format(Calendar.getInstance().getTime());
+        int seq = shp.getInt(Utilities.SP_KEY_SURVEY_REMINDER_SEQ, 1);
+        Editor ed = Utilities.getSP(context, Utilities.SP_REMINDER_INFO).edit();
+        String ts = Utilities.sdf.format(Calendar.getInstance().getTime());
 
         //write reminder timestamp to shared preferences
         if(seq == 3){
-            ed.putString(Uti.SP_KEY_REMINDER_INFO_3, ts).commit();
+            ed.putString(Utilities.SP_KEY_REMINDER_INFO_3, ts).commit();
         }
         else if(seq == 2){
-            ed.putString(Uti.SP_KEY_REMINDER_INFO_2, ts).commit();
-            ed.putString(Uti.SP_KEY_REMINDER_INFO_3, "").commit();
+            ed.putString(Utilities.SP_KEY_REMINDER_INFO_2, ts).commit();
+            ed.putString(Utilities.SP_KEY_REMINDER_INFO_3, "").commit();
         }else{
-            ed.putString(Uti.SP_KEY_REMINDER_INFO_1, ts).commit();
-            ed.putString(Uti.SP_KEY_REMINDER_INFO_2, "").commit();
-            ed.putString(Uti.SP_KEY_REMINDER_INFO_3, "").commit();
+            ed.putString(Utilities.SP_KEY_REMINDER_INFO_1, ts).commit();
+            ed.putString(Utilities.SP_KEY_REMINDER_INFO_2, "").commit();
+            ed.putString(Utilities.SP_KEY_REMINDER_INFO_3, "").commit();
         }
 
-        if(Uti.RELEASE) {
+        if(Utilities.RELEASE) {
             return getString(R.string.pin_title);
         }
         return getString(R.string.pin_title) + " for reminder "+ seq;
@@ -363,31 +363,31 @@ public class SurveyActivity extends Activity {
     protected void onNewIntent(Intent intent) {
         // TODO Auto-generated method stub
         super.onNewIntent(intent);
-        Uti.Log(TAG, "on new intent");
+        Utilities.Log(TAG, "on new intent");
 
         //autoTriggered = getIntent().getBooleanExtra(Utilities.SV_AUTO_TRIGGERED, false);
 
-        if(intent.getBooleanExtra(Uti.SV_REMINDER_LAST, false)){
+        if(intent.getBooleanExtra(Utilities.SV_REMINDER_LAST, false)){
             Toast.makeText(getApplicationContext(), R.string.survey_timeout, Toast.LENGTH_LONG).show();
             Toast.makeText(getApplicationContext(), "1", Toast.LENGTH_LONG).show();
 
-            String surName = intent.getStringExtra(Uti.SV_NAME);
-            SharedPreferences surShp = Uti.getSP(this, Uti.SP_SURVEY);
+            String surName = intent.getStringExtra(Utilities.SV_NAME);
+            SharedPreferences surShp = Utilities.getSP(this, Utilities.SP_SURVEY);
 
             String[] reminder = getReminderTimeStamp(context);
             try {
                 String seq = "";
-                int surSeq = surShp.getInt(Uti.SP_KEY_TRIGGER_SEQ_MAP.get(surName), -1);
+                int surSeq = surShp.getInt(Utilities.SP_KEY_TRIGGER_SEQ_MAP.get(surName), -1);
                 if (surSeq == 0) {
-                    surSeq = Uti.MAX_TRIGGER_MAP.get(surName);
+                    surSeq = Utilities.MAX_TRIGGER_MAP.get(surName);
                 }
-                if (surName.equals(Uti.SV_NAME_RANDOM)) {
+                if (surName.equals(Utilities.SV_NAME_RANDOM)) {
                     seq = "," + surSeq;
                 }
 
-                Uti.writeEventToFile(context, getSurveyType(), getScheduleTimeStamp(),
+                Utilities.writeEventToFile(context, getSurveyType(), getScheduleTimeStamp(),
                         reminder[0], reminder[1], reminder[2],
-                        "", Uti.sdf.format(Calendar.getInstance().getTime()) + seq);
+                        "", Utilities.sdf.format(Calendar.getInstance().getTime()) + seq);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -401,27 +401,27 @@ public class SurveyActivity extends Activity {
             Toast.makeText(getApplicationContext(), "manually one block the auto one!", Toast.LENGTH_LONG).show();
             Toast.makeText(getApplicationContext(), "4", Toast.LENGTH_LONG).show();
 
-            String surName = intent.getStringExtra(Uti.SV_NAME);
-            SharedPreferences surShp = Uti.getSP(this, Uti.SP_SURVEY);
+            String surName = intent.getStringExtra(Utilities.SV_NAME);
+            SharedPreferences surShp = Utilities.getSP(this, Utilities.SP_SURVEY);
 
-            if (!surName.equals(Uti.SV_NAME_MORNING)) {
+            if (!surName.equals(Utilities.SV_NAME_MORNING)) {
                 try {
                     // for under doing some survey MANUALLY, the new one will be skipped
                     // Random
                     // Drinking follow-ups
 
                     String seq = "";
-                    int surSeq = surShp.getInt(Uti.SP_KEY_TRIGGER_SEQ_MAP.get(surName), -1);
+                    int surSeq = surShp.getInt(Utilities.SP_KEY_TRIGGER_SEQ_MAP.get(surName), -1);
                     if (surSeq == 0) {
-                        surSeq = Uti.MAX_TRIGGER_MAP.get(surName);
+                        surSeq = Utilities.MAX_TRIGGER_MAP.get(surName);
                     }
-                    if (surName.equals(Uti.SV_NAME_RANDOM)) {
+                    if (surName.equals(Utilities.SV_NAME_RANDOM)) {
                         seq = "," + surSeq;
                     }
 
-                    Uti.writeEventToFile(context, (surName.equals(Uti.SV_NAME_RANDOM) ? Uti.CODE_SKIP_BLOCK_SURVEY_RANDOM : Uti.CODE_SKIP_BLOCK_SURVEY_DRINKING),
+                    Utilities.writeEventToFile(context, (surName.equals(Utilities.SV_NAME_RANDOM) ? Utilities.CODE_SKIP_BLOCK_SURVEY_RANDOM : Utilities.CODE_SKIP_BLOCK_SURVEY_DRINKING),
                             "", "", "", "",
-                            Uti.sdf.format(Calendar.getInstance().getTime()), "" + seq);
+                            Utilities.sdf.format(Calendar.getInstance().getTime()), "" + seq);
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -434,7 +434,7 @@ public class SurveyActivity extends Activity {
 
             playSound();
 
-            shp = Uti.getSP(this, Uti.SP_SURVEY);
+            shp = Utilities.getSP(this, Utilities.SP_SURVEY);
             dialogTitle = getDialogTitle();
             if(pinDialog.isShowing()) {
                 pinDialog.dismiss();
@@ -479,9 +479,9 @@ public class SurveyActivity extends Activity {
                 pinDialog.show();
                 dialog.cancel();
 
-                Log.d("fffffffffffff", ""+Uti.getSP(SurveyActivity.this, Uti.SP_SURVEY).getBoolean(Uti.SP_KEY_SURVEY_UNDERGOING, false) + " "+
-                        Uti.getSP(SurveyActivity.this, Uti.SP_SURVEY).getString(Uti.SP_KEY_SURVEY_UNDERREMINDERING, "nothing")+ " "+
-                        Uti.getSP(SurveyActivity.this, Uti.SP_SURVEY).getInt(Uti.SP_KEY_SURVEY_REMINDER_SEQ, -1)
+                Log.d("fffffffffffff", ""+Utilities.getSP(SurveyActivity.this, Utilities.SP_SURVEY).getBoolean(Utilities.SP_KEY_SURVEY_UNDERGOING, false) + " "+
+                        Utilities.getSP(SurveyActivity.this, Utilities.SP_SURVEY).getString(Utilities.SP_KEY_SURVEY_UNDERREMINDERING, "nothing")+ " "+
+                        Utilities.getSP(SurveyActivity.this, Utilities.SP_SURVEY).getInt(Utilities.SP_KEY_SURVEY_REMINDER_SEQ, -1)
                         );
             }
         })
@@ -504,24 +504,24 @@ public class SurveyActivity extends Activity {
 
                 EditText pinEdite = (EditText) DialogView.findViewById(R.id.pin_edit);
                 String pinStr = pinEdite.getText().toString();
-                Uti.Log("Pin Dialog", "pin String is "+pinStr);
+                Utilities.Log("Pin Dialog", "pin String is "+pinStr);
 
-                if (pinStr.equals(Uti.getPWD(context))){
-                    Log.d("test", "b r o a d is "+ surveyName+" "+Uti.BD_REMINDER_MAP.get(surveyName));
+                if (pinStr.equals(Utilities.getPWD(context))){
+                    Log.d("test", "b r o a d is "+ surveyName+" "+Utilities.BD_REMINDER_MAP.get(surveyName));
                     soundp.stop(streamID);
 
                     startCal = Calendar.getInstance();
 
                     if(autoTriggered){
                         //undergoing
-                        shp.edit().putBoolean(Uti.SP_KEY_SURVEY_UNDERGOING, true).commit();
+                        shp.edit().putBoolean(Utilities.SP_KEY_SURVEY_UNDERGOING, true).commit();
 
                         //underreminder
 //                      shp.edit().putString(Utilities.SP_KEY_SURVEY_UNDERREMINDERING, surveyFile).commit();
 
                         //notify broadcast to set timeout
-                        Intent it = new Intent(Uti.BD_REMINDER_MAP.get(surveyName));
-                        it.putExtra(Uti.SV_NAME, surveyName);
+                        Intent it = new Intent(Utilities.BD_REMINDER_MAP.get(surveyName));
+                        it.putExtra(Utilities.SV_NAME, surveyName);
                         SurveyActivity.this.sendBroadcast(it);
                     }
                     else{
@@ -559,7 +559,7 @@ public class SurveyActivity extends Activity {
     private void playSound(){
 //      this.setVolumeControlStream(AudioManager.STREAM_ALARM);
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        am.setStreamVolume(AudioManager.STREAM_MUSIC, Uti.VOLUME, AudioManager.FLAG_PLAY_SOUND);
+        am.setStreamVolume(AudioManager.STREAM_MUSIC, Utilities.VOLUME, AudioManager.FLAG_PLAY_SOUND);
 
         t.schedule(new StartSound(),soundDelay);
 
@@ -940,14 +940,14 @@ public class SurveyActivity extends Activity {
         }
         //answerMap.put(currentQuestion.getId(), currentQuestion.getSelectedAnswers());
 
-        if(surveyName.equals(Uti.SV_NAME_MORNING)){
+        if(surveyName.equals(Utilities.SV_NAME_MORNING)){
 
             //notify to set next day at noon (cancel today's Noon)
-            Intent i = new Intent(Uti.BD_ACTION_DAEMON);
-            i.putExtra(Uti.BD_ACTION_DAEMON_FUNC, -1);
+            Intent i = new Intent(Utilities.BD_ACTION_DAEMON);
+            i.putExtra(Utilities.BD_ACTION_DAEMON_FUNC, -1);
             sendBroadcast(i);
 
-            Uti.morningComplete(this, false);// as following
+            Utilities.morningComplete(this, false);// as following
 //          //write complete time
 //          Utilities.getSP(this, Utilities.SP_BED_TIME).edit().putLong(Utilities.SP_KEY_MORNING_COMPLETE_TIME, Calendar.getInstance().getTimeInMillis()).commit();
 //          //update study day
@@ -973,16 +973,16 @@ public class SurveyActivity extends Activity {
         }
 
         //haidong // for random survey score
-        if(surveyName.equals(Uti.SV_NAME_RANDOM)){
+        if(surveyName.equals(Utilities.SV_NAME_RANDOM)){
 
             String rsID = String.valueOf(randomSeq);
             Calendar rsT = Calendar.getInstance();
             String rsDate = (rsT.get(Calendar.MONTH)+1)+"/"+rsT.get(Calendar.DAY_OF_MONTH)+"/"+rsT.get(Calendar.YEAR);
-            String uID = Uti.getSP(this, Uti.SP_LOGIN).getString(Uti.SP_KEY_LOGIN_USERID, "0000");
+            String uID = Utilities.getSP(this, Utilities.SP_LOGIN).getString(Utilities.SP_KEY_LOGIN_USERID, "0000");
 
             String data = null;
             try {
-                data = Uti.encryption(uID + "," + rsDate + "," + rsID + "," + "complete");
+                data = Utilities.encryption(uID + "," + rsDate + "," + rsID + "," + "complete");
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -995,43 +995,43 @@ public class SurveyActivity extends Activity {
         //--
 
         //schedule drinking follow-ups if current completion is "initial drinking" or "random survey" with drinking condition
-        if (surveyName.equals(Uti.SV_NAME_DRINKING) || (hasTrigger && surveyName.equals(Uti.SV_NAME_RANDOM))) {// and followup triggers followup
-            Uti.triggerDrinkingFollowup(this);
-            shp.edit().putBoolean(Uti.SP_KEY_SURVEY_UNDERDRINKING, true).commit();
+        if (surveyName.equals(Utilities.SV_NAME_DRINKING) || (hasTrigger && surveyName.equals(Utilities.SV_NAME_RANDOM))) {// and followup triggers followup
+            Utilities.triggerDrinkingFollowup(this);
+            shp.edit().putBoolean(Utilities.SP_KEY_SURVEY_UNDERDRINKING, true).commit();
         }
-        else if (surveyName.equals(Uti.SV_NAME_DUAL_FOLLOWUP)) {
+        else if (surveyName.equals(Utilities.SV_NAME_DUAL_FOLLOWUP)) {
 
-            int curSeq = shp.getInt(Uti.SP_KEY_SURVEY_TRIGGER_SEQ_FOLLOWUP, -1);
+            int curSeq = shp.getInt(Utilities.SP_KEY_SURVEY_TRIGGER_SEQ_FOLLOWUP, -1);
             Log.d("+++++++++++++++++++++++++_____________________", "seq is " + curSeq);
 
             if (curSeq != 0) {
                 if (hasTrigger) {
-                    shp.edit().putBoolean(Uti.SP_KEY_SURVEY_TRIGGER_CONT_FOLLOWUP, true).commit();
+                    shp.edit().putBoolean(Utilities.SP_KEY_SURVEY_TRIGGER_CONT_FOLLOWUP, true).commit();
                 }
             }
             else {
-                if (hasTrigger || shp.getBoolean(Uti.SP_KEY_SURVEY_TRIGGER_CONT_FOLLOWUP, false)) {
+                if (hasTrigger || shp.getBoolean(Utilities.SP_KEY_SURVEY_TRIGGER_CONT_FOLLOWUP, false)) {
 
                     AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
                     //handle schedule
-                    Intent itSchedule = new Intent(Uti.BD_TRIGGER_MAP.get(surveyName));
-                    itSchedule.putExtra(Uti.SV_NAME, surveyName);
+                    Intent itSchedule = new Intent(Utilities.BD_TRIGGER_MAP.get(surveyName));
+                    itSchedule.putExtra(Utilities.SV_NAME, surveyName);
                     PendingIntent piSchedule = PendingIntent.getBroadcast(context, 0, itSchedule, Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                    shp.edit().putInt(Uti.SP_KEY_SURVEY_TRIGGER_SEQ_FOLLOWUP, 2).commit();
+                    shp.edit().putInt(Utilities.SP_KEY_SURVEY_TRIGGER_SEQ_FOLLOWUP, 2).commit();
                     long time = Long.MAX_VALUE;
-                    time = Calendar.getInstance().getTimeInMillis() + Uti.FOLLOWUP_IN_SECONDS * 1000 * 2;
+                    time = Calendar.getInstance().getTimeInMillis() + Utilities.FOLLOWUP_IN_SECONDS * 1000 * 2;
                     am.set(AlarmManager.RTC_WAKEUP, time, piSchedule);
 
-                    shp.edit().putBoolean(Uti.SP_KEY_SURVEY_TRIGGER_CONT_FOLLOWUP, false).commit();
+                    shp.edit().putBoolean(Utilities.SP_KEY_SURVEY_TRIGGER_CONT_FOLLOWUP, false).commit();
                     //04/02.2015
-                    shp.edit().putBoolean(Uti.SP_KEY_SURVEY_UNDERDRINKING, true).commit();
+                    shp.edit().putBoolean(Utilities.SP_KEY_SURVEY_UNDERDRINKING, true).commit();
                 }
                 else {
 
-                    shp.edit().putInt(Uti.SP_KEY_SURVEY_TRIGGER_SEQ_FOLLOWUP, 0).commit();//useless
-                    shp.edit().putBoolean(Uti.SP_KEY_SURVEY_UNDERDRINKING, false).commit();
+                    shp.edit().putInt(Utilities.SP_KEY_SURVEY_TRIGGER_SEQ_FOLLOWUP, 0).commit();//useless
+                    shp.edit().putBoolean(Utilities.SP_KEY_SURVEY_UNDERDRINKING, false).commit();
                 }
             }
 
@@ -1048,7 +1048,7 @@ public class SurveyActivity extends Activity {
             writeSurveyToFile(answerMap);
 
             if(autoTriggered) {
-                Uti.getSP(this, Uti.SP_REMINDER_INFO).edit().clear().commit();
+                Utilities.getSP(this, Utilities.SP_REMINDER_INFO).edit().clear().commit();
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -1058,7 +1058,7 @@ public class SurveyActivity extends Activity {
         Toast.makeText(this, R.string.survey_completed, Toast.LENGTH_LONG).show();
 
         //craving only
-        if (!surveyName.equals(Uti.SV_NAME_MORNING)) {
+        if (!surveyName.equals(Utilities.SV_NAME_MORNING)) {
             finish();
         }
     }
@@ -1066,12 +1066,12 @@ public class SurveyActivity extends Activity {
 
     //java 1.6 style...
     private int getSurveyType(){
-        if(surveyName.equals(Uti.SV_NAME_MORNING)) {
-            return Uti.CODE_NAME_MORNING;
-        } else if(surveyName.equals(Uti.SV_NAME_DRINKING)) {
-            return Uti.CODE_NAME_DRINKING;
-        } else if(surveyName.equals(Uti.SV_NAME_RANDOM)) {
-            return Uti.CODE_NAME_RANDOM;
+        if(surveyName.equals(Utilities.SV_NAME_MORNING)) {
+            return Utilities.CODE_NAME_MORNING;
+        } else if(surveyName.equals(Utilities.SV_NAME_DRINKING)) {
+            return Utilities.CODE_NAME_DRINKING;
+        } else if(surveyName.equals(Utilities.SV_NAME_RANDOM)) {
+            return Utilities.CODE_NAME_RANDOM;
         } else {
             return -1;
         }
@@ -1084,41 +1084,41 @@ public class SurveyActivity extends Activity {
 
         //default time to 12:00 at noon
 //      Calendar d = Utilities.getMorningCal(Utilities.defHour, Utilities.defMinute);
-        Calendar d = Uti.getDefaultMorningCal(this);
+        Calendar d = Utilities.getDefaultMorningCal(this);
         long defTime = d.getTimeInMillis();
 
         //schedule timestamp for morning, random and followups
         if(autoTriggered){
 
             //sequence
-            String triggerSeq = Uti.SP_KEY_TRIGGER_SEQ_MAP.get(surveyName);
+            String triggerSeq = Utilities.SP_KEY_TRIGGER_SEQ_MAP.get(surveyName);
             int seq = shp.getInt(triggerSeq, 1);
             if(seq == 0) {
-                seq = Uti.MAX_TRIGGER_MAP.get(surveyName);
+                seq = Utilities.MAX_TRIGGER_MAP.get(surveyName);
             }
 
 
             //for morning survey
-            if(surveyName.equals(Uti.SV_NAME_MORNING)){
-                scheduleTimeStamp = Uti.getSP(this, Uti.SP_BED_TIME).getLong(Uti.SP_KEY_BED_TIME_LONG, defTime);
+            if(surveyName.equals(Utilities.SV_NAME_MORNING)){
+                scheduleTimeStamp = Utilities.getSP(this, Utilities.SP_BED_TIME).getLong(Utilities.SP_KEY_BED_TIME_LONG, defTime);
             }
 
             //for random survey
-            else if(surveyName.equals(Uti.SV_NAME_RANDOM)){
+            else if(surveyName.equals(Utilities.SV_NAME_RANDOM)){
 //                      time = Calendar.getInstance().getTimeInMillis();
-                scheduleTimeStamp = Long.parseLong(Uti.getSP(this, Uti.SP_RANDOM_TIME).getString(Uti.SP_KEY_RANDOM_TIME_SET, ""+scheduleTimeStamp).split(",")[seq-1]);
+                scheduleTimeStamp = Long.parseLong(Utilities.getSP(this, Utilities.SP_RANDOM_TIME).getString(Utilities.SP_KEY_RANDOM_TIME_SET, ""+scheduleTimeStamp).split(",")[seq-1]);
             }
 
             //for followup survey
             else{
                 //followup setting time only works for schedule look-up
-                scheduleTimeStamp = Uti.getSP(this, Uti.SP_RANDOM_TIME).getLong(Uti.SP_KEY_DRINKING_TIME_SET, scheduleTimeStamp) + (seq * Uti.FOLLOWUP_IN_SECONDS*1000);
+                scheduleTimeStamp = Utilities.getSP(this, Utilities.SP_RANDOM_TIME).getLong(Utilities.SP_KEY_DRINKING_TIME_SET, scheduleTimeStamp) + (seq * Utilities.FOLLOWUP_IN_SECONDS*1000);
             }
         }else{
-            if(surveyName.equals(Uti.SV_NAME_MORNING)){
+            if(surveyName.equals(Utilities.SV_NAME_MORNING)){
 
 //              return Utilities.sdf.format(Utilities.getDefaultMorningCal(this).getTimeInMillis());
-                return Uti.sdf.format(Uti.getSP(this, Uti.SP_BED_TIME).getLong(Uti.SP_KEY_BED_TIME_LONG, defTime));
+                return Utilities.sdf.format(Utilities.getSP(this, Utilities.SP_BED_TIME).getLong(Utilities.SP_KEY_BED_TIME_LONG, defTime));
             } else {
                 return scheduleTS;
             }
@@ -1128,17 +1128,17 @@ public class SurveyActivity extends Activity {
 
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(scheduleTimeStamp);
-        return Uti.sdf.format(c.getTime());
+        return Utilities.sdf.format(c.getTime());
     }
 
     private String[] getReminderTimeStamp(Context context) {
 
         String[] value = { "", "", "" };
         if(autoTriggered){
-            SharedPreferences sp = Uti.getSP(context, Uti.SP_REMINDER_INFO);
-            value[0] = sp.getString(Uti.SP_KEY_REMINDER_INFO_1, "");
-            value[1] = sp.getString(Uti.SP_KEY_REMINDER_INFO_2, "");
-            value[2] = sp.getString(Uti.SP_KEY_REMINDER_INFO_3, "");
+            SharedPreferences sp = Utilities.getSP(context, Utilities.SP_REMINDER_INFO);
+            value[0] = sp.getString(Utilities.SP_KEY_REMINDER_INFO_1, "");
+            value[1] = sp.getString(Utilities.SP_KEY_REMINDER_INFO_2, "");
+            value[2] = sp.getString(Utilities.SP_KEY_REMINDER_INFO_3, "");
             return value;
         } else {
             return value;
@@ -1150,8 +1150,8 @@ public class SurveyActivity extends Activity {
 
         Calendar endCal = Calendar.getInstance();
 
-        String userID = Uti.getSP(this, Uti.SP_LOGIN).getString(Uti.SP_KEY_LOGIN_USERID, "0000");
-        int studyDay = Uti.getStudyDay(this);
+        String userID = Utilities.getSP(this, Utilities.SP_LOGIN).getString(Utilities.SP_KEY_LOGIN_USERID, "0000");
+        int studyDay = Utilities.getStudyDay(this);
         int type = getSurveyType();
 
 //      long scheduleTimeStamp = getScheduleTimeStamp();
@@ -1160,8 +1160,8 @@ public class SurveyActivity extends Activity {
         long startTimeStamp = startCal.getTimeInMillis();
         long endTimeStamp = endCal.getTimeInMillis();
 
-        String startTS = Uti.sdf.format(startCal.getTime());
-        String endTS = Uti.sdf.format(endCal.getTime());
+        String startTS = Utilities.sdf.format(startCal.getTime());
+        String endTS = Utilities.sdf.format(endCal.getTime());
 
 
 
@@ -1202,10 +1202,10 @@ public class SurveyActivity extends Activity {
 
         //Ricky 2014/4/1
         //dealing with the random sequence
-        if (surveyName.equals(Uti.SV_NAME_RANDOM)) {
+        if (surveyName.equals(Utilities.SV_NAME_RANDOM)) {
             //random sequence
-            int i = shp.getInt(Uti.SP_KEY_SURVEY_TRIGGER_SEQ_RANDOM, -1);
-            sb.append(",seq:"+ (i==0? Uti.MAX_TRIGGER_MAP.get(surveyName): i));
+            int i = shp.getInt(Utilities.SP_KEY_SURVEY_TRIGGER_SEQ_RANDOM, -1);
+            sb.append(",seq:"+ (i==0? Utilities.MAX_TRIGGER_MAP.get(surveyName): i));
         }
 //      sb.append("\n");
 
@@ -1217,11 +1217,11 @@ public class SurveyActivity extends Activity {
             String dateObj =curFormater.format(c.getTime());
             String file_name=surveyName+"."+userID+"."+dateObj+".txt";
 
-        StringBuilder prefix_sb = new StringBuilder(Uti.PREFIX_LEN);
+        StringBuilder prefix_sb = new StringBuilder(Utilities.PREFIX_LEN);
         String prefix = surveyName + "." + userID + "." + dateObj;
         prefix_sb.append(prefix);
 
-        for (int i = prefix.length(); i <= Uti.PREFIX_LEN; i++) {
+        for (int i = prefix.length(); i <= Utilities.PREFIX_LEN; i++) {
             prefix_sb.append(" ");
         }
 
@@ -1233,12 +1233,12 @@ public class SurveyActivity extends Activity {
          */
         String ensb = null;
         try {
-            ensb = Uti.encryption(prefix_sb.toString() + sb.toString());
+            ensb = Utilities.encryption(prefix_sb.toString() + sb.toString());
 
-            if(Uti.WRITE_RAW) {
-                Uti.writeToFile(file_name, sb.toString());
+            if(Utilities.WRITE_RAW) {
+                Utilities.writeToFile(file_name, sb.toString());
             } else{
-                Uti.writeToFileEnc(file_name, ensb);
+                Utilities.writeToFileEnc(file_name, ensb);
             }
 
         } catch (Exception e) {
@@ -1253,9 +1253,9 @@ public class SurveyActivity extends Activity {
 
 
         //for debug
-        int i = shp.getInt(Uti.SP_KEY_SURVEY_TRIGGER_SEQ_RANDOM, -1);
-        Uti.writeToFile("Event.txt",sb.substring(0, sb.indexOf("q"))+
-                (surveyName.equals(Uti.SV_NAME_RANDOM) ?  "seq:"+(i==0? Uti.MAX_TRIGGER_MAP.get(surveyName): i) : ""));
+        int i = shp.getInt(Utilities.SP_KEY_SURVEY_TRIGGER_SEQ_RANDOM, -1);
+        Utilities.writeToFile("Event.txt",sb.substring(0, sb.indexOf("q"))+
+                (surveyName.equals(Utilities.SV_NAME_RANDOM) ?  "seq:"+(i==0? Utilities.MAX_TRIGGER_MAP.get(surveyName): i) : ""));
 
     }
 
@@ -1275,7 +1275,7 @@ public class SurveyActivity extends Activity {
             {
 
             Log.d("((((((((((((((((((((((((", ""+Thread.currentThread().getId());
-             HttpPost request = new HttpPost(Uti.UPLOAD_ADDRESS);
+             HttpPost request = new HttpPost(Utilities.UPLOAD_ADDRESS);
              List<NameValuePair> params = new ArrayList<NameValuePair>();
                 params.add(new BasicNameValuePair("data", data));
 
@@ -1335,7 +1335,7 @@ public class SurveyActivity extends Activity {
     @Override
     public void onBackPressed() {
         // TODO Auto-generated method stub
-        Uti.Log_sys(TAG, "On back pressed");
+        Utilities.Log_sys(TAG, "On back pressed");
         new AlertDialog.Builder(this)
         .setTitle(R.string.survey_cancel_title)
         .setMessage(R.string.survey_cancel_msg)
@@ -1349,17 +1349,17 @@ public class SurveyActivity extends Activity {
                 String[] reminder = getReminderTimeStamp(context);
                 try {
                     String seq = "";
-                    int surSeq = shp.getInt(Uti.SP_KEY_TRIGGER_SEQ_MAP.get(surveyName), -1);
+                    int surSeq = shp.getInt(Utilities.SP_KEY_TRIGGER_SEQ_MAP.get(surveyName), -1);
                     if (surSeq == 0) {
-                        surSeq = Uti.MAX_TRIGGER_MAP.get(surveyName);
+                        surSeq = Utilities.MAX_TRIGGER_MAP.get(surveyName);
                     }
-                    if (surveyName.equals(Uti.SV_NAME_RANDOM)) {
+                    if (surveyName.equals(Utilities.SV_NAME_RANDOM)) {
                         seq = "," + surSeq;
                     }
 
-                    Uti.writeEventToFile(context, getSurveyType(), getScheduleTimeStamp(),
+                    Utilities.writeEventToFile(context, getSurveyType(), getScheduleTimeStamp(),
                             reminder[0], reminder[1], reminder[2],
-                            "", Uti.sdf.format(Calendar.getInstance().getTime()) + seq);
+                            "", Utilities.sdf.format(Calendar.getInstance().getTime()) + seq);
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -1374,7 +1374,7 @@ public class SurveyActivity extends Activity {
     protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
-        Uti.Log_sys(TAG, "onDestroy");
+        Utilities.Log_sys(TAG, "onDestroy");
 
         soundp.stop(streamID);
         soundp.release();
@@ -1396,13 +1396,13 @@ public class SurveyActivity extends Activity {
 //      ){
 
 
-        if(shp.getBoolean(Uti.SP_KEY_SURVEY_UNDERGOING, false)){
+        if(shp.getBoolean(Utilities.SP_KEY_SURVEY_UNDERGOING, false)){
 //          shp.edit().putBoolean(Utilities.SP_KEY_SURVEY_UNDERGOING, false).commit();
-            shp.edit().putInt(Uti.SP_KEY_SURVEY_REMINDER_SEQ, Uti.MAX_REMINDER+2).commit();
+            shp.edit().putInt(Utilities.SP_KEY_SURVEY_REMINDER_SEQ, Utilities.MAX_REMINDER+2).commit();
 
             //notify broadcast to cancel timeout alarm
-            Intent it = new Intent(Uti.BD_REMINDER_MAP.get(surveyName));
-            it.putExtra(Uti.SV_NAME, surveyName);
+            Intent it = new Intent(Utilities.BD_REMINDER_MAP.get(surveyName));
+            it.putExtra(Utilities.SV_NAME, surveyName);
             sendBroadcast(it);
         }
 //      }
@@ -1416,7 +1416,7 @@ public class SurveyActivity extends Activity {
     protected void onPause() {
         // TODO Auto-generated method stub
         super.onPause();
-        Uti.Log_sys(TAG, "onPause");
+        Utilities.Log_sys(TAG, "onPause");
         soundp.stop(streamID);
         if(wl.isHeld()) {
             wl.release();
@@ -1427,28 +1427,28 @@ public class SurveyActivity extends Activity {
     protected void onRestart() {
         // TODO Auto-generated method stub
         super.onRestart();
-        Uti.Log_sys(TAG, "onRestart");
+        Utilities.Log_sys(TAG, "onRestart");
     }
 
     @Override
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        Uti.Log_sys(TAG, "onResume");
+        Utilities.Log_sys(TAG, "onResume");
     }
 
     @Override
     protected void onStart() {
         // TODO Auto-generated method stub
         super.onStart();
-        Uti.Log_sys(TAG, "onStart");
+        Utilities.Log_sys(TAG, "onStart");
     }
 
     @Override
     protected void onStop() {
         // TODO Auto-generated method stub
         super.onStop();
-        Uti.Log_sys(TAG, "onStop");
+        Utilities.Log_sys(TAG, "onStop");
     }
 
     //haidong from ricky
@@ -1465,7 +1465,7 @@ public class SurveyActivity extends Activity {
             //           String CMD = strings[3];
              if(checkDataConnectivity())
             {
-             HttpPost request = new HttpPost(Uti.COMPLIANCE_ADDRESS);
+             HttpPost request = new HttpPost(Utilities.COMPLIANCE_ADDRESS);
              List<NameValuePair> params = new ArrayList<NameValuePair>();
                 params.add(new BasicNameValuePair("data", data));
                 //           params.add(new BasicNameValuePair("category",CMD));

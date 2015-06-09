@@ -5,7 +5,7 @@ import java.util.HashMap;
 /* @author Chen
  * date: 06/07/2015
  * start using survey type for methods of launching
- * 
+ *
  * Author: Paul Baskett
  * Last Update: 9/25/2012
  * Comments Added
@@ -68,22 +68,22 @@ public class SurveyInfo {
     public String getFileName(){
         return this.surveyFile;
     }
-    
+
     /**
      * The type of the survey.
      *     1. auto triggered
      *     2. manually launched
      *     3. manually launched with confirmation
      *     4. manually launched with restriction
-     *     
+     *
      * @see #TYPE_SHOWN_MAP
      */
     public String getType(){
         return this.surveyType;
     }
-    
+
     /**
-     *     1. auto triggered </br>
+     *     1. auto triggered - do not shown on menu</br>
      *     2. manually launched </br>
      *     3. manually launched with confirmation </br>
      *     4. manually launched with restriction

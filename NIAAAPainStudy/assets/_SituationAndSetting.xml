@@ -49,7 +49,7 @@
             <text id = "6">In the past 15 minutes, the physical pain was stopping me from enjoying life.</text>
         </questionblock>
     </category>
-    
+
     <category>
         <description>COGNITIVE</description>
         <questionblock type = "radio">
@@ -72,7 +72,7 @@
             <answer id = "1">Yes</answer>
             <answer id = "2" skip = "13q12">No</answer>
         </question>
-        
+
         <question id = "11" type = "number">
             <text>How many CIGARETTES did you smoke SINCE the last survey you answered?</text>
             <answer id = "item">cigarette(s)</answer>
@@ -100,7 +100,7 @@
             <answer id = "3">Moderately</answer>
             <answer id = "4">Quite a bit</answer>
             <answer id = "5">Extremely</answer>
-            
+
             <text id = "13">How much have you felt the following IN THE PAST 15 MINUTES?  ||anxious</text>
             <text id = "14">How much have you felt the following IN THE PAST 15 MINUTES?  ||on edge</text>
             <text id = "15">How much have you felt the following IN THE PAST 15 MINUTES?  ||uneasy</text>
@@ -144,7 +144,7 @@
             <text id = "41">In the past 15 minutes, I enjoyed how I was feeling.</text>
         </questionblock>
     </category>
-    
+
     <category>
         <description>COGNITIVE MOOD</description>
         <questionblock type = "radio">
@@ -195,7 +195,7 @@
             <answer id = "5">Constantly</answer>
         </question>
     </category>
-    
+
     <category>
         <description>ALCOHOL URGE/CRAVING</description>
         <question id = "49" type = "radio">
@@ -231,7 +231,7 @@
             <answer id = "9 ">Stranger(s)</answer>
             <answer id = "A">Other</answer>
         </question>
-        
+
         <question id = "52" type = "check">
             <text>In the PAST 15 MINUTES, WHERE is your current location? (Check all that apply)</text>
             <answer id = "1 ">Home</answer>
@@ -245,7 +245,7 @@
             <answer id = "9">Vehicle</answer>
             <answer id = "A">Other</answer>
         </question>
-        
+
        <question id = "53" type = "check">
             <text>In the PAST 15 MINUTES, WHAT are you currently doing? (Check all that apply)</text>
             <answer id = "1">Socializing</answer>
@@ -257,7 +257,7 @@
             <answer id = "7">Having sex</answer>
             <answer id = "8" action="uncheck">Nothing</answer>
         </question>
-        
+
         <question id = "54" type = "radio">
             <text>In the PAST 15 MINUTES, how physically active were you?</text>
             <answer id = "1">Not at all</answer>
@@ -266,7 +266,7 @@
             <answer id = "4">Quite a bit</answer>
             <answer id = "5">Extremely</answer>
         </question>
-            
+
         <question id = "55" type = "radio">
             <text>In the PAST 15 MINUTES, to what degree did your physical pain interfere with you being physically active?</text>
             <answer id = "1">Very little or not at all</answer>

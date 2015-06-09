@@ -2,7 +2,7 @@
 <root>
 
     <externalsource baseid="12q" filename="_RecentDrinkingLess.xml"></externalsource>
-    
+
     <category>
         <description>RECENT PAIN MEDICATION USE</description>
         <question id = "6q1" type = "radio">
@@ -11,9 +11,9 @@
             <answer id = "2" skip = "11q23">No</answer>
         </question>
     </category>
-    
+
     <externalsource baseid="11q" filename="_RecentPainMedicationDrinking.xml"></externalsource>
- 
+
     <externalsource baseid="13q" filename="_SituationAndSetting.xml"></externalsource>
 
 </root>

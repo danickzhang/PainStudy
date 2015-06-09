@@ -9,7 +9,7 @@
             <answer id = "2" skip = "1q4">No</answer>
         </question>
     </category>
-    
+
     <category>
         <description>HANGOVER/HANGOVER SYMPTOMS</description>
         <questionblock type="radio">
@@ -65,7 +65,7 @@
             <answer id = "2" skip = "11q23">No</answer>
         </question>
     </category>
-    
+
     <externalsource baseid="11q" filename="_RecentPainMedicationMorning.xml"></externalsource>
 
     <!-- <RECENT DRINKING> -->
@@ -84,7 +84,7 @@
     <externalsource baseid="13q" filename="_SituationAndSettingMorning.xml"></externalsource>
 
 <!--     ## -->
-    
+
     <category>
         <description>PAIN MEDICATION EXPECTANCY ITEMS</description>
         <questionblock type="radio">
@@ -105,8 +105,8 @@
             <text id = "1q20">If I take opioid pain medication today, I expect it would make me feel less depressed.</text>
         </questionblock>
     </category>
-    
-    <category>  
+
+    <category>
         <description>ALCOHOL EXPECTANCY ITEMS</description>
         <questionblock type="radio">
             <answer id = "1">Very slightly or not at all</answer>
@@ -126,7 +126,7 @@
             <text id = "1q53">If I drink alcohol today, I expect it would make me feel less depressed.</text>
         </questionblock>
     </category>
-    
+
     <category>
         <description>DRINKING PLAN</description>
         <question id = "1q106" type = "radio">
