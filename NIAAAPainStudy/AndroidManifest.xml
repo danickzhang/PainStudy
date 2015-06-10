@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.missouri.niaaa.pain"
-    android:versionCode="3"
+    android:versionCode="4"
     android:versionName="1.1" >
 
     <uses-sdk
@@ -51,7 +51,7 @@
         </service>
 
         <receiver
-            android:name="edu.missouri.niaaa.pain.survey.SurveyBroadcast"
+            android:name="edu.missouri.niaaa.pain.temp.SurveyBroadcast"
             android:permission=".SurveyBroadcast"
             android:process=":remote">
             <intent-filter>
@@ -76,9 +76,20 @@
 
             </intent-filter>
         </receiver>
+        
+        <receiver
+            android:name="edu.missouri.niaaa.pain.survey.SurveyBroad"
+            android:permission=".SurveyBroad"
+            android:process=":remote">
+            <intent-filter>
+                <action android:name="edu.missouri.niaaa.pain.SURVEY" />
+                <action android:name="edu.missouri.niaaa.pain.SUSPENSION" />
+
+            </intent-filter>
+        </receiver>
 
         <receiver
-            android:name=".StartupIntentReceiver"
+            android:name=".RebootReceiver"
             android:enabled="true"
             android:exported="false" >
             <intent-filter>
@@ -87,7 +98,7 @@
         </receiver>
 
         <receiver
-            android:name="edu.missouri.niaaa.pain.survey.DaemonReceiver"
+            android:name="edu.missouri.niaaa.pain.temp.DaemonReceiver" 
             android:exported="false" >
             <intent-filter >
 <!--                 <action android:name="edu.missouri.niaaa.pain.DAEMON_NOON" /> -->

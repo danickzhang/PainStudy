@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import edu.missouri.niaaa.pain.R;
+import edu.missouri.niaaa.pain.Util;
 import edu.missouri.niaaa.pain.Utilities;
 import edu.missouri.niaaa.pain.survey.parser.SurveyInfo;
 import edu.missouri.niaaa.pain.survey.parser.XMLConfigParser;
@@ -58,7 +59,7 @@ public class SurveyMenu extends Activity {
 
         if(surveys == null){
             Toast.makeText(this, "Invalid configuration file", Toast.LENGTH_LONG).show();
-            Utilities.Log_debug(TAG, logEnable, "No surveys in config.xml");
+            Util.Log_debug(TAG, logEnable, "No surveys in config.xml");
             finish();
         }
         else{
@@ -67,14 +68,14 @@ public class SurveyMenu extends Activity {
             tv.setText(R.string.survey_menu_select);
             linearLayout.addView(tv);
             for(SurveyInfo survey: surveys){
-                Utilities.Log_debug(TAG, logEnable, survey.getDisplayName()+" "+survey.getType()+" "+SurveyInfo.TYPE_SHOWN_MAP.get(survey.getType()));
+                Util.Log_debug(TAG, logEnable, survey.getDisplayName()+" "+survey.getType()+" "+SurveyInfo.TYPE_SHOWN_MAP.get(survey.getType()));
                 Button b = new Button(this);
                 b.setText(survey.getDisplayName());
                 b.setPadding(0, 30, 0, 30);
 
                 /* only show surveys with type contains "manually"
                  * bypass if debug mood */
-                if(SurveyInfo.TYPE_SHOWN_MAP.get(survey.getType()) || !Utilities.RELEASE){
+                if(SurveyInfo.TYPE_SHOWN_MAP.get(survey.getType()) || !Util.RELEASE){
                     linearLayout.addView(b);
                 }
 
@@ -83,8 +84,8 @@ public class SurveyMenu extends Activity {
                     @Override
                     public void onClick(View v) {
                         final SurveyInfo temp = buttonMap.get(v);
-                        Utilities.Log_debug(TAG, logEnable, temp.getDisplayName());
-                        Utilities.Log_debug(TAG, logEnable, temp.getDisplayName()+" "+temp.getFileName()+" "+temp.getName());
+                        Util.Log_debug(TAG, logEnable, temp.getDisplayName());
+                        Util.Log_debug(TAG, logEnable, temp.getDisplayName()+" "+temp.getFileName()+" "+temp.getName());
 
                         /*Morning
                          *      once per day
@@ -131,7 +132,7 @@ public class SurveyMenu extends Activity {
                         }
                         else{
                             /*for debug mode only*/
-                            if(!Utilities.RELEASE){
+                            if(!Util.RELEASE){
                                 launchSurvey(temp.getName());
                             }
                         }

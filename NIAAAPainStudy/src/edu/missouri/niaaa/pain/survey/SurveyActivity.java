@@ -52,6 +52,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import edu.missouri.niaaa.pain.R;
+import edu.missouri.niaaa.pain.Util;
 import edu.missouri.niaaa.pain.Utilities;
 import edu.missouri.niaaa.pain.survey.category.Answer;
 import edu.missouri.niaaa.pain.survey.category.Category;
@@ -192,7 +193,7 @@ public class SurveyActivity extends Activity {
                     String rsID = String.valueOf(randomSeq);
                     Calendar rsT = Calendar.getInstance();
                     String rsDate = (rsT.get(Calendar.MONTH)+1)+"/"+rsT.get(Calendar.DAY_OF_MONTH)+"/"+rsT.get(Calendar.YEAR);
-                    String uID = Utilities.getSP(this, Utilities.SP_LOGIN).getString(Utilities.SP_KEY_LOGIN_USERID, "0000");
+                    String uID = Utilities.getSP(this, Util.SP_LOGIN).getString(Util.SP_LOGIN_KEY_USERID, "0000");
 
                     String data = null;
                     try {
@@ -262,7 +263,7 @@ public class SurveyActivity extends Activity {
 
         }
 
-        setTitle(Utilities.RELEASE? surveyName: surveyTitle);
+        setTitle(Util.RELEASE? surveyName: surveyTitle);
 
 
 
@@ -353,7 +354,7 @@ public class SurveyActivity extends Activity {
             ed.putString(Utilities.SP_KEY_REMINDER_INFO_3, "").commit();
         }
 
-        if(Utilities.RELEASE) {
+        if(Util.RELEASE) {
             return getString(R.string.pin_title);
         }
         return getString(R.string.pin_title) + " for reminder "+ seq;
@@ -943,8 +944,8 @@ public class SurveyActivity extends Activity {
         if(surveyName.equals(Utilities.SV_NAME_MORNING)){
 
             //notify to set next day at noon (cancel today's Noon)
-            Intent i = new Intent(Utilities.BD_ACTION_DAEMON);
-            i.putExtra(Utilities.BD_ACTION_DAEMON_FUNC, -1);
+            Intent i = new Intent(Util.BD_ACTION_DAEMON);
+            i.putExtra(Util.BD_ACTION_DAEMON_FUNC, -1);
             sendBroadcast(i);
 
             Utilities.morningComplete(this, false);// as following
@@ -978,7 +979,7 @@ public class SurveyActivity extends Activity {
             String rsID = String.valueOf(randomSeq);
             Calendar rsT = Calendar.getInstance();
             String rsDate = (rsT.get(Calendar.MONTH)+1)+"/"+rsT.get(Calendar.DAY_OF_MONTH)+"/"+rsT.get(Calendar.YEAR);
-            String uID = Utilities.getSP(this, Utilities.SP_LOGIN).getString(Utilities.SP_KEY_LOGIN_USERID, "0000");
+            String uID = Utilities.getSP(this, Util.SP_LOGIN).getString(Util.SP_LOGIN_KEY_USERID, "0000");
 
             String data = null;
             try {
@@ -1150,7 +1151,7 @@ public class SurveyActivity extends Activity {
 
         Calendar endCal = Calendar.getInstance();
 
-        String userID = Utilities.getSP(this, Utilities.SP_LOGIN).getString(Utilities.SP_KEY_LOGIN_USERID, "0000");
+        String userID = Utilities.getSP(this, Util.SP_LOGIN).getString(Util.SP_LOGIN_KEY_USERID, "0000");
         int studyDay = Utilities.getStudyDay(this);
         int type = getSurveyType();
 

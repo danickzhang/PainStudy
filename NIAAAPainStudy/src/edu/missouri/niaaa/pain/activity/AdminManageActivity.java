@@ -52,6 +52,7 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 import edu.missouri.niaaa.pain.R;
+import edu.missouri.niaaa.pain.Util;
 import edu.missouri.niaaa.pain.Utilities;
 
 /**
@@ -90,7 +91,7 @@ public class AdminManageActivity extends TabActivity {
         // Setup the window
         //requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
-        // Set result CANCELED incase the user backs out
+        // Set result CANCELED in case the user backs out
         setResult(Activity.RESULT_CANCELED);
 
         ////////////////////////////////////////////////////////////////////
@@ -103,7 +104,7 @@ public class AdminManageActivity extends TabActivity {
         setContentView(tabHost);
 
 
-        shp = getSharedPreferences(Utilities.SP_LOGIN, Context.MODE_PRIVATE);
+        shp = getSharedPreferences(Util.SP_LOGIN, Context.MODE_PRIVATE);
         editor = shp.edit();
         asID = (EditText) findViewById(R.id.assigned_ID);
         deasID = (EditText) findViewById(R.id.deassigned_ID);
@@ -149,7 +150,7 @@ public class AdminManageActivity extends TabActivity {
 
                 String data = null;
                 try {
-                    data = Utilities.encryption("0000" + "," + "1" + "," + pinStr);
+                    data = Utilities.encryption(Util.ADMIN_UID + "," + "1" + "," + pinStr);
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
@@ -238,15 +239,15 @@ public class AdminManageActivity extends TabActivity {
         // TODO Auto-generated method stub
 
         asID.setText("");
-        currentAssID = shp.getString(Utilities.SP_KEY_LOGIN_USERID, "");
-        Log.d(TAG, "set Hints is "+shp.getString(Utilities.SP_KEY_LOGIN_USERID,""));
+        currentAssID = shp.getString(Util.SP_LOGIN_KEY_USERID, "");
+        Log.d(TAG, "set Hints is "+shp.getString(Util.SP_LOGIN_KEY_USERID,""));
         if(currentAssID.equals("")){
             AsIdHint = getString(R.string.assign_hint);
             RmIdHint = getString(R.string.remove_hint);
         }
         else{
-            AsIdHint = "Current " + shp.getString(Utilities.SP_KEY_LOGIN_USERID, "");
-            RmIdHint = shp.getString(Utilities.SP_KEY_LOGIN_USERID, "");
+            AsIdHint = "Current " + shp.getString(Util.SP_LOGIN_KEY_USERID, "");
+            RmIdHint = shp.getString(Util.SP_LOGIN_KEY_USERID, "");
         }
 
         asID.setHint(AsIdHint);
@@ -397,7 +398,7 @@ public class AdminManageActivity extends TabActivity {
         Utilities.getSP(context, Utilities.SP_BED_TIME).edit().clear().commit();
         Utilities.getSP(context, Utilities.SP_RANDOM_TIME).edit().clear().commit();
         Utilities.getSP(context, Utilities.SP_SURVEY).edit().clear().commit();
-        Utilities.getSP(context, Utilities.SP_LOGIN).edit().clear().commit();
+        Utilities.getSP(context, Util.SP_LOGIN).edit().clear().commit();
     }
 
     private Dialog removeDialog(Context context){
@@ -497,12 +498,12 @@ public class AdminManageActivity extends TabActivity {
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
-                editor.putString(Utilities.SP_KEY_LOGIN_USERID, asID.getText().toString());
+                editor.putString(Util.SP_LOGIN_KEY_USERID, asID.getText().toString());
                 Log.d("here!!!", "id is "+asID.getText().toString());
                 //format check
 
-                editor.putString(Utilities.SP_KEY_LOGIN_USERPWD, "");
-                editor.putString(Utilities.SP_KEY_LOGIN_STUDY_STARTTIME, ""+Calendar.getInstance().getTimeInMillis());
+                editor.putString(Util.SP_LOGIN_KEY_USERPWD, "");
+                editor.putString(Util.SP_LOGIN_KEY_STUDY_STARTTIME, ""+Calendar.getInstance().getTimeInMillis());
                 editor.commit();
 
                 //start new study week, if checked

@@ -54,14 +54,9 @@ import com.google.android.gms.location.DetectedActivity;
 
 public class Utilities {
 
-    /*for debug*/
-    public final static boolean DEBUG_LIFECYCLE = true;
-    public final static boolean DEBUG           = true;
-    public final static boolean RELEASE         = false;
 
-    /*broadcast actions*/
-    public final static String BD_ACTION_BASE = "edu.missouri.niaaa.pain.ACTION.";
-    public final static String BD_ACTION_SUSPENSION = BD_ACTION_BASE    +"SUSPENSION";
+
+
 
     public static PublicKey publicKey = null;
 
@@ -80,28 +75,7 @@ public class Utilities {
 
 
 
-    /**
-     * Logs to debug system life cycle, which is triggered by system inherently.
-     *
-     * @param s1 Class name
-     * @param s2 Name of life cycle function, this should contain "~~~" and so that easy for messages searching
-     */
-    public static void Log_lifeCycle(String s1, String s2){
-        if(DEBUG_LIFECYCLE) {
-            Log.d(s1,s2);
-        }
-    }
 
-    public static void Log_debug(String s1, boolean enableByClass, String s2){
-        if(DEBUG && enableByClass) {
-            Log.d(s1,s2);
-        }
-    }
-
-    public static void Log_debug(String s1, boolean enableByClass, String s2, boolean enable){
-        if(enable)
-            Log_debug(s1, enableByClass, s2);
-    }
 
 
 
@@ -275,11 +249,7 @@ public class Utilities {
 
 
     /*user login info*/
-    public final static String SP_LOGIN = "edu.missouri.niaaa.pain.LOGIN";
 
-    public final static String SP_KEY_LOGIN_STUDY_STARTTIME = "STUDY_START_DAY";
-    public final static String SP_KEY_LOGIN_USERID = "USER_ID";
-    public final static String SP_KEY_LOGIN_USERPWD = "USER_PWD";
 
     public final static String SP_KEY_SUSPENSION_TS = "SUSPENSION_TS";
     public final static String SP_KEY_SUSPENSION_CHOICE = "SUSPENSION_CHOICE";
@@ -300,8 +270,7 @@ public class Utilities {
     //  public final static String BD_ACTION_DAEMON_NOON = "edu.missouri.niaaa.pain.DAEMON_NOON";
     //  public final static String BD_ACTION_DAEMON_MIDN = "edu.missouri.niaaa.pain.DAEMON_MIDNIGHT";
     //  public final static String BD_ACTION_DAEMON_THRE = "edu.missouri.niaaa.pain.DAEMON_THREEOCLOCK";
-    public final static String BD_ACTION_DAEMON = "edu.missouri.niaaa.pain.DAEMON";
-    public final static String BD_ACTION_DAEMON_FUNC = "DAEMON_FUNCTION";
+
 
     public final static String BD_ACTION_SCHEDULE_MORNING = "edu.missouri.niaaa.pain.SCHEDULE_MORNING";
     public final static String BD_ACTION_TRIGGER_MORNING = "edu.missouri.niaaa.pain.TRIGGER_MORNING";
@@ -376,7 +345,7 @@ public class Utilities {
 //  public final static String UPLOAD_ADDRESS = WRITE_ARRAY_TO_FILE;
     public final static String UPLOAD_ADDRESS = WRITE_ARRAY_TO_FILE_DEC;
     public final static SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-    public final static boolean WRITE_RAW = !RELEASE;
+    public final static boolean WRITE_RAW = !Util.RELEASE;
 
 
     static boolean debug_system = true;
@@ -412,12 +381,12 @@ public class Utilities {
 
             // last suspension timestamp
             Calendar c = Calendar.getInstance();
-            SharedPreferences sp = context.getSharedPreferences(Utilities.SP_LOGIN, Context.MODE_PRIVATE);
+            SharedPreferences sp = context.getSharedPreferences(Util.SP_LOGIN, Context.MODE_PRIVATE);
             long lastStartTime = sp.getLong(Utilities.SP_KEY_SUSPENSION_TS, c.getTimeInMillis());
             int choice = sp.getInt(SP_KEY_SUSPENSION_CHOICE, 0);
 
             AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            Intent breakIntent = new Intent(Utilities.BD_ACTION_SUSPENSION);
+            Intent breakIntent = new Intent(Util.BD_ACTION_SUSPENSION);
             breakIntent.putExtra(Utilities.SV_NAME, Utilities.SV_NAME_RANDOM);// useless
             PendingIntent breakPi = PendingIntent.getBroadcast(context, 0, breakIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
             am.set(AlarmManager.RTC_WAKEUP, lastStartTime + choice * SUSPENSION_INTERVAL_IN_SECOND * 1000, breakPi);
@@ -426,8 +395,8 @@ public class Utilities {
     }
 
     public static void scheduleDaemon(Context context){
-        Intent i = new Intent(Utilities.BD_ACTION_DAEMON);
-        i.putExtra(Utilities.BD_ACTION_DAEMON_FUNC, 0);
+        Intent i = new Intent(Util.BD_ACTION_DAEMON);
+        i.putExtra(Util.BD_ACTION_DAEMON_FUNC, 0);
         context.sendBroadcast(i);
     }
 
@@ -824,9 +793,9 @@ public class Utilities {
     }
 
     public static String getPWD(Context context){// need modify
-        SharedPreferences shp = context.getSharedPreferences(SP_LOGIN, Context.MODE_PRIVATE);
+        SharedPreferences shp = context.getSharedPreferences(Util.SP_LOGIN, Context.MODE_PRIVATE);
 //      ID = shp.getString(AdminManageActivity.ASID, "");
-        String PWD = shp.getString(Utilities.SP_KEY_LOGIN_USERPWD, "");
+        String PWD = shp.getString(Util.SP_LOGIN_KEY_USERPWD, "");
         return PWD;
     }
 
@@ -892,7 +861,7 @@ public class Utilities {
         String str =
                 "\nStudy Day: "+getStudyDay(context) +
                 (!getSP(context, Utilities.SP_SURVEY).getBoolean(Utilities.SP_KEY_SURVEY_SUSPENSION, false)?"\n":"\nUnder suspension.\n") +
-                (RELEASE? "" :
+                (Util.RELEASE? "" :
                 "\nMorning  survey at: " + (morning == -1 ? TIME_NONE : getTimeFromLong(morning))+
                 "\nFollowup survey at: " + follow +
                 "\nRandom  survey at: "+random);
@@ -902,7 +871,7 @@ public class Utilities {
 
 
     public static int getStudyDay(Context context){
-        String startStr = getSP(context, SP_LOGIN).getString(SP_KEY_LOGIN_STUDY_STARTTIME, "");
+        String startStr = getSP(context, Util.SP_LOGIN).getString(Util.SP_LOGIN_KEY_STUDY_STARTTIME, "");
         if(!startStr.equals("")){
             long start = Long.parseLong(startStr);
             long current = Calendar.getInstance().getTimeInMillis();
@@ -1084,7 +1053,7 @@ public class Utilities {
 
         Calendar endCal = Calendar.getInstance();
 
-        String userID = Utilities.getSP(context, Utilities.SP_LOGIN).getString(Utilities.SP_KEY_LOGIN_USERID, "0000");
+        String userID = Utilities.getSP(context, Util.SP_LOGIN).getString(Util.SP_LOGIN_KEY_USERID, "0000");
         int studyDay = Utilities.getStudyDay(context);
 
 

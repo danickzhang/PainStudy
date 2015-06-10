@@ -33,7 +33,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -65,139 +64,158 @@ public class MainActivity extends Activity {
     boolean logEnable = true;
 
     /*onActivityResult Result Code*/
-    final static int INTENT_REQUEST_MAMAGE = 1;
-    final static int INTENT_REQUEST_SUSPENSION = 2;
-    final static int INTENT_REQUEST_BLUETOOTH = 3;
+    static final int INTENT_REQUEST_MAMAGE = 1;
+    static final int INTENT_REQUEST_SUSPENSION = 2;
+    static final int INTENT_REQUEST_BLUETOOTH = 3;
 
-    Button section_1;
-    Button section_2;
-    Button section_3;
-    Button section_4;
-    Button section_5;
-    Button section_6;
-    Button section_7;
-    Button section_8;
-    Button section_9;
+    private Button section_1;
+    private Button section_2;
+    private Button section_3;
+    private Button section_4;
+    private Button section_5;
+    private Button section_6;
+    private Button section_7;
+    private Button section_8;
+    private Button section_9;
 
-    InputMethodManager imm;
-    SharedPreferences shp;
-    Editor editor;
-    String ID;
-    String PWD;
     /*adapter for bluetooth switch*/
-    BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     *
-     */
-    BroadcastReceiver suspensionReceiver = new BroadcastReceiver(){
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // TODO Auto-generated method stub
-            Utilities.Log(TAG, "on receiver break suspension");
-
-//            section_6.setText(R.string.section_6);
-////          Uti.getSP(MainActivity.this, Uti.SP_SURVEY).edit().putBoolean(Uti.SP_KEY_SURVEY_SUSPENSION, false).commit();
-//
-//            //write to server
-//            Calendar c = Calendar.getInstance();
-//            SharedPreferences sp = getSharedPreferences(Uti.SP_LOGIN, Context.MODE_PRIVATE);
-//            long startTimeStamp = sp.getLong(Uti.SP_KEY_SUSPENSION_TS, c.getTimeInMillis());
-//            c.setTimeInMillis(startTimeStamp);
-//
-//            try {
-//                Uti.writeEventToFile(MainActivity.this, Uti.CODE_SUSPENSION, "", "", "", "",
-//                        Uti.sdf.format(c.getTime()), Uti.sdf.format(Calendar.getInstance().getTime()));
-//            } catch (IOException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
-//            sp.edit().remove(Uti.SP_KEY_SUSPENSION_TS).commit();
-//
-//            Toast.makeText(getApplicationContext(), R.string.suspension_end, Toast.LENGTH_LONG).show();
-        }
-    };
-
-
+    private BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+    private SharedPreferences shp = null; 
+    private InputMethodManager imm = null;
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utilities.Log_lifeCycle(TAG, "OnCreate~~~");
+        Util.Log_lifeCycle(TAG, "OnCreate~~~");
 
         /* thread policy
          * help to check if there is misuse of threads, such as read large files or network communication, that
          * should not be in the main UI thread.
          * Should be bypass when product released */
-        if(!Utilities.RELEASE){
+        if(!Util.RELEASE){
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
             .detectAll()
             //.permitAll()
             .build());
         }
 
-
         /* initialization
          * set initial parameters, register broadcasts,
          * but not time-consuming tasks such as animation or file reading cursor reading;
          * unregister broadcasts @onDestroy, put time-consuming tasks @onResume*/
 
+        shp = getSharedPreferences(Util.SP_LOGIN, Context.MODE_PRIVATE);
+        imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        
         setContentView(R.layout.activity_main);
 
         setListeners();
+        
+        this.registerReceiver(suspensionReceiver, new IntentFilter(Util.BD_ACTION_SUSPENSION));
 
+    }
+    
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Util.Log_lifeCycle(TAG, "OnResume~~~");
+
+        /*set shared resources*/
         setSharedValue();
-        this.registerReceiver(suspensionReceiver, new IntentFilter(Utilities.BD_ACTION_SUSPENSION));
 
+        /* check if ID is assigned
+         * if not, jump to admin manage page and FINISH with this
+         * if yes, go and restore all the schedules and status
+         * then, check if PWD is assigned
+         *   
+         * */
+        checkIDStatus();
+        //restoreStatus();
+        
+    }
+
+
+    /**
+     * ID is null - go admin and set one
+     * PWD is null - set user pin
+     * both ok - start normal procedure
+     */
+    private void checkIDStatus() {
+        // TODO Auto-generated method stub
         //check if device is assigned with an ID
-        shp = getSharedPreferences(Utilities.SP_LOGIN, Context.MODE_PRIVATE);
-        ID = shp.getString(Utilities.SP_KEY_LOGIN_USERID, "");
-        PWD = shp.getString(Utilities.SP_KEY_LOGIN_USERPWD, "");
-        editor = shp.edit();
-
-        imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        Log.d(TAG,"id is "+ID);
+        String ID = shp.getString(Util.SP_LOGIN_KEY_USERID, "");
+        String PWD = shp.getString(Util.SP_LOGIN_KEY_USERPWD, "");
+        
+        Util.Log_debug(TAG, "assigned user ID is "+ID);
 
         if(ID.equals("")){
-            management();
-
-
+            managePage();
             imm.toggleSoftInput(0, InputMethodManager.RESULT_HIDDEN);
 
         }else if(PWD.equals("")){
             //set password
-
-            UserPWDSetDialog(this, ID).show();
+            setUserPwdDialog(this, ID).show();
 
         }else{
-            Log.d(TAG,"pwd is "+shp.getString(Utilities.SP_KEY_LOGIN_USERPWD, "get fail?"));
-//          startSService();
-
-            //set fun to 0
-//          sendBroadcast(new Intent(Uti.BD_ACTION_DAEMON));
-
-            //restart gps
-            if(Utilities.completedMorningToday(this) || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 3){
-                sendBroadcast(new Intent(LocationUtilities.ACTION_START_LOCATION));
+            Util.Log_debug(TAG, "assigned user PWD is "+PWD);
+            
+            //with full ID and PWD
+            
+            /*is app launched by RebootReceiver*/
+            if(getIntent().getBooleanExtra(Util.REBOOT, false)){
+                Util.Log_debug(TAG, "app is just launched by RebootReceiver");
+                restoreStatusForTheFirstTime();
+                
+            }else{
+                
             }
+            restoreStatus();
         }
+    }
+    
+
+    /**
+     * jump to admin manage page for assign ID
+     * return OK if id assigned
+     */
+    private void managePage(){
+        Intent serverIntent = new Intent(this, AdminManageActivity.class);
+        startActivityForResult(serverIntent, INTENT_REQUEST_MAMAGE);
+    }
+
+
+    /**
+     * 
+     */
+    private void restoreStatus() {
+        // TODO Auto-generated method stub
+
+        /*check suspension status*/
+        //if suspension expired, remove suspension flag
+
+      //restart gps
+        if(Utilities.completedMorningToday(this) || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 3){
+            sendBroadcast(new Intent(LocationUtilities.ACTION_START_LOCATION));
+        }
+
+    }
+    
+    /**
+     * Similar with {@link #restoreStatus()}, but this is called for 
+     * the first time ID is assigned
+     */
+    private void restoreStatusForTheFirstTime(){
+        
+        Util.scheduleRandomSurvey(MainActivity.this, true, true);
+
+        
+        
+        Utilities.scheduleDaemon(MainActivity.this);
+//      startSService();
+        
+        restoreStatus();
     }
 
 
@@ -219,7 +237,7 @@ public class MainActivity extends Activity {
     }
 
 
-    private Dialog UserPWDSetDialog(Context context, final String ID) {
+    private Dialog setUserPwdDialog(Context context, final String ID) {
         LayoutInflater inflater = LayoutInflater.from(context);
         final View textEntryView = inflater.inflate(R.layout.pin_input, null);
         TextView pinText = (TextView) textEntryView.findViewById(R.id.pin_text);
@@ -274,14 +292,10 @@ public class MainActivity extends Activity {
                             //new pwd created
                             //format check
 
-                            editor.putString(Utilities.SP_KEY_LOGIN_USERPWD, pinStr);
-                            editor.commit();
-                            PWD = shp.getString(Utilities.SP_KEY_LOGIN_USERPWD, "");
+                            shp.edit().putString(Util.SP_LOGIN_KEY_USERPWD, pinStr).commit();
+                            
+                            restoreStatusForTheFirstTime();
 
-
-                            Utilities.scheduleAll(MainActivity.this);
-                            Utilities.scheduleDaemon(MainActivity.this);
-//                          startSService();
                         }else{
                             //imm.toggleSoftInput(0, InputMethodManager.RESULT_SHOWN);
                             //imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
@@ -320,6 +334,7 @@ public class MainActivity extends Activity {
         return builder.create();
     }
 
+    
     private void setListeners() {
         // TODO Auto-generated method stub
 
@@ -346,7 +361,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 // TODO Auto-generated method stub
-                Utilities.Log_debug(TAG, logEnable, "section 1 on click listener");
+                Util.Log_debug(TAG, logEnable, "section 1 on click listener");
 
             }
         });
@@ -356,7 +371,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
-                Utilities.Log_debug(TAG, logEnable, "section 2 on click listener");
+                Util.Log_debug(TAG, logEnable, "section 2 on click listener");
 
             }
         });
@@ -366,7 +381,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
-                Utilities.Log_debug(TAG, logEnable, "section 3 on click listener");
+                Util.Log_debug(TAG, logEnable, "section 3 on click listener");
 
 //                if(!getSuspension()){
                     startActivity(new Intent(MainActivity.this, SurveyMenu.class));
@@ -457,7 +472,7 @@ public class MainActivity extends Activity {
                                 //cancel suspension alarm
                                 AlarmManager am = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
 
-                                Intent breakIntent = new Intent(Utilities.BD_ACTION_SUSPENSION);
+                                Intent breakIntent = new Intent(Util.BD_ACTION_SUSPENSION);
                                 PendingIntent breakPi = PendingIntent.getBroadcast(getApplicationContext(), 0, breakIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
             //                  getApplicationContext().sendBroadcast(breakIntent);
 
@@ -465,7 +480,7 @@ public class MainActivity extends Activity {
 
                                 //write to server
                                 Calendar c = Calendar.getInstance();
-                                SharedPreferences sp = getSharedPreferences(Utilities.SP_LOGIN, Context.MODE_PRIVATE);
+                                SharedPreferences sp = getSharedPreferences(Util.SP_LOGIN, Context.MODE_PRIVATE);
                                 long startTimeStamp = sp.getLong(Utilities.SP_KEY_SUSPENSION_TS, c.getTimeInMillis());
                                 c.setTimeInMillis(startTimeStamp);
 
@@ -601,146 +616,6 @@ public class MainActivity extends Activity {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Utilities.Log_lifeCycle(TAG, "OnResume~~~");
-
-        /*implementation here*/
-        restoreCurrentStatus();
-
-
-    }
-
-
-    private void restoreCurrentStatus() {
-        // TODO Auto-generated method stub
-
-        /*check suspension status*/
-
-
-
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private void management(){
-        Intent serverIntent = new Intent(this, AdminManageActivity.class);
-        startActivityForResult(serverIntent, INTENT_REQUEST_MAMAGE);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -774,15 +649,15 @@ public class MainActivity extends Activity {
 
         //MANAGEMENT
         else if(item.getItemId() == R.id.manage){
-            management();
+            managePage();
         }
 
         //ABOUT
         else if(item.getItemId() == R.id.about){
 
             //initial versionCode
-            int versionCode = 100;
-            String versionName = "2.2";
+            int versionCode = 0;
+            String versionName = "";
             PackageInfo pinfo;
             try {
                 pinfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_CONFIGURATIONS);
@@ -794,10 +669,11 @@ public class MainActivity extends Activity {
             }
 
             // show current version, which is defined in Android Manifest
+            String uid = shp.getString(Util.SP_LOGIN_KEY_USERID, "");
             Dialog alertDialog = new AlertDialog.Builder(MainActivity.this)
             .setCancelable(false)
             .setTitle(getString(R.string.menu_about)+"  ver."+versionName+"."+versionCode)
-            .setMessage("User ID: "+ID+"\n"+Utilities.getScheduleForToady(MainActivity.this))
+            .setMessage("User ID: "+uid+"\n"+Utilities.getScheduleForToady(MainActivity.this))
             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
                 @Override
@@ -846,23 +722,18 @@ public class MainActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
-        Utilities.Log_lifeCycle(TAG, "OnCreate~~~");
-        Utilities.Log_lifeCycle(TAG, "~~~"+requestCode+" "+resultCode);
+        Util.Log_lifeCycle(TAG, "OnCreate~~~");
+        Util.Log_lifeCycle(TAG, "~~~"+requestCode+" "+resultCode);
 
          switch (requestCode) {
             case INTENT_REQUEST_MAMAGE:
-                if(resultCode == Activity.RESULT_CANCELED){
+                if(resultCode == Activity.RESULT_OK){
+//                    String uid = shp.getString(Util.SP_LOGIN_KEY_USERID, "");
+//                    setUserPwdDialog(this, uid).show();
+                }
+                else{ //if(resultCode == Activity.RESULT_CANCELED){
 //                  stopSService();
                     finish();
-
-                }
-                else if(resultCode == Activity.RESULT_OK){
-                    ID = shp.getString(Utilities.SP_KEY_LOGIN_USERID, "");
-                    UserPWDSetDialog(this, ID).show();
-
-                }
-                else{
-
                 }
 
                 break;
@@ -882,14 +753,14 @@ public class MainActivity extends Activity {
     protected void onRestart() {
         // TODO Auto-generated method stub
         super.onRestart();
-        Utilities.Log_lifeCycle(TAG, "OnRestart~~~");
+        Util.Log_lifeCycle(TAG, "OnRestart~~~");
     }
 
     @Override
     protected void onStart() {
         // TODO Auto-generated method stub
         super.onStart();
-        Utilities.Log_lifeCycle(TAG, "OnStart~~~");
+        Util.Log_lifeCycle(TAG, "OnStart~~~");
     }
 
 
@@ -897,7 +768,7 @@ public class MainActivity extends Activity {
     protected void onPause() {
         // TODO Auto-generated method stub
         super.onPause();
-        Utilities.Log_lifeCycle(TAG, "OnPause~~~");
+        Util.Log_lifeCycle(TAG, "OnPause~~~");
 
     }
 
@@ -905,13 +776,13 @@ public class MainActivity extends Activity {
     protected void onStop() {
         // TODO Auto-generated method stub
         super.onStop();
-        Utilities.Log_lifeCycle(TAG, "onStop~~~");
+        Util.Log_lifeCycle(TAG, "onStop~~~");
 
     }
 
     @Override
     protected void onDestroy() {
-        Utilities.Log_lifeCycle(TAG, "onDestroy~~~");
+        Util.Log_lifeCycle(TAG, "onDestroy~~~");
         // implementation here
 
         super.onDestroy();
@@ -923,8 +794,39 @@ public class MainActivity extends Activity {
     public void onBackPressed() {
         // TODO Auto-generated method stub
         super.onBackPressed();
-        Utilities.Log_lifeCycle(TAG, "onBackPressed~~~");
+        Util.Log_lifeCycle(TAG, "onBackPressed~~~");
     }
 
+    /**
+     * write the start and end timestamp to server
+     */
+    BroadcastReceiver suspensionReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // TODO Auto-generated method stub
+            Utilities.Log(TAG, "on receiver break suspension");
+
+//            section_6.setText(R.string.section_6);
+////          Uti.getSP(MainActivity.this, Uti.SP_SURVEY).edit().putBoolean(Uti.SP_KEY_SURVEY_SUSPENSION, false).commit();
+//
+//            //write to server
+//            Calendar c = Calendar.getInstance();
+//            SharedPreferences sp = getSharedPreferences(Uti.SP_LOGIN, Context.MODE_PRIVATE);
+//            long startTimeStamp = sp.getLong(Uti.SP_KEY_SUSPENSION_TS, c.getTimeInMillis());
+//            c.setTimeInMillis(startTimeStamp);
+//
+//            try {
+//                Uti.writeEventToFile(MainActivity.this, Uti.CODE_SUSPENSION, "", "", "", "",
+//                        Uti.sdf.format(c.getTime()), Uti.sdf.format(Calendar.getInstance().getTime()));
+//            } catch (IOException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
+//            sp.edit().remove(Uti.SP_KEY_SUSPENSION_TS).commit();
+//
+//            Toast.makeText(getApplicationContext(), R.string.suspension_end, Toast.LENGTH_LONG).show();
+        }
+    };
 
 }

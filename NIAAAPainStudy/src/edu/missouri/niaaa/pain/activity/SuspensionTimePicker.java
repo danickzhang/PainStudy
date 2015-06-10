@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
 import edu.missouri.niaaa.pain.R;
+import edu.missouri.niaaa.pain.Util;
 import edu.missouri.niaaa.pain.Utilities;
 
 public class SuspensionTimePicker extends Activity {
@@ -31,7 +32,7 @@ public class SuspensionTimePicker extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_suspension_picker);
-        final SharedPreferences sp = getSharedPreferences(Utilities.SP_LOGIN, Context.MODE_PRIVATE);
+        final SharedPreferences sp = getSharedPreferences(Util.SP_LOGIN, Context.MODE_PRIVATE);
         if(!sp.contains(Utilities.SP_KEY_SUSPENSION_TS)){
             sp.edit().putLong(Utilities.SP_KEY_SUSPENSION_TS, Calendar.getInstance().getTimeInMillis()).commit();
         }
@@ -67,7 +68,7 @@ public class SuspensionTimePicker extends Activity {
                 //set suspension alarm
                 AlarmManager am = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
 
-                Intent breakIntent = new Intent(Utilities.BD_ACTION_SUSPENSION);
+                Intent breakIntent = new Intent(Util.BD_ACTION_SUSPENSION);
                 breakIntent.putExtra(Utilities.SV_NAME, Utilities.SV_NAME_RANDOM);//useless
                 PendingIntent breakPi = PendingIntent.getBroadcast(getApplicationContext(), 0, breakIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
 //              getApplicationContext().sendBroadcast(breakIntent);

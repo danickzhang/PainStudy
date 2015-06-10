@@ -20,6 +20,7 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Toast;
 import edu.missouri.niaaa.mail.GmailSender;
 import edu.missouri.niaaa.pain.R;
+import edu.missouri.niaaa.pain.Util;
 import edu.missouri.niaaa.pain.Utilities;
 
 public class SupportActivity extends Activity {
@@ -51,7 +52,7 @@ public class SupportActivity extends Activity {
 
         setListener();
 
-        userID = Utilities.getSP(this, Utilities.SP_LOGIN).getString(Utilities.SP_KEY_LOGIN_USERID, "0000");
+        userID = Utilities.getSP(this, Util.SP_LOGIN).getString(Util.SP_LOGIN_KEY_USERID, "0000");
         try {
             PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_CONFIGURATIONS);
             appVersion = "ver." + pinfo.versionName + "." + pinfo.versionCode;

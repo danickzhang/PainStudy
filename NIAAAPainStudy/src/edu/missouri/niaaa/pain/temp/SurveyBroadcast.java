@@ -1,4 +1,4 @@
-package edu.missouri.niaaa.pain.survey;
+package edu.missouri.niaaa.pain.temp;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -18,7 +18,9 @@ import android.os.PowerManager.WakeLock;
 import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Toast;
+import edu.missouri.niaaa.pain.Util;
 import edu.missouri.niaaa.pain.Utilities;
+import edu.missouri.niaaa.pain.survey.SurveyActivity;
 import edu.missouri.niaaa.pain.survey.parser.SurveyInfo;
 import edu.missouri.niaaa.pain.survey.parser.XMLConfigParser;
 
@@ -31,7 +33,7 @@ public class SurveyBroadcast extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         // TODO Auto-generated method stub
-
+        
         XMLConfigParser configParser = new XMLConfigParser();
         try {
             List<SurveyInfo> surveys = configParser.parseQuestion(new InputSource(context.getAssets().open("config.xml")));
@@ -39,7 +41,7 @@ public class SurveyBroadcast extends BroadcastReceiver {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-
+        
         Utilities.Log_sys(TAG, "broadcast on receive"+intent.getAction());
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
@@ -58,14 +60,14 @@ public class SurveyBroadcast extends BroadcastReceiver {
 
         //restart gps
         if(!surveyName.equals(Utilities.SV_NAME_MORNING)){
-//          if(Utilities.completedMorningToday(context) || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 3){
-//              context.sendBroadcast(new Intent(LocationUtilities.ACTION_START_LOCATION));
+//          if(Utilitieslities.completedMorningToday(context) || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 3){
+//              context.sendBroadcast(new Intent(LocationUtilitieslities.ACTION_START_LOCATION));
 //          }
         }
 
 
 /*      suspension*/
-        if (action.equals(Utilities.BD_ACTION_SUSPENSION)) {
+        if (action.equals(Util.BD_ACTION_SUSPENSION)) {
             Utilities.LogB(TAG, "broadcast at suspension");
 
             shp.edit().putBoolean(Utilities.SP_KEY_SURVEY_SUSPENSION, false).commit();
@@ -82,7 +84,7 @@ public class SurveyBroadcast extends BroadcastReceiver {
             Utilities.LogB(TAG, "boot upppppppppppppppp!");
 
             Utilities.reScheduleMorningSurvey(context);//contains the following
-//          Utilities.reScheduleRandom(context);
+//          Utilitieslities.reScheduleRandom(context);
 
         }
 
@@ -97,7 +99,7 @@ public class SurveyBroadcast extends BroadcastReceiver {
             PendingIntent piTrigger = PendingIntent.getBroadcast(context, 0, itTrigger, Intent.FLAG_ACTIVITY_NEW_TASK);
 
             //default time to 12:00 at noon
-//          Calendar c = Utilities.getMorningCal(Utilities.defHour, Utilities.defMinute);
+//          Calendar c = Utilitieslities.getMorningCal(Utilitieslities.defHour, Utilitieslities.defMinute);
             Calendar c = Utilities.getDefaultMorningCal(context);
 
             long defTime = c.getTimeInMillis();
@@ -125,7 +127,7 @@ public class SurveyBroadcast extends BroadcastReceiver {
                 time = Calendar.getInstance().getTimeInMillis()+Utilities.FOLLOWUP_IN_SECONDS*1000;
 
                 Log.d("sa======================", "set true");
-//              shp.edit().putBoolean(Utilities.SP_KEY_SURVEY_UNDERDRINKING, true).commit();
+//              shp.edit().putBoolean(Utilitieslities.SP_KEY_SURVEY_UNDERDRINKING, true).commit();
             }
 
             //cancel exist reminder alarms if any
@@ -137,14 +139,14 @@ public class SurveyBroadcast extends BroadcastReceiver {
                 PendingIntent piReminder = PendingIntent.getBroadcast(context, 0, itReminder, Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 //set undergoing and send reminder broadcast // an other way
-                //shp.edit().putBoolean(Utilities.SP_KEY_SURVEY_UNDERGOING, true).commit();
+                //shp.edit().putBoolean(Utilitieslities.SP_KEY_SURVEY_UNDERGOING, true).commit();
                 //am.set(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis(), piReminder);
 
                 //set reminder seq to 0
                 shp.edit().putInt(Utilities.SP_KEY_SURVEY_REMINDER_SEQ, 0).commit();
-//              shp.edit().putBoolean(Utilities.SP_KEY_SURVEY_UNDERGOING, false).commit();
+//              shp.edit().putBoolean(Utilitieslities.SP_KEY_SURVEY_UNDERGOING, false).commit();
 //
-//              shp.edit().putString(Utilities.SP_KEY_SURVEY_UNDERREMINDERING, "").commit();
+//              shp.edit().putString(Utilitieslities.SP_KEY_SURVEY_UNDERREMINDERING, "").commit();
 
                 am.cancel(piReminder);
             }
@@ -192,7 +194,7 @@ public class SurveyBroadcast extends BroadcastReceiver {
                 //04/02/2015
                 if (surveyName.equals(Utilities.SV_NAME_DRINKING_FOLLOWUP)) {
                     Log.d("sa======================", "set false " + shp.getInt(Utilities.SP_KEY_SURVEY_TRIGGER_SEQ_FOLLOWUP, -1) + "" + shp.getBoolean(Utilities.SP_KEY_SURVEY_TRIGGER_CONT_FOLLOWUP, false));
-                    //                  shp.edit().putBoolean(Utilities.SP_KEY_SURVEY_UNDERDRINKING, false).commit();
+                    //                  shp.edit().putBoolean(Utilitieslities.SP_KEY_SURVEY_UNDERDRINKING, false).commit();
 
                     if (shp.getInt(Utilities.SP_KEY_SURVEY_TRIGGER_SEQ_FOLLOWUP, -1) == 0 && shp.getBoolean(Utilities.SP_KEY_SURVEY_TRIGGER_CONT_FOLLOWUP, false)) {
                         Log.d("sa======================", "set false 3 ");
@@ -266,7 +268,7 @@ public class SurveyBroadcast extends BroadcastReceiver {
             Utilities.LogB("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^", ""+shp.getInt(Utilities.SP_KEY_SURVEY_REMINDER_SEQ, 0)+" "+shp.getBoolean(Utilities.SP_KEY_SURVEY_UNDERGOING, false));
 
             Intent launchSurvey = new Intent(context, SurveyActivity.class);
-//          launchSurvey.putExtra(Utilities.SV_FILE, Utilities.SV_MAP.get(surveyName));
+//          launchSurvey.putExtra(Utilitieslities.SV_FILE, Utilitieslities.SV_MAP.get(surveyName));
             launchSurvey.putExtra(Utilities.SV_NAME, surveyName);
             launchSurvey.putExtra(Utilities.SV_AUTO_TRIGGERED, true);
             launchSurvey.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -293,7 +295,7 @@ public class SurveyBroadcast extends BroadcastReceiver {
 //              launchSurvey.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //              launchSurvey.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-//              if(!shp.getBoolean(Utilities.SP_KEY_SURVEY_SUSPENSION, false) || !surveyName.equals(Utilities.SV_NAME_RANDOM)){
+//              if(!shp.getBoolean(Utilitieslities.SP_KEY_SURVEY_SUSPENSION, false) || !surveyName.equals(Utilitieslities.SV_NAME_RANDOM)){
                 if((!shp.getBoolean(Utilities.SP_KEY_SURVEY_SUSPENSION, false) || !surveyName.equals(Utilities.SV_NAME_RANDOM)) && !shp.getBoolean("undermangoing", false)){
                     context.startActivity(launchSurvey);
                     Log.d("XXXXXXXXXXXXXXXX", "start activity");
@@ -361,7 +363,7 @@ public class SurveyBroadcast extends BroadcastReceiver {
 //              launchSurvey.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //              launchSurvey.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-//              if(!(shp.getInt(Utilities.SP_KEY_SURVEY_REMINDER_SEQ, Utilities.MAX_REMINDER+1) == Utilities.MAX_REMINDER+1 && !shp.getBoolean(Utilities.SP_KEY_SURVEY_UNDERGOING, false))){
+//              if(!(shp.getInt(Utilitieslities.SP_KEY_SURVEY_REMINDER_SEQ, Utilitieslities.MAX_REMINDER+1) == Utilitieslities.MAX_REMINDER+1 && !shp.getBoolean(Utilitieslities.SP_KEY_SURVEY_UNDERGOING, false))){
 
                 launchSurvey.putExtra(Utilities.SV_REMINDER_LAST, true);
                 context.startActivity(launchSurvey);
