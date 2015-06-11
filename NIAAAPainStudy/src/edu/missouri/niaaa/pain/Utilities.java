@@ -153,13 +153,7 @@ public class Utilities {
         }
     };
 
-/*  survey config*/
-    public final static int MAX_REMINDER = 3;
-    public final static int MAX_TRIGGER_MORNING = 1;//1
-    public final static int MAX_TRIGGER_RANDOM = 6;//6
-    public final static int MAX_TRIGGER_FOLLOWUP = 3;//3
-    public final static int VOLUME = 8;//10
-    public final static String PHONE_BASE_PATH = "sdcard/TestResult_craving/";
+
     public final static int CODE_NAME_MORNING = 1;
     public final static int CODE_NAME_DRINKING = 2;
     public final static int CODE_NAME_MOOD = 3;
@@ -178,9 +172,9 @@ public class Utilities {
 
     public final static HashMap<String, Integer> MAX_TRIGGER_MAP = new HashMap<String, Integer>() {
         {
-            put(SV_NAME_MORNING, MAX_TRIGGER_MORNING);
-            put(SV_NAME_RANDOM, MAX_TRIGGER_RANDOM);
-            put(SV_NAME_DRINKING_FOLLOWUP, MAX_TRIGGER_FOLLOWUP);
+            put(SV_NAME_MORNING, Util.MAX_TRIGGER_MORNING);
+            put(SV_NAME_RANDOM, Util.MAX_TRIGGER_RANDOM);
+            put(SV_NAME_DRINKING_FOLLOWUP, Util.MAX_TRIGGER_FOLLOWUP);
         }
     };
 
@@ -418,12 +412,12 @@ public class Utilities {
         }
         long peak = c.getTimeInMillis();
 
-        long unit = (peak-base)/(MAX_TRIGGER_RANDOM+1);//7
-        long r_unit = (peak-base)/((MAX_TRIGGER_RANDOM+1)*3);//21
+        long unit = (peak-base)/(Util.MAX_TRIGGER_RANDOM+1);//7
+        long r_unit = (peak-base)/((Util.MAX_TRIGGER_RANDOM+1)*3);//21
 
         String random_schedule = new String();
 
-        for(int i=1;i<MAX_TRIGGER_RANDOM+1;i++){//7
+        for(int i=1;i<Util.MAX_TRIGGER_RANDOM+1;i++){//7
             random_schedule = random_schedule + (base+unit*i+(new Random().nextInt((int) (2*r_unit))-r_unit)+",");
         }
 
@@ -828,7 +822,7 @@ public class Utilities {
         long followup = getSP(context, SP_RANDOM_TIME).getLong(SP_KEY_DRINKING_TIME_SET, -1);
         String follow = "";
         if(followup != -1){
-            for(int i=1;i<=MAX_TRIGGER_FOLLOWUP;i++){
+            for(int i=1;i<=Util.MAX_TRIGGER_FOLLOWUP;i++){
                 if(getTimeFromLong(followup+FOLLOWUP_IN_SECONDS*1000*i).equals(TIME_NONE)){
                     follow = TIME_NONE;
                     break;
@@ -1214,11 +1208,11 @@ public class Utilities {
 
 
     public static void writeToFile(String fileName, String toWrite) throws IOException{
-        File dir =new File(PHONE_BASE_PATH);
+        File dir =new File(Util.PHONE_BASE_PATH);
         if(!dir.exists()) {
             dir.mkdirs();
         }
-        File f = new File(PHONE_BASE_PATH,fileName);
+        File f = new File(Util.PHONE_BASE_PATH,fileName);
         FileWriter fw = new FileWriter(f, true);
         fw.write(toWrite+'\n');
         fw.flush();
@@ -1228,11 +1222,11 @@ public class Utilities {
 
     public static void writeToFileEnc(String fileName, String toWrite) throws IOException{
         Utilities.Log("write to file", "enc");
-        File dir =new File(PHONE_BASE_PATH);
+        File dir =new File(Util.PHONE_BASE_PATH);
         if(!dir.exists()) {
             dir.mkdirs();
         }
-        File f = new File(PHONE_BASE_PATH,fileName);
+        File f = new File(Util.PHONE_BASE_PATH,fileName);
         FileWriter fw = new FileWriter(f, true);
         fw.write(toWrite);
         fw.flush();

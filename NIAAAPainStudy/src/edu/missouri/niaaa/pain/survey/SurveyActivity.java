@@ -161,7 +161,7 @@ public class SurveyActivity extends Activity {
         }
         else if(autoTriggered){
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            am.setStreamVolume(AudioManager.STREAM_MUSIC, Utilities.VOLUME, AudioManager.FLAG_PLAY_SOUND);
+            am.setStreamVolume(AudioManager.STREAM_MUSIC, Util.VOLUME, AudioManager.FLAG_PLAY_SOUND);
 
             acquireLock();
 
@@ -560,7 +560,7 @@ public class SurveyActivity extends Activity {
     private void playSound(){
 //      this.setVolumeControlStream(AudioManager.STREAM_ALARM);
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        am.setStreamVolume(AudioManager.STREAM_MUSIC, Utilities.VOLUME, AudioManager.FLAG_PLAY_SOUND);
+        am.setStreamVolume(AudioManager.STREAM_MUSIC, Util.VOLUME, AudioManager.FLAG_PLAY_SOUND);
 
         t.schedule(new StartSound(),soundDelay);
 
@@ -1399,7 +1399,7 @@ public class SurveyActivity extends Activity {
 
         if(shp.getBoolean(Utilities.SP_KEY_SURVEY_UNDERGOING, false)){
 //          shp.edit().putBoolean(Utilities.SP_KEY_SURVEY_UNDERGOING, false).commit();
-            shp.edit().putInt(Utilities.SP_KEY_SURVEY_REMINDER_SEQ, Utilities.MAX_REMINDER+2).commit();
+            shp.edit().putInt(Utilities.SP_KEY_SURVEY_REMINDER_SEQ, Util.MAX_REMINDER+2).commit();
 
             //notify broadcast to cancel timeout alarm
             Intent it = new Intent(Utilities.BD_REMINDER_MAP.get(surveyName));

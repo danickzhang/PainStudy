@@ -11,12 +11,28 @@ import android.content.Intent;
 import android.util.Log;
 
 public class Util {
+    static String TAG = "Util.java";
+    
+    public static final String  ADMIN_UID = "0000";
+    
+    
+    
     
     /*for debug*/
     public static final boolean DEBUG_LIFECYCLE = true;
     public static final boolean DEBUG           = true;
     public static final boolean RELEASE         = false;
-    public static final String  ADMIN_UID = "0000";
+    
+    
+    /*  survey config*/
+    public final static int MAX_REMINDER = 3;
+    public final static int MAX_TRIGGER_MORNING = 1;//1
+    public final static int MAX_TRIGGER_RANDOM = 6;//6
+    public final static int MAX_TRIGGER_FOLLOWUP = 3;//3
+    public final static int VOLUME = 8;//10
+    public final static String PHONE_BASE_PATH = "sdcard/TestResult_craving/";
+    
+    
     
     
     /*constant value*/
@@ -56,7 +72,9 @@ public class Util {
     public static final String BD_ACTION_BASE           = PKG_BASE;//+"action.";
     
     public static final String BD_ACTION_DAEMON         = BD_ACTION_BASE    + "DAEMON";
-    public static final String BD_ACTION_SURVEY         = BD_ACTION_BASE    + "SURVEY";
+    
+    public static final String BD_ACTION_SURVEY_TRIGGER = BD_ACTION_BASE    + "SURVEY_TRIGGER";
+    public static final String BD_ACTION_SURVEY_REMINDS = BD_ACTION_BASE    + "SURVEY_REMINDS";
     
     
     public static final String BD_ACTION_SUSPENSION     = BD_ACTION_BASE    + "SUSPENSION";
@@ -66,11 +84,12 @@ public class Util {
     
     
     
+    
     /**
      * Logs to debug system life cycle, which is triggered by system inherently.
      *
      * @param s1 Class name
-     * @param s2 Name of life cycle function, this should contain "~~~" and so that easy for messages searching
+     * @param s2 Name of life cycle function, contain "~~~" for logcat messages filtering
      */
     public static void Log_lifeCycle(String s1, String s2){
         if(DEBUG_LIFECYCLE) {
@@ -78,6 +97,9 @@ public class Util {
         }
     }
 
+    /**
+     * @param s2 contain "---" for logcat filtering if needed.
+     */
     public static void Log_debug(String s1, String s2){
         if(DEBUG){
             Log.d(s1,s2);
@@ -97,7 +119,6 @@ public class Util {
     
     
     
-    static int MAX_TRIGGER_RANDOM = 6;
     public final static int CODE_SCHEDULE_MANUALLY = 10;
     public final static int CODE_SCHEDULE_AUTOMATIC = 11;
     
@@ -144,7 +165,7 @@ public class Util {
                 i++;
                 
                 
-                Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY);
+                Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY_TRIGGER);
                 itTrigger.putExtra(Utilities.SV_NAME, i);
                 PendingIntent piTrigger = PendingIntent.getBroadcast(context, i, itTrigger, Intent.FLAG_ACTIVITY_NEW_TASK);
                 long time = Long.parseLong(str);
@@ -166,6 +187,42 @@ public class Util {
     }
 
     
+    /*************************************************************************************************************/
+    /*Morning*/
     
+    public static void ScheduleMorning(Context context){
+        
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        
+        //default time to 12:00 at noon
+        Calendar c = Utilities.getDefaultMorningCal(context);
+        long defTime = c.getTimeInMillis();
+        long time = Long.MAX_VALUE;
+
+        time = Calendar.getInstance().getTimeInMillis();//Utilities.getSP(context, Utilities.SP_BED_TIME).getLong(Utilities.SP_KEY_BED_TIME_LONG, defTime);
+        Util.Log_debug(TAG, "---MorningSruvey scheduled at "+Utilities.getTimeFromLong(time));
+        
+        Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY_TRIGGER);
+        itTrigger.putExtra(Utilities.SV_NAME, Utilities.SV_NAME_MORNING);
+        PendingIntent piTrigger = PendingIntent.getBroadcast(context, 1, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
+        
+        am.setExact(AlarmManager.RTC_WAKEUP, time, piTrigger);
+    }
+    
+    public static void RescheduleMorning(Context context){
+        
+    }
+    
+    /*/Morning*/
+    
+    
+    /**
+     * when app reboot, check if there is any suspension at the time phone shut down.
+     * if it still under that time period, set suspension again,
+     * if it expired, clear the suspension flag.
+     */
+    public static void restoreSuspension(){
+        
+    }
     
 }

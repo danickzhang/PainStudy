@@ -428,7 +428,7 @@ public class AdminManageActivity extends TabActivity {
                 // remove local file, if checked
                 Log.d(TAG, "is checked "+rm_check.isChecked());
                 if(rm_check.isChecked()){
-                    deleteDirectory(Utilities.PHONE_BASE_PATH);
+                    deleteDirectory(Util.PHONE_BASE_PATH);
                 }
 
                 setHints();

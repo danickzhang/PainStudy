@@ -73,7 +73,7 @@ public class SurveyBroadcast extends BroadcastReceiver {
             shp.edit().putBoolean(Utilities.SP_KEY_SURVEY_SUSPENSION, false).commit();
 
             AudioManager audiom = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            audiom.setStreamVolume(AudioManager.STREAM_MUSIC, Utilities.VOLUME, AudioManager.FLAG_PLAY_SOUND);
+            audiom.setStreamVolume(AudioManager.STREAM_MUSIC, Util.VOLUME, AudioManager.FLAG_PLAY_SOUND);
 
             Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
             v.vibrate(500);
@@ -275,7 +275,7 @@ public class SurveyBroadcast extends BroadcastReceiver {
             launchSurvey.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
             //under reminder counting
-            if(shp.getInt(Utilities.SP_KEY_SURVEY_REMINDER_SEQ, 0) < Utilities.MAX_REMINDER && !shp.getBoolean(Utilities.SP_KEY_SURVEY_UNDERGOING, false)){// <max, false
+            if(shp.getInt(Utilities.SP_KEY_SURVEY_REMINDER_SEQ, 0) < Util.MAX_REMINDER && !shp.getBoolean(Utilities.SP_KEY_SURVEY_UNDERGOING, false)){// <max, false
                 Utilities.LogB("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^","if 1");
 
                 //reminder req +1
@@ -323,10 +323,10 @@ public class SurveyBroadcast extends BroadcastReceiver {
             }
 
             //survey under going, cancel the following reminder
-            else if(shp.getInt(Utilities.SP_KEY_SURVEY_REMINDER_SEQ, 0) <= Utilities.MAX_REMINDER && shp.getBoolean(Utilities.SP_KEY_SURVEY_UNDERGOING, false)){// <=max, true
+            else if(shp.getInt(Utilities.SP_KEY_SURVEY_REMINDER_SEQ, 0) <= Util.MAX_REMINDER && shp.getBoolean(Utilities.SP_KEY_SURVEY_UNDERGOING, false)){// <=max, true
                 Utilities.LogB("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^","if 2");
 
-                shp.edit().putInt(Utilities.SP_KEY_SURVEY_REMINDER_SEQ, Utilities.MAX_REMINDER+1).commit();
+                shp.edit().putInt(Utilities.SP_KEY_SURVEY_REMINDER_SEQ, Util.MAX_REMINDER+1).commit();
 
                 Intent it = new Intent(Utilities.BD_REMINDER_MAP.get(surveyName));
                 it.putExtra(Utilities.SV_NAME, surveyName);
@@ -339,7 +339,7 @@ public class SurveyBroadcast extends BroadcastReceiver {
             }
 
             //reset by xml ondestroy
-            else if(shp.getInt(Utilities.SP_KEY_SURVEY_REMINDER_SEQ, 0) == Utilities.MAX_REMINDER+2){// ==max+2
+            else if(shp.getInt(Utilities.SP_KEY_SURVEY_REMINDER_SEQ, 0) == Util.MAX_REMINDER+2){// ==max+2
                 //startActivity should be first
 
                 Intent it = new Intent(Utilities.BD_REMINDER_MAP.get(surveyName));

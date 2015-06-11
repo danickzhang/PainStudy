@@ -70,12 +70,6 @@ public class SurveyInfo {
     }
 
     /**
-     * The type of the survey.
-     *     1. auto triggered
-     *     2. manually launched
-     *     3. manually launched with confirmation
-     *     4. manually launched with restriction
-     *
      * @see #TYPE_SHOWN_MAP
      */
     public String getType(){
@@ -86,7 +80,7 @@ public class SurveyInfo {
      *     1. auto triggered - do not shown on menu</br>
      *     2. manually launched </br>
      *     3. manually launched with confirmation </br>
-     *     4. manually launched with restriction
+     *     4. manually launched with restriction OR auto triggered.
      */
     public final static HashMap<String, Boolean> TYPE_SHOWN_MAP = new HashMap<String, Boolean>() {
         {

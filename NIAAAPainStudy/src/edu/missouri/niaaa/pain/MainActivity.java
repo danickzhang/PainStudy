@@ -95,8 +95,11 @@ public class MainActivity extends Activity {
          * Should be bypass when product released */
         if(!Util.RELEASE){
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-            .detectAll()
-            //.permitAll()
+            //.detectAll()
+//            .detectNetwork()
+//            .detectCustomSlowCalls()
+//            .detectDiskWrites()
+            .permitAll()
             .build());
         }
 
@@ -112,7 +115,7 @@ public class MainActivity extends Activity {
 
         setListeners();
         
-        this.registerReceiver(suspensionReceiver, new IntentFilter(Util.BD_ACTION_SUSPENSION));
+        registerReceiver(suspensionReceiver, new IntentFilter(Util.BD_ACTION_SUSPENSION));
 
     }
     
@@ -166,12 +169,13 @@ public class MainActivity extends Activity {
             /*is app launched by RebootReceiver*/
             if(getIntent().getBooleanExtra(Util.REBOOT, false)){
                 Util.Log_debug(TAG, "app is just launched by RebootReceiver");
+                
                 restoreStatusForTheFirstTime();
                 
             }else{
-                
+                restoreStatus();
             }
-            restoreStatus();
+            
         }
     }
     
@@ -208,7 +212,10 @@ public class MainActivity extends Activity {
      */
     private void restoreStatusForTheFirstTime(){
         
+        //schedule 
+        //or reschedule if already there
         Util.scheduleRandomSurvey(MainActivity.this, true, true);
+        //scheduleAll();
 
         
         
@@ -495,7 +502,7 @@ public class MainActivity extends Activity {
 
                                 //volume
                                 AudioManager audiom = (AudioManager) MainActivity.this.getSystemService(Context.AUDIO_SERVICE);
-                                audiom.setStreamVolume(AudioManager.STREAM_MUSIC, Utilities.VOLUME, AudioManager.FLAG_PLAY_SOUND);
+                                audiom.setStreamVolume(AudioManager.STREAM_MUSIC, Util.VOLUME, AudioManager.FLAG_PLAY_SOUND);
 
                                 Vibrator v = (Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
                                 v.vibrate(500);
@@ -769,7 +776,12 @@ public class MainActivity extends Activity {
         // TODO Auto-generated method stub
         super.onPause();
         Util.Log_lifeCycle(TAG, "OnPause~~~");
-
+        
+        if(getIntent().getBooleanExtra(Util.REBOOT, false)){
+            Intent i = getIntent();
+            i.removeExtra(Util.REBOOT);
+            setIntent(i);
+        }
     }
 
     @Override
@@ -784,7 +796,8 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         Util.Log_lifeCycle(TAG, "onDestroy~~~");
         // implementation here
-
+        unregisterReceiver(suspensionReceiver);
+        
         super.onDestroy();
     }
 

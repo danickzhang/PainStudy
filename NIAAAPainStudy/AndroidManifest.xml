@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.missouri.niaaa.pain"
-    android:versionCode="4"
+    android:versionCode="5"
     android:versionName="1.1" >
 
     <uses-sdk
@@ -82,7 +82,8 @@
             android:permission=".SurveyBroad"
             android:process=":remote">
             <intent-filter>
-                <action android:name="edu.missouri.niaaa.pain.SURVEY" />
+                <action android:name="edu.missouri.niaaa.pain.SURVEY_TRIGGER" />
+                <action android:name="edu.missouri.niaaa.pain.SURVEY_REMINDS" />
                 <action android:name="edu.missouri.niaaa.pain.SUSPENSION" />
 
             </intent-filter>
