@@ -238,7 +238,7 @@ public class SurveyActivity extends Activity {
 //          if(!Utilities.completedMorningToday(this) && !surveyName.equals(Utilities.SV_NAME_MORNING) && !surveyName.equals(Utilities.SV_NAME_DRINKING)
 //                  && Calendar.getInstance().get(Calendar.HOUR_OF_DAY) >= 3
 //                  && Calendar.getInstance().getTimeInMillis() <
-//                          Utilities.getSP(XMLSurveyActivity.this, Utilities.SP_BED_TIME).getLong(Utilities.SP_KEY_BED_TIME_LONG, -1)
+//                          Utilities.getSP(XMLSurveyActivity.this, Utilities.SP_BED_TIME).getLong(Utilities.SP_BEDTIME_KEY_LONG, -1)
 //                          ){//problem
 //              //same as above
 //              setResult(2);
@@ -250,7 +250,7 @@ public class SurveyActivity extends Activity {
 //                  && surveyName.equals(Utilities.SV_NAME_DRINKING)
 //                  && Calendar.getInstance().get(Calendar.HOUR_OF_DAY) >= 3
 //                  && Calendar.getInstance().getTimeInMillis() <
-//                          Utilities.getSP(XMLSurveyActivity.this, Utilities.SP_BED_TIME).getLong(Utilities.SP_KEY_BED_TIME_LONG, -1)
+//                          Utilities.getSP(XMLSurveyActivity.this, Utilities.SP_BED_TIME).getLong(Utilities.SP_BEDTIME_KEY_LONG, -1)
 //                  )
 //          ){//problem
 //              //same as above
@@ -1101,7 +1101,7 @@ public class SurveyActivity extends Activity {
 
             //for morning survey
             if(surveyName.equals(Utilities.SV_NAME_MORNING)){
-                scheduleTimeStamp = Utilities.getSP(this, Utilities.SP_BED_TIME).getLong(Utilities.SP_KEY_BED_TIME_LONG, defTime);
+                scheduleTimeStamp = Utilities.getSP(this, Util.SP_BEDTIME).getLong(Util.SP_BEDTIME_KEY_LONG, defTime);
             }
 
             //for random survey
@@ -1119,7 +1119,7 @@ public class SurveyActivity extends Activity {
             if(surveyName.equals(Utilities.SV_NAME_MORNING)){
 
 //              return Utilities.sdf.format(Utilities.getDefaultMorningCal(this).getTimeInMillis());
-                return Utilities.sdf.format(Utilities.getSP(this, Utilities.SP_BED_TIME).getLong(Utilities.SP_KEY_BED_TIME_LONG, defTime));
+                return Utilities.sdf.format(Utilities.getSP(this, Util.SP_BEDTIME).getLong(Util.SP_BEDTIME_KEY_LONG, defTime));
             } else {
                 return scheduleTS;
             }

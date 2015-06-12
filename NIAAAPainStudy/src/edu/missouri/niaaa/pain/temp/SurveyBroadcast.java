@@ -91,7 +91,7 @@ public class SurveyBroadcast extends BroadcastReceiver {
 /*      schedule survey*/
         else if(action.equals(Utilities.BD_SCHEDULE_MAP.get(surveyName))){
             Utilities.LogB("#####################################", ""+surveyName+" "+Utilities.getTimeFromLong(Calendar.getInstance().getTimeInMillis())
-                    +" "+Utilities.getTimeFromLong(Utilities.getSP(context, Utilities.SP_BED_TIME).getLong(Utilities.SP_KEY_BED_TIME_LONG, -1)));
+                    +" "+Utilities.getTimeFromLong(Utilities.getSP(context, Util.SP_BEDTIME).getLong(Util.SP_BEDTIME_KEY_LONG, -1)));
 
 
             Intent itTrigger = new Intent(Utilities.BD_TRIGGER_MAP.get(surveyName));
@@ -108,7 +108,7 @@ public class SurveyBroadcast extends BroadcastReceiver {
 
             //for morning survey
             if(surveyName.equals(Utilities.SV_NAME_MORNING)){
-                time = Utilities.getSP(context, Utilities.SP_BED_TIME).getLong(Utilities.SP_KEY_BED_TIME_LONG, defTime);
+                time = Utilities.getSP(context, Util.SP_BEDTIME).getLong(Util.SP_BEDTIME_KEY_LONG, defTime);
                 Utilities.LogB("################################morning", "time is "+Utilities.getTimeFromLong(time));
             }
 

@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.RSAPublicKeySpec;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -64,9 +65,11 @@ public class MainActivity extends Activity {
     boolean logEnable = true;
 
     /*onActivityResult Result Code*/
-    static final int INTENT_REQUEST_MAMAGE = 1;
-    static final int INTENT_REQUEST_SUSPENSION = 2;
-    static final int INTENT_REQUEST_BLUETOOTH = 3;
+    static final int INTENT_REQUEST_BLUETOOTH = 1;
+    static final int INTENT_REQUEST_MAMAGE = 2;
+    static final int INTENT_REQUEST_WAKEUP = 3;
+    static final int INTENT_REQUEST_SUSPENSION = 4;
+    
 
     private Button section_1;
     private Button section_2;
@@ -132,9 +135,8 @@ public class MainActivity extends Activity {
          * if not, jump to admin manage page and FINISH with this
          * if yes, go and restore all the schedules and status
          * then, check if PWD is assigned
-         *   
          * */
-        checkIDStatus();
+        checkUserStatus();
         //restoreStatus();
         
     }
@@ -145,7 +147,7 @@ public class MainActivity extends Activity {
      * PWD is null - set user pin
      * both ok - start normal procedure
      */
-    private void checkIDStatus() {
+    private void checkUserStatus() {
         // TODO Auto-generated method stub
         //check if device is assigned with an ID
         String ID = shp.getString(Util.SP_LOGIN_KEY_USERID, "");
@@ -154,12 +156,12 @@ public class MainActivity extends Activity {
         Util.Log_debug(TAG, "assigned user ID is "+ID);
 
         if(ID.equals("")){
-            managePage();
+            adminManagePage();
             imm.toggleSoftInput(0, InputMethodManager.RESULT_HIDDEN);
 
         }else if(PWD.equals("")){
             //set password
-            setUserPwdDialog(this, ID).show();
+            userPinSetDialog(this, ID).show();
 
         }else{
             Util.Log_debug(TAG, "assigned user PWD is "+PWD);
@@ -167,7 +169,7 @@ public class MainActivity extends Activity {
             //with full ID and PWD
             
             /*is app launched by RebootReceiver*/
-            if(getIntent().getBooleanExtra(Util.REBOOT, false)){
+            if(getIntent().getBooleanExtra(RebootReceiver.REBOOT, false)){
                 Util.Log_debug(TAG, "app is just launched by RebootReceiver");
                 
                 restoreStatusForTheFirstTime();
@@ -184,14 +186,15 @@ public class MainActivity extends Activity {
      * jump to admin manage page for assign ID
      * return OK if id assigned
      */
-    private void managePage(){
-        Intent serverIntent = new Intent(this, AdminManageActivity.class);
-        startActivityForResult(serverIntent, INTENT_REQUEST_MAMAGE);
+    private void adminManagePage(){
+        Intent intent = new Intent(this, AdminManageActivity.class);
+        startActivityForResult(intent, INTENT_REQUEST_MAMAGE);
     }
 
 
     /**
-     * 
+     * each time MainActivity onResume will call this.
+     * to restore, must check flag like "activated" or "suspension" first.
      */
     private void restoreStatus() {
         // TODO Auto-generated method stub
@@ -214,7 +217,7 @@ public class MainActivity extends Activity {
         
         //schedule 
         //or reschedule if already there
-        Util.scheduleRandomSurvey(MainActivity.this, true, true);
+        //Util.scheduleRandomSurvey(MainActivity.this, true, true);
         //scheduleAll();
 
         
@@ -244,7 +247,7 @@ public class MainActivity extends Activity {
     }
 
 
-    private Dialog setUserPwdDialog(Context context, final String ID) {
+    private Dialog userPinSetDialog(Context context, final String ID) {
         LayoutInflater inflater = LayoutInflater.from(context);
         final View textEntryView = inflater.inflate(R.layout.pin_input, null);
         TextView pinText = (TextView) textEntryView.findViewById(R.id.pin_text);
@@ -390,11 +393,11 @@ public class MainActivity extends Activity {
                 // TODO Auto-generated method stub
                 Util.Log_debug(TAG, logEnable, "section 3 on click listener");
 
-//                if(!getSuspension()){
+                if(!Util.isSuspension()){
                     startActivity(new Intent(MainActivity.this, SurveyMenu.class));
-//                }else{
-//                    suspensionAlert();
-//                }
+                }else{
+                    suspensionAlert();
+                }
 
             }
         });
@@ -416,21 +419,21 @@ public class MainActivity extends Activity {
                 // TODO Auto-generated method stub
                 Utilities.Log(TAG, "section 5 on click listener");
 
-//                if(!getSuspension()){
+                if(!Util.isSuspension()){
                     int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
                     if(hour >= 21 || hour <3){
                         //verify user pin
-                        PinVerifyDialog(MainActivity.this).show();
+                        userPinCheckDialogForBedtime(MainActivity.this).show();
                     }else{
                         //alert dialog
                         bedTimeWrongDialog();
                     }
-//                }
-//                else{
-//                suspensionAlert();
-//                }
+                }
+                else{
+                    suspensionAlert();
+                }
 
-//              startActivity(new Intent(getApplicationContext(), MorningScheduler.class));
+                //startActivity(new Intent(getApplicationContext(), MorningScheduler.class));
 
             }
         });
@@ -457,7 +460,7 @@ public class MainActivity extends Activity {
                             @Override
                             public void onClick(DialogInterface arg0, int arg1) {
                                 Intent intent = new Intent(getApplicationContext(), SuspensionTimePicker.class);
-                                startActivityForResult(intent, 2);
+                                startActivityForResult(intent, INTENT_REQUEST_SUSPENSION);
                             }
                         }).create().show();
                     }
@@ -528,6 +531,24 @@ public class MainActivity extends Activity {
             }
         });
         
+        section_8.setOnClickListener(new OnClickListener(){
+
+            @Override
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+                Utilities.Log(TAG, "section 8 on click listener");
+
+                
+                AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                
+                Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY_TRIGGER);
+                itTrigger.putExtra(Utilities.SV_NAME, Utilities.SV_NAME_MORNING);
+                PendingIntent piTrigger = PendingIntent.getBroadcast(MainActivity.this, 1, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
+                
+                am.setExact(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis(), piTrigger);
+            }
+        });
+        
     }
     
     
@@ -558,7 +579,7 @@ public class MainActivity extends Activity {
         .create().show();
     }
 
-    private Dialog PinVerifyDialog(final Context context) {
+    private Dialog userPinCheckDialogForBedtime(final Context context) {
         LayoutInflater inflater = LayoutInflater.from(context);
         final View DialogView = inflater.inflate(R.layout.pin_input, null);
         TextView pinText = (TextView) DialogView.findViewById(R.id.pin_text);
@@ -577,7 +598,7 @@ public class MainActivity extends Activity {
 
                 if (pinStr.equals(Utilities.getPWD(context))){
                     //Send the intent and trigger new Survey Activity....
-                    bedAlertDialog();
+                    bedtimeReportConfirmDialog();
                     dialog.cancel();
                 }
                 else {
@@ -604,7 +625,7 @@ public class MainActivity extends Activity {
         return builder.create();
     }
 
-    private void bedAlertDialog(){
+    private void bedtimeReportConfirmDialog(){
         new AlertDialog.Builder(MainActivity.this)
         .setTitle(R.string.bedtime_title)
         .setMessage(R.string.bedtime_message_confirm)
@@ -613,7 +634,8 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                startActivity(new Intent(getApplicationContext(), MorningScheduler.class));
+                Intent intent = new Intent(getApplicationContext(), MorningScheduler.class);
+                startActivityForResult(intent, INTENT_REQUEST_WAKEUP);
 
                 dialog.cancel();
             }
@@ -642,7 +664,7 @@ public class MainActivity extends Activity {
                 Toast.makeText(getApplicationContext(), R.string.bluetooth_enabled ,Toast.LENGTH_LONG).show();
             }
             else{
-                turnOnBt();
+                turnOnBluetooth();
             }
             return true;
         }
@@ -656,7 +678,7 @@ public class MainActivity extends Activity {
 
         //MANAGEMENT
         else if(item.getItemId() == R.id.manage){
-            managePage();
+            adminManagePage();
         }
 
         //ABOUT
@@ -697,7 +719,7 @@ public class MainActivity extends Activity {
     }
 
 
-    private void turnOnBt(){
+    private void turnOnBluetooth(){
         // TODO Auto-generated method stub
         Intent Enable_Bluetooth=new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         startActivityForResult(Enable_Bluetooth, INTENT_REQUEST_BLUETOOTH);
@@ -742,7 +764,31 @@ public class MainActivity extends Activity {
 //                  stopSService();
                     finish();
                 }
+                break;
+                
+            case INTENT_REQUEST_WAKEUP:
+                if(resultCode == Activity.RESULT_OK){
+                    //write
+                    Calendar morning = Calendar.getInstance();
+                    morning.setTimeInMillis(Utilities.getSP(MainActivity.this, Util.SP_BEDTIME).getLong(Util.SP_BEDTIME_KEY_LONG, 0));
 
+                    Toast.makeText(getApplicationContext(), getString(R.string.bedtime_set)+" "+ DateFormat.getDateTimeInstance().format(morning.getTime()),Toast.LENGTH_LONG).show();
+                    Util.Log_debug(TAG, "Morning Survey scheduled at " + DateFormat.getDateTimeInstance().format(morning.getTime()));
+                    
+                    //keep delivered
+                    try {
+                        Utilities.writeEventToFile(MainActivity.this, Utilities.CODE_BEDTIME,
+                                Utilities.sdf.format(morning.getTime()), "", "", "",
+                                Utilities.sdf.format(((Calendar)data.getSerializableExtra(MorningScheduler.INTENT_TS)).getTime()),
+                                Utilities.sdf.format(Calendar.getInstance().getTime()));
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+                else{ //if(resultCode == Activity.RESULT_CANCELED){
+                
+                }
                 break;
 
             case INTENT_REQUEST_SUSPENSION:
@@ -777,9 +823,9 @@ public class MainActivity extends Activity {
         super.onPause();
         Util.Log_lifeCycle(TAG, "OnPause~~~");
         
-        if(getIntent().getBooleanExtra(Util.REBOOT, false)){
+        if(getIntent().getBooleanExtra(RebootReceiver.REBOOT, false)){
             Intent i = getIntent();
-            i.removeExtra(Util.REBOOT);
+            i.removeExtra(RebootReceiver.REBOOT);
             setIntent(i);
         }
     }

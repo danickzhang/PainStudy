@@ -192,12 +192,7 @@ public class Utilities {
 
 
 /*  shared preferences*/
-    /*bed time info*/
-    public final static String SP_BED_TIME = "edu.missouri.niaaa.pain.BEDTIME_INFO";
-
-    public final static String SP_KEY_BED_TIME_HOUR = "BEDTIME_INFO_HOUR";
-    public final static String SP_KEY_BED_TIME_MINUTE = "BEDTIME_INFO_MINUTE";
-    public final static String SP_KEY_BED_TIME_LONG = "BEDTIME_INTO_LONG";
+    
     public final static String SP_KEY_MORNING_COMPLETE_TIME = "MORNING_COMPLETE_TIME";
 
     /*random time set*/
@@ -504,9 +499,9 @@ public class Utilities {
 
     /* morning */
     public static void scheduleMorningSurvey(Context context, int hour, int minute){
-        Calendar c = getMorningCal(hour, minute);
+        Calendar c = Util.getProperMorningScheduleTime(hour, minute);
 
-        getSP(context, SP_BED_TIME).edit().putLong(SP_KEY_BED_TIME_LONG, c.getTimeInMillis()).commit();
+        getSP(context, Util.SP_BEDTIME).edit().putLong(Util.SP_BEDTIME_KEY_LONG, c.getTimeInMillis()).commit();
 
 
         Intent scheduleIntent = new Intent(Utilities.BD_ACTION_SCHEDULE_MORNING);
@@ -537,14 +532,14 @@ public class Utilities {
 
         //morning
         Calendar m = Calendar.getInstance();
-        m.setTimeInMillis(getSP(context, SP_BED_TIME).getLong(SP_KEY_BED_TIME_LONG, defTime));
+        m.setTimeInMillis(getSP(context, Util.SP_BEDTIME).getLong(Util.SP_BEDTIME_KEY_LONG, defTime));
 
         //set morning & schedule random
         if(c.after(n)){
 //          morningComplete(context);
 
             //write complete time
-            getSP(context, SP_BED_TIME).edit().putLong(SP_KEY_MORNING_COMPLETE_TIME, Calendar.getInstance().getTimeInMillis()).commit();
+            getSP(context, Util.SP_BEDTIME).edit().putLong(SP_KEY_MORNING_COMPLETE_TIME, Calendar.getInstance().getTimeInMillis()).commit();
 
             if (isRandomScheduled(context)) {
                 //reschedule today's random
@@ -606,7 +601,7 @@ public class Utilities {
     }
 
     public static boolean completedMorningToday(Context context){
-        long time = getSP(context, SP_BED_TIME).getLong(SP_KEY_MORNING_COMPLETE_TIME, 0);
+        long time = getSP(context, Util.SP_BEDTIME).getLong(SP_KEY_MORNING_COMPLETE_TIME, 0);
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(time);
         int day = c.get(Calendar.DAY_OF_YEAR);
@@ -624,7 +619,7 @@ public class Utilities {
         // TODO Auto-generated method stub
 
         //write complete time
-        getSP(context, SP_BED_TIME).edit().putLong(SP_KEY_MORNING_COMPLETE_TIME, Calendar.getInstance().getTimeInMillis()).commit();
+        getSP(context, Util.SP_BEDTIME).edit().putLong(SP_KEY_MORNING_COMPLETE_TIME, Calendar.getInstance().getTimeInMillis()).commit();
         //update study day
         updateStudyDay();
         //schedule random survey
@@ -690,7 +685,7 @@ public class Utilities {
         Calendar c = Calendar.getInstance();
 //      c.setTimeInMillis(getSP(context, SP_BED_TIME).getLong(SP_KEY_MORNING_COMPLETE_TIME, c.getTimeInMillis()));
         c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR)-1);
-        getSP(context, SP_BED_TIME).edit().putLong(SP_KEY_MORNING_COMPLETE_TIME, c.getTimeInMillis()).commit();
+        getSP(context, Util.SP_BEDTIME).edit().putLong(SP_KEY_MORNING_COMPLETE_TIME, c.getTimeInMillis()).commit();
     }
 
 
@@ -816,7 +811,7 @@ public class Utilities {
 
     public static String getScheduleForToady(Context context){
         //morning
-        long morning = getSP(context, SP_BED_TIME).getLong(SP_KEY_BED_TIME_LONG, -1);
+        long morning = getSP(context, Util.SP_BEDTIME).getLong(Util.SP_BEDTIME_KEY_LONG, -1);
 
         //follow-ups
         long followup = getSP(context, SP_RANDOM_TIME).getLong(SP_KEY_DRINKING_TIME_SET, -1);
@@ -901,7 +896,7 @@ public class Utilities {
 
     public static String getMorningTimeWithFlag(Context context){
 
-        long time = getSP(context, SP_BED_TIME).getLong(SP_KEY_BED_TIME_LONG, -1);
+        long time = getSP(context, Util.SP_BEDTIME).getLong(Util.SP_BEDTIME_KEY_LONG, -1);
 
         Calendar m = Calendar.getInstance();
         Calendar t = Calendar.getInstance();
@@ -920,31 +915,19 @@ public class Utilities {
 
     public static Calendar getDefaultMorningCal(Context context){
 
-        SharedPreferences sp = getSP(context, SP_BED_TIME);
+        SharedPreferences sp = getSP(context, Util.SP_BEDTIME);
         int hour = defHour;
         int minute = defMinute;
 
-        boolean setDefault = (sp.getInt(Utilities.SP_KEY_BED_TIME_HOUR, -1) == -1?false:true);
+        boolean setDefault = (sp.getInt(Util.SP_BEDTIME_KEY_HOUR, -1) == -1?false:true);
         if(setDefault){
-            hour = sp.getInt(Utilities.SP_KEY_BED_TIME_HOUR, -1);
-            minute = sp.getInt(Utilities.SP_KEY_BED_TIME_MINUTE, -1);
+            hour = sp.getInt(Util.SP_BEDTIME_KEY_HOUR, -1);
+            minute = sp.getInt(Util.SP_BEDTIME_KEY_MINUTE, -1);
         }
 
-        return getMorningCal(hour, minute);
+        return Util.getProperMorningScheduleTime(hour, minute);
     }
 
-    public static Calendar getMorningCal(int hour, int minute){
-        Calendar c = Calendar.getInstance();
-        if(c.get(Calendar.HOUR_OF_DAY) > 3){
-            //next day
-            c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR)+1);
-        }
-        c.set(Calendar.HOUR_OF_DAY, hour);
-        c.set(Calendar.MINUTE, minute);
-        c.set(Calendar.SECOND, 0);
-
-        return c;
-    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //pin check                                                                                                   //

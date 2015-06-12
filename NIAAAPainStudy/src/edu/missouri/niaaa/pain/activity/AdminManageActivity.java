@@ -395,7 +395,7 @@ public class AdminManageActivity extends TabActivity {
 
 
     private void cleanUp(Context context){
-        Utilities.getSP(context, Utilities.SP_BED_TIME).edit().clear().commit();
+        Utilities.getSP(context, Util.SP_BEDTIME).edit().clear().commit();
         Utilities.getSP(context, Utilities.SP_RANDOM_TIME).edit().clear().commit();
         Utilities.getSP(context, Utilities.SP_SURVEY).edit().clear().commit();
         Utilities.getSP(context, Util.SP_LOGIN).edit().clear().commit();

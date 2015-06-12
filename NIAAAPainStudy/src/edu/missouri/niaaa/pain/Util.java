@@ -24,47 +24,46 @@ public class Util {
     public static final boolean RELEASE         = false;
     
     
-    /*  survey config*/
-    public final static int MAX_REMINDER = 3;
-    public final static int MAX_TRIGGER_MORNING = 1;//1
-    public final static int MAX_TRIGGER_RANDOM = 6;//6
-    public final static int MAX_TRIGGER_FOLLOWUP = 3;//3
-    public final static int VOLUME = 8;//10
-    public final static String PHONE_BASE_PATH = "sdcard/TestResult_craving/";
+    /*survey config*/
+    public static final int MAX_REMINDER = 3;
+    public static final int MAX_TRIGGER_MORNING = 1;//1
+    public static final int MAX_TRIGGER_RANDOM = 6;//6
+    public static final int MAX_TRIGGER_FOLLOWUP = 3;//3
+    public static final int VOLUME = 8;//10
+    public static final String PHONE_BASE_PATH = "sdcard/TestResult_craving/";
     
-    
+    /*survey type*/
+    public static final String SV_NAME = "Survey_Name";
+    public static final String SV_SEQ = "Survey_Seq";
     
     
     /*constant value*/
     public static final String PKG_BASE = "edu.missouri.niaaa.pain.";
-    public static final String REBOOT = "Intent_Reboot"; 
-    /**
-     *  0 - </br>
-     *  1 - 
-     * -1 - </br>
-     *  2 - </br>
-     * -2 - 
-     *  3 - </br>
-     * -3 - 
-     *  4 - </br>
-     */
+
     public static final String BD_ACTION_DAEMON_FUNC    = "Intent_Daemon";
-    
     
     public static final String BD_ACTION_SURVEY_FUNC    = "Intent_Survey";
 //    String schedule
     
+    public static final int SURVEY_TIMEOUT_IN_SECONDS = 7*60;
     
     
-    /*sharedPreference*/
+    //*sharedPreference*//
     public static final String SP_BASE = PKG_BASE;
+    
+    /*login info*/
     public static final String SP_LOGIN                     = SP_BASE + "LOGIN";
-    public static final String SP_LOGIN_KEY_STUDY_STARTTIME = SP_BASE + "STUDY_DAY_START";
-    public static final String SP_LOGIN_KEY_USERID          = SP_BASE + "USER_ID";
-    public static final String SP_LOGIN_KEY_USERPWD         = SP_BASE + "USER_PWD";
-    
-    
-    
+    public static final String SP_LOGIN_KEY_STUDY_STARTTIME = "STUDY_DAY_START";
+    public static final String SP_LOGIN_KEY_USERID          = "USER_ID";
+    public static final String SP_LOGIN_KEY_USERPWD         = "USER_PWD";
+    /*bed time info*/
+    public static final String SP_BEDTIME                   = SP_BASE + "BEDTIME";
+    public static final String SP_BEDTIME_KEY_HOUR          = "BEDTIME_HOUR";
+    public static final String SP_BEDTIME_KEY_MINUTE        = "BEDTIME_MINUTE";
+    public static final String SP_BEDTIME_KEY_LONG          = "BEDTIME_LONG";
+    /*survey*/
+    public static final String SP_SURVEY                    = SP_BASE + "SURVEY";
+                                                            
     
     
     
@@ -80,7 +79,7 @@ public class Util {
     public static final String BD_ACTION_SUSPENSION     = BD_ACTION_BASE    + "SUSPENSION";
     
     
-    public final static SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+    public static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
     
     
     
@@ -98,6 +97,7 @@ public class Util {
     }
 
     /**
+     * @param s1
      * @param s2 contain "---" for logcat filtering if needed.
      */
     public static void Log_debug(String s1, String s2){
@@ -119,8 +119,8 @@ public class Util {
     
     
     
-    public final static int CODE_SCHEDULE_MANUALLY = 10;
-    public final static int CODE_SCHEDULE_AUTOMATIC = 11;
+    public static final int CODE_SCHEDULE_MANUALLY = 10;
+    public static final int CODE_SCHEDULE_AUTOMATIC = 11;
     
     /* random */
     public static void scheduleRandomSurvey(Context context, boolean startFromNoon, boolean autoTriggered) {
@@ -188,9 +188,9 @@ public class Util {
 
     
     /*************************************************************************************************************/
-    /*Morning*/
+    /*Morning & bedtime*/
     
-    public static void ScheduleMorning(Context context){
+    public static void scheduleMorningSurvey(Context context){
         
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         
@@ -199,8 +199,8 @@ public class Util {
         long defTime = c.getTimeInMillis();
         long time = Long.MAX_VALUE;
 
-        time = Calendar.getInstance().getTimeInMillis();//Utilities.getSP(context, Utilities.SP_BED_TIME).getLong(Utilities.SP_KEY_BED_TIME_LONG, defTime);
-        Util.Log_debug(TAG, "---MorningSruvey scheduled at "+Utilities.getTimeFromLong(time));
+        time = Utilities.getSP(context, Util.SP_BEDTIME).getLong(Util.SP_BEDTIME_KEY_LONG, defTime);
+        Util.Log_debug(TAG, "---MorningSruvey scheduled at "+Utilities.getTimeFromLong(time)+" context "+context.hashCode());
         
         Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY_TRIGGER);
         itTrigger.putExtra(Utilities.SV_NAME, Utilities.SV_NAME_MORNING);
@@ -209,11 +209,59 @@ public class Util {
         am.setExact(AlarmManager.RTC_WAKEUP, time, piTrigger);
     }
     
-    public static void RescheduleMorning(Context context){
+    /**
+     * This is called when you not sure whether or not it's right time to schedule morning survey.
+     * like what it needs to restore from reboot.
+     */
+    public static void rescheduleMorningSurvey(Context context){
         
     }
     
-    /*/Morning*/
+    
+    public static void activateToday(){
+        
+    }
+    
+    public static void deActivateToday(){
+        
+    }
+    
+    
+    /**
+     * deactivate and cancel surveys today,
+     * schedule for next morning survey.
+     */
+    public static void bedtimeComplete(Context context){
+        
+        deActivateToday();
+        
+        scheduleMorningSurvey(context);
+    }
+    
+    
+    /**
+     * Morning scheduler just set for hour and minute, call this to get proper date information.
+     * @param hour
+     * @param minute
+     * @return
+     * if set before midnight(after 9pm), morning alarm day is tomorrow, 
+     * else if set before 3am, morning alarm day is today.
+     */
+    public static Calendar getProperMorningScheduleTime(int hour, int minute){
+        Calendar c = Calendar.getInstance();
+        
+        if(c.get(Calendar.HOUR_OF_DAY) > 3){
+            //next day
+            c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) + 1);
+        }
+        c.set(Calendar.HOUR_OF_DAY, hour);
+        c.set(Calendar.MINUTE, minute);
+        c.set(Calendar.SECOND, 0);
+
+        return c;
+    }
+    
+    /*/Morning & bedtime*/
     
     
     /**
@@ -225,4 +273,34 @@ public class Util {
         
     }
     
+    public static boolean isSuspension(){
+        return false;
+    }
+    
+    
+    /**
+     * start recording location with condition checking first
+     * check if today is activated (from activated time to 3am next day)
+     */
+    public static void restartRecordingLocation(){
+        if(true){
+            startRecordingLocation();
+        }
+    }
+    
+    public static void startRecordingLocation(){
+        
+    }
+    
+    public static void stopRecordingLocation(){
+        
+    }
+    
+    
+    /**
+     * @return
+     */
+    public static boolean isTodayActivated(){
+        return false;
+    }
 }

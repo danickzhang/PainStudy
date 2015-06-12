@@ -1,13 +1,11 @@
 package edu.missouri.niaaa.pain.activity;
 
-import java.io.IOException;
-import java.text.NumberFormat;
 import java.util.Calendar;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -19,12 +17,14 @@ import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
 import android.widget.Toast;
 import edu.missouri.niaaa.pain.R;
+import edu.missouri.niaaa.pain.Util;
 import edu.missouri.niaaa.pain.Utilities;
 
 public class MorningScheduler extends Activity {
 
     String TAG = "MorningScheduler.java";
 
+    TextView title;
     TextView timeText;
     CheckBox timeBox;
     TimePicker timePicker;
@@ -35,7 +35,9 @@ public class MorningScheduler extends Activity {
     int minute = Utilities.defMinute;
 
     SharedPreferences sp;
-    Calendar startBedReportCal;
+    Calendar bedtimeReportStartTS;
+    
+    public static final String INTENT_TS = "START_TIME";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,21 +45,23 @@ public class MorningScheduler extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_morning_scheduler);
-        startBedReportCal = Calendar.getInstance();
+        bedtimeReportStartTS = Calendar.getInstance();
 
-        sp = getSharedPreferences(Utilities.SP_BED_TIME, MODE_PRIVATE);
-        boolean setDefault = (sp.getInt(Utilities.SP_KEY_BED_TIME_HOUR, -1) == -1?false:true);
+        sp = getSharedPreferences(Util.SP_BEDTIME, MODE_PRIVATE);
+        boolean setDefault = (sp.getInt(Util.SP_BEDTIME_KEY_HOUR, -1) == -1?false:true);
         if(setDefault){
-            hour = sp.getInt(Utilities.SP_KEY_BED_TIME_HOUR, -1);
-            minute = sp.getInt(Utilities.SP_KEY_BED_TIME_MINUTE, -1);
+            hour = sp.getInt(Util.SP_BEDTIME_KEY_HOUR, -1);
+            minute = sp.getInt(Util.SP_BEDTIME_KEY_MINUTE, -1);
         }
 
+        title = (TextView) findViewById(R.id.morning_title);
         timeText = (TextView) findViewById(R.id.morning_text);
         timeBox = (CheckBox) findViewById(R.id.morning_box);
         timePicker = (TimePicker) findViewById(R.id.morning_picker);
         setPicker = (Button) findViewById(R.id.btnSchedule);
         backButton = (Button) findViewById(R.id.btnReturn);
 
+        title.setText(bedtimeReportStartTS.get(Calendar.HOUR_OF_DAY)>3 ? R.string.morning_report_set_text1: R.string.morning_report_set_text2);
         timeText.setText(Utilities.getMorningTimeWithFlag(this));
 
         timeBox.setChecked(setDefault);
@@ -67,11 +71,11 @@ public class MorningScheduler extends Activity {
             public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
                 // TODO Auto-generated method stub
                 if(arg1){
-                    Log.d("test", "checked");
+                    Util.Log_debug(TAG, "checked");
                     timePicker.setEnabled(false);
                 }
                 else{
-                    Log.d("test", "unchecked");
+                    Util.Log_debug(TAG, "unchecked");
                     timePicker.setEnabled(true);
                 }
             }});
@@ -103,41 +107,14 @@ public class MorningScheduler extends Activity {
                 Utilities.Log(TAG, ""+hour+":"+minute);
 
                 if(hour >= 3 && hour <12 || (hour == 12 && minute == 0)){
-//              if(true){
 
-                    setAsDefault();
-                    Utilities.bedtimeComplete(MorningScheduler.this, hour, minute);//as following
-
-//                  //set flag for bedtime, press-in survey should be blocked
-//                  Uti.morningReset(MorningScheduler.this);
-//
-//                  //cancel all the running survey
-//                  Uti.cancelSchedule(MorningScheduler.this);
-//
-//                  //schedule for next morning
-//                  Uti.scheduleMorningSurvey(MorningScheduler.this, hour, minute);
-//
-//                  //next midnight
-//                  Intent i = new Intent(Uti.BD_ACTION_DAEMON);
-//                  i.putExtra(Uti.BD_ACTION_DAEMON_FUNC, -3);
-//                  sendBroadcast(i);
-
-                    NumberFormat nf = NumberFormat.getInstance();
-                    nf.setMinimumIntegerDigits(2);
-
-                    Toast.makeText(getApplicationContext(), getString(R.string.bedtime_set)+" "+nf.format(hour)+":"+nf.format(minute),Toast.LENGTH_LONG).show();
-                    nf = null;
-
-                    try {
-                        Utilities.writeEventToFile(MorningScheduler.this, Utilities.CODE_BEDTIME,
-                                Utilities.sdf.format(Utilities.getMorningCal(hour, minute).getTime()), "", "", "",
-                                Utilities.sdf.format(startBedReportCal.getTime()),
-                                Utilities.sdf.format(Calendar.getInstance().getTime()));
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-
+                    saveDefault();
+                    
+                    Util.bedtimeComplete(MorningScheduler.this);
+                    
+                    Intent i = new Intent();
+                    i.putExtra(INTENT_TS,bedtimeReportStartTS);
+                    setResult(Activity.RESULT_OK, i);
                     finish();
                 }
                 else{
@@ -154,15 +131,18 @@ public class MorningScheduler extends Activity {
             }});
     }
 
-    private void setAsDefault(){
+    private void saveDefault(){
         if(timeBox.isChecked()){
-            sp.edit().putInt(Utilities.SP_KEY_BED_TIME_HOUR, hour).commit();
-            sp.edit().putInt(Utilities.SP_KEY_BED_TIME_MINUTE, minute).commit();
+            sp.edit().putInt(Util.SP_BEDTIME_KEY_HOUR, hour).commit();
+            sp.edit().putInt(Util.SP_BEDTIME_KEY_MINUTE, minute).commit();
         }
         else{
-            sp.edit().putInt(Utilities.SP_KEY_BED_TIME_HOUR, -1).commit();
-            sp.edit().putInt(Utilities.SP_KEY_BED_TIME_MINUTE, -1).commit();
+            sp.edit().putInt(Util.SP_BEDTIME_KEY_HOUR, -1).commit();
+            sp.edit().putInt(Util.SP_BEDTIME_KEY_MINUTE, -1).commit();
         }
+        
+        Calendar c = Util.getProperMorningScheduleTime(hour, minute);
+        sp.edit().putLong(Util.SP_BEDTIME_KEY_LONG, c.getTimeInMillis()).commit();
     }
 
 

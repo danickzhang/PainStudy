@@ -126,7 +126,7 @@ public class DaemonReceiver extends BroadcastReceiver {
 
             //morning
             Calendar m = Calendar.getInstance();
-            m.setTimeInMillis(Utilities.getSP(context, Utilities.SP_BED_TIME).getLong(Utilities.SP_KEY_BED_TIME_LONG, -1));
+            m.setTimeInMillis(Utilities.getSP(context, Util.SP_BEDTIME).getLong(Util.SP_BEDTIME_KEY_LONG, -1));
 
             if(c.before(m)){
                 //set m as morning
