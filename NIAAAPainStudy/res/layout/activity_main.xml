@@ -53,8 +53,7 @@
     <Button
         android:id="@+id/section_label8"
         style="@style/button_style"
-        android:text="random"
-        android:visibility="gone"
+        android:text="trigger"
         />
     <Button
         android:id="@+id/section_label9"

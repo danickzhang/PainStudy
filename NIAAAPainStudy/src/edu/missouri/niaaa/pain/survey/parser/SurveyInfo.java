@@ -2,7 +2,13 @@ package edu.missouri.niaaa.pain.survey.parser;
 
 import java.util.HashMap;
 
-/* @author Chen
+/** 
+ * @author Chen
+ * data: 06/13/2015
+ * change methods of launching to action
+ * make type for id of surveys
+ * 
+ * @author Chen
  * date: 06/07/2015
  * start using survey type for methods of launching
  *
@@ -21,9 +27,10 @@ import java.util.HashMap;
 public class SurveyInfo {
 
     //Instance variables
+    protected String surveyType;
+    protected String surveyAction;
     protected String surveyName;
     protected String surveyFile;
-    protected String surveyType;
     protected String surveyDisplayName;
 
     /*
@@ -31,9 +38,10 @@ public class SurveyInfo {
      * survey type (methods of launch),
      * and survey name (used for storage, not displayed for user)
      */
-    public SurveyInfo(String surveyFile, String surveyType, String surveyName){
-        this.surveyFile = surveyFile;
+    public SurveyInfo(String surveyType, String surveyAction, String surveyFile, String surveyName){
         this.surveyType = surveyType;
+        this.surveyAction = surveyAction;
+        this.surveyFile = surveyFile;
         this.surveyName = surveyName;
     }
 
@@ -52,6 +60,13 @@ public class SurveyInfo {
      */
     public String getDisplayName(){
         return this.surveyDisplayName;
+    }
+    
+    /**
+     * @return the id of the survey, which is used in app to specify survey type.
+     */
+    public String getType(){
+        return this.surveyType;
     }
 
     /**
@@ -72,15 +87,15 @@ public class SurveyInfo {
     /**
      * @see #TYPE_SHOWN_MAP
      */
-    public String getType(){
-        return this.surveyType;
+    public String getAction(){
+        return this.surveyAction;
     }
-
+    
     /**
-     *     1. auto triggered - do not shown on menu</br>
-     *     2. manually launched </br>
-     *     3. manually launched with confirmation </br>
-     *     4. manually launched with restriction OR auto triggered.
+     *     A1. auto triggered - do not shown on menu</br>
+     *     M2. manually launched </br>
+     *     MC3. manually launched with confirmation </br>
+     *     MA4. manually launched with restriction OR auto triggered.
      */
     public final static HashMap<String, Boolean> TYPE_SHOWN_MAP = new HashMap<String, Boolean>() {
         {

@@ -107,7 +107,8 @@
     <string name="morning_report_msg2">The Morning Report should be done before noon.</string>
     <string name="morning_report_title3">Too Early</string>
     <string name="morning_report_msg3">The Morning Report should be done after 3:00 a.m.</string>
-    <string name="morning_report_set_text">Wake up time (for tomorrow):</string>
+    <string name="morning_report_set_text1">Wake up time (for tomorrow):</string>
+    <string name="morning_report_set_text2">Wake up time (for today):</string>
     <string name="morning_report_set">Set wake up time</string>
     <string name="morning_report_unfinished">You may need to complete morning survey for today first</string>
     <string name="morning_report_title4">Alert</string>

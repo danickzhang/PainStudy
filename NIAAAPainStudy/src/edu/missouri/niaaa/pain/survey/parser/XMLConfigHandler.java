@@ -53,10 +53,11 @@ public class XMLConfigHandler extends DefaultHandler {
         buffer.setLength(0);
 
         if(localName.equals("item")){
-            String file = attr.getValue("file");
             String type = attr.getValue("type");
+            String action = attr.getValue("action");
+            String file = attr.getValue("file");
             String name = attr.getValue("name");
-            currentSurvey = new SurveyInfo(file, type, name);
+            currentSurvey = new SurveyInfo(type, action, file, name);
         }
 
     }

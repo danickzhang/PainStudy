@@ -5,12 +5,13 @@
     android:orientation="vertical" >
 
     <TextView
+    	android:id="@+id/morning_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10sp"
         android:layout_marginTop="5sp"
         android:textSize="20sp"
-        android:text="@string/morning_report_set_text"
+        android:text="@string/morning_report_set_text1"
         />
 
     <TextView

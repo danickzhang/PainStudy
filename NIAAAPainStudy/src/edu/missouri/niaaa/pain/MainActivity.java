@@ -83,6 +83,7 @@ public class MainActivity extends Activity {
 
     /*adapter for bluetooth switch*/
     private BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+    
     private SharedPreferences shp = null; 
     private InputMethodManager imm = null;
     
@@ -128,7 +129,7 @@ public class MainActivity extends Activity {
         super.onResume();
         Util.Log_lifeCycle(TAG, "OnResume~~~");
 
-        /*set shared resources*/
+        /*read shared resources*/
         setSharedValue();
 
         /* check if ID is assigned
@@ -542,10 +543,10 @@ public class MainActivity extends Activity {
                 AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                 
                 Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY_TRIGGER);
-                itTrigger.putExtra(Utilities.SV_NAME, Utilities.SV_NAME_MORNING);
+                itTrigger.putExtra(Util.SV_TYPE, Util.SV_NAME_MORNING);
                 PendingIntent piTrigger = PendingIntent.getBroadcast(MainActivity.this, 1, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
                 
-                am.setExact(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis(), piTrigger);
+                am.setExact(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis()+500, piTrigger);
             }
         });
         

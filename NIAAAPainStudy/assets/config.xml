@@ -1,12 +1,12 @@
 <root>
 <menu>
-    <item type="4" file="MorningReportParcel.xml" name="MORNING_REPORT">Morning Report</item>
-    <item type="1" file="RandomAssessmentParcel.xml" name="RANDOM_ASSESSMENT">Random</item>
-    <item type="3" file="InitialPainMedicationParcel.xml" name = "INITIAL_PAIN">Initial Pain</item>
-    <item type="1" file="PainMedicationFollowupParcel.xml" name="PAIN_FOLLOWUP">Pain Followup</item>
-    <item type="3" file="InitialDrinkingParcel.xml" name = "INITIAL_DRINKING">Initial Drinking</item>
-    <item type="1" file="DrinkingFollowupParcel.xml" name="DRINKING_FOLLOWUP">Drinking Followup</item>
-    <item type="2" file="DualFollowupParcel.xml" name="DUAL_FOLLOWUP">Dual Followup</item>
+    <item type="1" action="4" file="MorningReportParcel.xml" name="MORNING_REPORT">Morning Report</item>
+    <item type="2" action="1" file="RandomAssessmentParcel.xml" name="RANDOM_ASSESSMENT">Random Assessment</item>
+    <item type="3" action="3" file="InitialPainMedicationParcel.xml" name = "INITIAL_PAIN">Initial Pain Medication Survey</item>
+    <item type="4" action="1" file="PainMedicationFollowupParcel.xml" name="PAIN_FOLLOWUP">Pain Medication Followup</item>
+    <item type="5" action="3" file="InitialDrinkingParcel.xml" name = "INITIAL_DRINKING">Initial Drinking</item>
+    <item type="6" action="1" file="DrinkingFollowupParcel.xml" name="DRINKING_FOLLOWUP">Drinking Followup</item>
+    <item type="7" action="2" file="DualFollowupParcel.xml" name="DUAL_FOLLOWUP">Dual Followup</item>
 </menu>
 
 <!-- <components>

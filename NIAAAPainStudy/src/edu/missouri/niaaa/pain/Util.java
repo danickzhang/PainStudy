@@ -1,14 +1,20 @@
 package edu.missouri.niaaa.pain;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Random;
+
+import org.xml.sax.InputSource;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import edu.missouri.niaaa.pain.survey.parser.SurveyInfo;
+import edu.missouri.niaaa.pain.survey.parser.XMLConfigParser;
 
 public class Util {
     static String TAG = "Util.java";
@@ -22,6 +28,7 @@ public class Util {
     public static final boolean DEBUG_LIFECYCLE = true;
     public static final boolean DEBUG           = true;
     public static final boolean RELEASE         = false;
+    public static final boolean REMIND_SEPLIT   = true;
     
     
     /*survey config*/
@@ -33,8 +40,17 @@ public class Util {
     public static final String PHONE_BASE_PATH = "sdcard/TestResult_craving/";
     
     /*survey type*/
-    public static final String SV_NAME = "Survey_Name";
-    public static final String SV_SEQ = "Survey_Seq";
+    public static final String SV_TYPE                      = "Survey_Type";
+    public static final String SV_SEQ                       = "Survey_Seq";
+    public static final String SV_REMIND_SEQ                = "Survey_Reminder_Seq";
+    
+    public static final int SV_NAME_MORNING              = 1;
+    public static final int SV_NAME_RANDOM               = 2;
+    public static final int SV_NAME_PAIN                 = 3;
+    public static final int SV_NAME_PAIN_FOLLOWUP        = 4;
+    public static final int SV_NAME_DRINKING             = 5;
+    public static final int SV_NAME_DRINKING_FOLLOWUP    = 6;
+    public static final int SV_NAME_DUAL_FOLLOWUP        = 7;
     
     
     /*constant value*/
@@ -184,6 +200,12 @@ public class Util {
 
         Utilities.getSP(context, Utilities.SP_RANDOM_TIME).edit().putString(Utilities.SP_KEY_RANDOM_TIME_SET, random_schedule).commit();
 
+    }
+    
+    
+    public static List<SurveyInfo> getSurverList(Context context) throws IOException{
+        //Try to read surveys from give file
+        return new XMLConfigParser().parseQuestion(new InputSource(context.getAssets().open("config.xml")));
     }
 
     
