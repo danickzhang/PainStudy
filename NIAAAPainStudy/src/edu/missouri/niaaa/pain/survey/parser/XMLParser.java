@@ -38,8 +38,7 @@ public class XMLParser {
      * Parse InputSource xml file to list of SurveyInfo
      * wrapper objects.
      */
-    public ArrayList<Category> parseQuestion(InputSource XML,
-            Context c, boolean allowExternalXML, String baseId){
+    public ArrayList<Category> parseQuestion(InputSource XML, Context c, boolean allowExternalXML, String baseId){
         try{
             XMLReader reader = initializeReader();
 

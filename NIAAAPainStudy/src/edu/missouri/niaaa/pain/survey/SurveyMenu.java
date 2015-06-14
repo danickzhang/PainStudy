@@ -104,7 +104,7 @@ public class SurveyMenu extends Activity {
                             threeT.set(Calendar.MINUTE, 0);
                             threeT.set(Calendar.SECOND, 0);
 
-                            if(Utilities.completedMorningToday(SurveyMenu.this)){
+                            if(Utilities.completedMorningToday(SurveyMenu.this)){//??##
                                 Alert(R.string.morning_report_title,R.string.morning_report_msg);
                             }
                             else if(mT.after(noonT)){
@@ -114,21 +114,21 @@ public class SurveyMenu extends Activity {
                                 Alert(R.string.morning_report_title3, R.string.morning_report_msg3);
                             }
                             else {
-                                launchSurvey(temp.getType());
+                                launchSurvey(temp.getType(), true);
                             }
                         }
-                        else if(temp.getAction().equals("3")){
+                        else if(temp.getAction().equals("3")){//based on activateToday, initial is still able from deactivate to 3am
                             /*manually confirmation*/
                             Alert(R.string.first_drink_title, R.string.first_drink_msg, temp);
                         }
                         else if(temp.getAction().equals("2")){
                             /*maunally*/
-                            launchSurvey(temp.getType());
+                            launchSurvey(temp.getType(), true);
                         }
                         else{
                             /*for debug mode only*/
                             if(!Util.RELEASE){
-                                launchSurvey(temp.getType());
+                                launchSurvey(temp.getType(), false);
                             }
                         }
                         
@@ -176,7 +176,7 @@ public class SurveyMenu extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 // TODO Auto-generated method stub
                 if(trigger){
-                    launchSurvey(survey.getType());
+                    launchSurvey(survey.getType(), true);
                 }
             }
         })
@@ -185,9 +185,13 @@ public class SurveyMenu extends Activity {
     }
 
 
-    private void launchSurvey(String type){
+    private void launchSurvey(String type, boolean man){
         Intent launchIntent = new Intent(getApplicationContext(), SurveyAct.class);
         launchIntent.putExtra(Util.SV_TYPE, (int)Integer.valueOf(type));
+        if(man){
+            launchIntent.putExtra(Util.SV_MANUAL, true);
+        }
+        
 //      if (surveyName.equalsIgnoreCase("RANDOM_ASSESSMENT"))
 //          launchIntent.putExtra("random_sequence", randomSeq);
 

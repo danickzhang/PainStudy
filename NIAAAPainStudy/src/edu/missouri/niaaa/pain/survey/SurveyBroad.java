@@ -29,7 +29,7 @@ public class SurveyBroad extends BroadcastReceiver {
             Util.Log_debug(TAG, "action~~~ "+action);
             Calendar c = Calendar.getInstance();
             long time = c.getTimeInMillis()+500;
-            long unit = 5000;
+            long unit = 10000;
             for(int i=1; i<=4; i++){
                 int seq = i%4;
                 Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY_REMINDS);

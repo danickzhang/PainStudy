@@ -128,8 +128,7 @@ public class XMLHandler extends DefaultHandler {
      * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
      */
     @Override
-    public void startElement(String namespaceURI, String localName,
-            String qName, Attributes attr){
+    public void startElement(String namespaceURI, String localName, String qName, Attributes attr){
 
         buffer.setLength(0);
 

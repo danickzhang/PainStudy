@@ -43,6 +43,7 @@ public class Util {
     public static final String SV_TYPE                      = "Survey_Type";
     public static final String SV_SEQ                       = "Survey_Seq";
     public static final String SV_REMIND_SEQ                = "Survey_Reminder_Seq";
+    public static final String SV_MANUAL                    = "Survey_manual_triggered";
     
     public static final int SV_NAME_MORNING              = 1;
     public static final int SV_NAME_RANDOM               = 2;

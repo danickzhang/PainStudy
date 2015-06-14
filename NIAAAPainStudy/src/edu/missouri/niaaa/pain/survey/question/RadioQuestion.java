@@ -68,7 +68,7 @@ public class RadioQuestion extends SurveyQuestion {
             radio.setLayoutParams(radioLayout);
             radio.setPadding(0, 10, 20, 0);
             if(this.answers.size()>6){
-                radio.setHeight(56);
+                radio.setHeight(56);//??##need to be change later
             }
 
             radioGroup.addView(radio);

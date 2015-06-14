@@ -4,21 +4,34 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.xml.sax.InputSource;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
+import android.os.Vibrator;
+import android.util.SparseIntArray;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import edu.missouri.niaaa.pain.R;
 import edu.missouri.niaaa.pain.Util;
 import edu.missouri.niaaa.pain.Utilities;
@@ -30,18 +43,22 @@ import edu.missouri.niaaa.pain.survey.parser.SurveyInfo;
 import edu.missouri.niaaa.pain.survey.parser.XMLParser;
 
 public class SurveyAct extends Activity {
-    String TAG = "SurveyActivity";
+    String TAG = "SurveyActivity.java";
     boolean logEnable = true;
     
-    
+    /*survey init variables*/
     List<SurveyInfo> surveys = null;
     int surveyType = -1;
     int surveySeq = -1;
+    int remindSeq = -1;
+    boolean manualTrigger = false;
     String surveyDisplayName;
     String surveyFileName;
+    String pinCheckDialogTitle;
     
-    SharedPreferences shp;
-    
+    /*dialogs*/
+    Dialog pinCheckDialog;
+    Dialog retryPinDialog;
     
     /*used by survey layout*/
     //Button used to submit each question
@@ -60,6 +77,23 @@ public class SurveyAct extends Activity {
     LinkedHashMap<String, List<String>> answerMap;
     //List of read categories
     ArrayList<Category> cats = null;
+    
+    /*sound*/
+    SoundPool soundpool;
+    private SparseIntArray soundMap;
+    Timer soundTimer;
+    TimerTask soundTask;
+    int soundStreamID;
+    int soundPlayAfter = 1000;
+    Vibrator vibrator;
+    
+    WakeLock wakelock;
+    
+    //
+    SharedPreferences shp;
+    
+
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,22 +102,74 @@ public class SurveyAct extends Activity {
         Util.Log_lifeCycle(TAG, "OnCreate~~~");
         Util.Log_debug(TAG, "~~~"+getIntent().getIntExtra(Util.SV_TYPE, -1)+" "+getIntent().getIntExtra(Util.SV_SEQ, -1)+" "+getIntent().getIntExtra(Util.SV_REMIND_SEQ, -1));
         
-        surveyType = getIntent().getIntExtra(Util.SV_TYPE, -1);// protect for -1
-        surveySeq = getIntent().getIntExtra(Util.SV_SEQ, -1);// protect for -1
+        wakelock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, TAG);
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        soundpool = new SoundPool(2, AudioManager.STREAM_MUSIC, 100);
+        soundMap = new SparseIntArray();
+        soundMap.put(1, soundpool.load(this, R.raw.alarm_sound, 1));
+        soundTimer = new Timer();
+        
+        
+        getSurveyList();
         
         init();
         
         setTitle(surveyDisplayName);
-
         setContentView(R.layout.survey_layout);
-        
         setListeners();
         
         initializeSurveyLayout();
+        
     }
 
 
     private void init() {
+        // TODO Auto-generated method stub
+        
+        initializeVariable();
+        
+        checkStatue();
+    }
+
+
+    private void initializeVariable() {
+        // TODO Auto-generated method stub
+        surveyType = getIntent().getIntExtra(Util.SV_TYPE, -1);// protect for -1 //onNewIntent, should be same, is there any chance that type changes??
+        surveySeq = getIntent().getIntExtra(Util.SV_SEQ, -1);// protect for -1
+        remindSeq = getIntent().getIntExtra(Util.SV_REMIND_SEQ, -1);// protect for -1
+        manualTrigger = getIntent().getBooleanExtra(Util.SV_MANUAL, false);
+        
+        SurveyInfo si = surveys.get(surveyType-1);
+        surveyDisplayName = (Util.RELEASE ? si.getDisplayName() : num2seq(surveySeq) + si.getDisplayName());
+        surveyFileName = si.getFileName();
+        
+        pinCheckDialogTitle = (Util.RELEASE ? getString(R.string.pin_title) : getString(R.string.pin_title) + " for reminder "+remindSeq);
+    }
+
+    
+    private void checkStatue() {
+        // TODO Auto-generated method stub
+        acquireWakeLock();
+        
+        pinCheckDialog = userPinCheckDialog(this);
+        retryPinDialog = retryUserPinDialog();
+        
+        if(manualTrigger){
+            
+        }
+        else{
+            playSound();
+            
+        }
+        
+        if(pinCheckDialog.isShowing()) {
+            pinCheckDialog.dismiss();
+        }
+        pinCheckDialog.show();
+    }
+    
+
+    private void getSurveyList() {
         // TODO Auto-generated method stub
         
         /*prepare survey info*/
@@ -98,10 +184,6 @@ public class SurveyAct extends Activity {
         for(SurveyInfo survey: surveys){
             Util.Log_debug(TAG, false, survey.getType()+" "+survey.getDisplayName()+" "+survey.getAction()+" "+SurveyInfo.TYPE_SHOWN_MAP.get(survey.getAction()));
         }
-
-        SurveyInfo si = surveys.get(surveyType-1);
-        surveyDisplayName = (Util.RELEASE ? si.getDisplayName() : num2seq(surveySeq) + si.getDisplayName());
-        surveyFileName = si.getFileName();
     }
 
 
@@ -198,6 +280,19 @@ public class SurveyAct extends Activity {
 
 
     }
+    
+    
+    private void surveyStart(){
+        // TODO Auto-generated method stub
+        Util.Log_debug(TAG, "~~~Survey Start");
+    }
+    
+    
+    private void surveyComplete() {
+        // TODO Auto-generated method stub
+        Util.Log_debug(TAG, "~~~Survey Complete");
+    }
+    
     
     
     /**
@@ -388,14 +483,89 @@ public class SurveyAct extends Activity {
     
     
     
-    
-    
-    
-    private void surveyComplete() {
-        // TODO Auto-generated method stub
-        Util.Log_debug(TAG, "~~~Survey Complete");
-    }
+    private Dialog retryUserPinDialog(){
 
+        return new AlertDialog.Builder(this)
+        .setCancelable(false)
+        .setTitle(R.string.pin_title_wrong)
+        .setMessage(R.string.pin_message_wrong)
+        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO Auto-generated method stub
+
+                pinCheckDialog.show();
+                dialog.cancel();
+
+            }
+        })
+        .create();
+    }
+    
+    
+    private Dialog userPinCheckDialog(final Context context) {
+        
+        LayoutInflater inflater = LayoutInflater.from(context);
+        final View DialogView = inflater.inflate(R.layout.pin_input, null);
+        TextView pinText = (TextView) DialogView.findViewById(R.id.pin_text);
+        pinText.setText(R.string.pin_message);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        builder.setTitle(pinCheckDialogTitle);
+        builder.setView(DialogView);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                EditText pinEdite = (EditText) DialogView.findViewById(R.id.pin_edit);
+                String pinStr = pinEdite.getText().toString();
+                Utilities.Log("Pin Dialog", "pin String is "+pinStr);
+
+                if (pinStr.equals(Utilities.getPWD(context))){
+                    stopSound();
+
+                    surveyStart();
+
+                    dialog.cancel();
+                }
+                else {
+                    dialog.cancel();
+                    retryPinDialog.show();
+                }
+                dialog.cancel();
+
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                stopSound();
+                finish();
+            }
+        });
+
+        return builder.create();
+    }
+    
+    
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     @Override
     protected void onStart() {
@@ -434,8 +604,8 @@ public class SurveyAct extends Activity {
         Util.Log_lifeCycle(TAG, "onNewIntent~~~");
         Util.Log_debug(TAG, "~~~"+getIntent().getIntExtra(Util.SV_TYPE, -1)+" "+getIntent().getIntExtra(Util.SV_SEQ, -1)+" "+getIntent().getIntExtra(Util.SV_REMIND_SEQ, -1));
         
-        
-        
+        /*actually only auto triggered survey can be here*/
+        init();
     }
 
     
@@ -457,9 +627,75 @@ public class SurveyAct extends Activity {
     
     
     
+    /*screen lock*/
+    
+    private void acquireWakeLock() {
+        // TODO Auto-generated method stub
+        wakelock.acquire();
+    }
+    
+    private void releaseWakeLock() {
+        // TODO Auto-generated method stub
+        if(wakelock.isHeld()) {
+            wakelock.release();
+        }
+    }
+    
+    
+    /*sound & vibrator*/
+    
+    private void playSoundOnprepared(){
+        soundpool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+
+            @Override
+            public void onLoadComplete(SoundPool arg0, int arg1, int arg2) {
+                // TODO Auto-generated method stub
+                
+                playSound();
+            }
+        });
+    }
+    
+    private void playSound(){
+        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        am.setStreamVolume(AudioManager.STREAM_MUSIC, Util.VOLUME, AudioManager.FLAG_PLAY_SOUND);
+
+        soundTask = new StartTask();
+        soundTimer.schedule(soundTask,soundPlayAfter);
+
+        
+        vibrator.vibrate(5000);
+    }
+
+    private class StartTask extends TimerTask {
+        @Override
+        public void run(){
+
+            soundStreamID = soundpool.play(soundMap.get(1), 1, 1, 1, 0, 1); // craving should be different
+        }
+    }
+
+    private void stopSound(){
+//        soundTimer.cancel();
+        if(soundTask != null)
+        soundTask.cancel();
+        
+        soundpool.stop(soundStreamID);
+        
+        vibrator.cancel();
+    }
+    
+    private void releaseSound(){
+        stopSound();
+        soundpool.release();
+        soundTimer.cancel();
+        soundTimer.purge();
+        soundTimer = null;
+    }
     
     
     
+    /*some utilities*/
     
     private String num2seq(int num){
         String seq = "";
@@ -482,7 +718,7 @@ public class SurveyAct extends Activity {
     
     private void printCategoryForDebug(ArrayList<Category> cats, boolean able) {
         // TODO Auto-generated method stub
-        Util.Log_debug(TAG, "-------------^^^^^^^^______________");
+        Util.Log_debug(TAG, able, "-------------^^^^^^^^______________");
         if(able)
         for(Category ca :cats){
             Utilities.Log(TAG, "category is "+ca.getQuestionDesc());
@@ -504,7 +740,8 @@ public class SurveyAct extends Activity {
         super.onPause();
         Util.Log_lifeCycle(TAG, "onPause~~~");
         
-        
+        stopSound();
+        releaseWakeLock();
     }
 
     @Override
@@ -520,6 +757,12 @@ public class SurveyAct extends Activity {
         // TODO Auto-generated method stub
         Util.Log_lifeCycle(TAG, "onDestroy~~~");
         
+        releaseSound();
+        
+        if(pinCheckDialog.isShowing())
+            pinCheckDialog.dismiss();
+        if(retryPinDialog.isShowing())
+            retryPinDialog.dismiss();
         
         super.onDestroy();
     }
