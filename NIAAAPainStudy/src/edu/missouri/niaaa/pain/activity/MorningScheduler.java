@@ -36,7 +36,7 @@ public class MorningScheduler extends Activity {
 
     SharedPreferences sp;
     Calendar bedtimeReportStartTS;
-    
+
     public static final String INTENT_TS = "START_TIME";
 
     @Override
@@ -109,9 +109,9 @@ public class MorningScheduler extends Activity {
                 if(hour >= 3 && hour <12 || (hour == 12 && minute == 0)){
 
                     saveDefault();
-                    
+
                     Util.bedtimeComplete(MorningScheduler.this);
-                    
+
                     Intent i = new Intent();
                     i.putExtra(INTENT_TS,bedtimeReportStartTS);
                     setResult(Activity.RESULT_OK, i);
@@ -140,7 +140,7 @@ public class MorningScheduler extends Activity {
             sp.edit().putInt(Util.SP_BEDTIME_KEY_HOUR, -1).commit();
             sp.edit().putInt(Util.SP_BEDTIME_KEY_MINUTE, -1).commit();
         }
-        
+
         Calendar c = Util.getProperMorningScheduleTime(hour, minute);
         sp.edit().putLong(Util.SP_BEDTIME_KEY_LONG, c.getTimeInMillis()).commit();
     }

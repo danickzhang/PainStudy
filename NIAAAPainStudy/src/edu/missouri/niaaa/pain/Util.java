@@ -18,19 +18,19 @@ import edu.missouri.niaaa.pain.survey.parser.XMLConfigParser;
 
 public class Util {
     static String TAG = "Util.java";
-    
+
     public static final String  ADMIN_UID = "0000";
-    
-    
-    
-    
+
+
+
+
     /*for debug*/
     public static final boolean DEBUG_LIFECYCLE = true;
     public static final boolean DEBUG           = true;
     public static final boolean RELEASE         = false;
     public static final boolean REMIND_SEPLIT   = true;
-    
-    
+
+
     /*survey config*/
     public static final int MAX_REMINDER = 3;
     public static final int MAX_TRIGGER_MORNING = 1;//1
@@ -38,13 +38,13 @@ public class Util {
     public static final int MAX_TRIGGER_FOLLOWUP = 3;//3
     public static final int VOLUME = 8;//10
     public static final String PHONE_BASE_PATH = "sdcard/TestResult_craving/";
-    
+
     /*survey type*/
     public static final String SV_TYPE                      = "Survey_Type";
     public static final String SV_SEQ                       = "Survey_Seq";
     public static final String SV_REMIND_SEQ                = "Survey_Reminder_Seq";
     public static final String SV_MANUAL                    = "Survey_manual_triggered";
-    
+
     public static final int SV_NAME_MORNING              = 1;
     public static final int SV_NAME_RANDOM               = 2;
     public static final int SV_NAME_PAIN                 = 3;
@@ -52,22 +52,22 @@ public class Util {
     public static final int SV_NAME_DRINKING             = 5;
     public static final int SV_NAME_DRINKING_FOLLOWUP    = 6;
     public static final int SV_NAME_DUAL_FOLLOWUP        = 7;
-    
-    
+
+
     /*constant value*/
     public static final String PKG_BASE = "edu.missouri.niaaa.pain.";
 
     public static final String BD_ACTION_DAEMON_FUNC    = "Intent_Daemon";
-    
+
     public static final String BD_ACTION_SURVEY_FUNC    = "Intent_Survey";
 //    String schedule
-    
+
     public static final int SURVEY_TIMEOUT_IN_SECONDS = 7*60;
-    
-    
+
+
     //*sharedPreference*//
     public static final String SP_BASE = PKG_BASE;
-    
+
     /*login info*/
     public static final String SP_LOGIN                     = SP_BASE + "LOGIN";
     public static final String SP_LOGIN_KEY_STUDY_STARTTIME = "STUDY_DAY_START";
@@ -80,27 +80,27 @@ public class Util {
     public static final String SP_BEDTIME_KEY_LONG          = "BEDTIME_LONG";
     /*survey*/
     public static final String SP_SURVEY                    = SP_BASE + "SURVEY";
-                                                            
-    
-    
-    
+
+
+
+
     /*broadcast actions*/
     public static final String BD_ACTION_BASE           = PKG_BASE;//+"action.";
-    
+
     public static final String BD_ACTION_DAEMON         = BD_ACTION_BASE    + "DAEMON";
-    
+
     public static final String BD_ACTION_SURVEY_TRIGGER = BD_ACTION_BASE    + "SURVEY_TRIGGER";
     public static final String BD_ACTION_SURVEY_REMINDS = BD_ACTION_BASE    + "SURVEY_REMINDS";
-    
-    
+
+
     public static final String BD_ACTION_SUSPENSION     = BD_ACTION_BASE    + "SUSPENSION";
-    
-    
+
+
     public static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-    
-    
-    
-    
+
+
+
+
     /**
      * Logs to debug system life cycle, which is triggered by system inherently.
      *
@@ -122,7 +122,7 @@ public class Util {
             Log.d(s1,s2);
         }
     }
-    
+
     public static void Log_debug(String s1, boolean enableByClass, String s2){
         if(enableByClass) {
             Log_debug(s1,s2);
@@ -133,17 +133,17 @@ public class Util {
 //        if(enable)
 //            Log_debug(s1, enableByClass, s2);
 //    }
-    
-    
-    
+
+
+
     public static final int CODE_SCHEDULE_MANUALLY = 10;
     public static final int CODE_SCHEDULE_AUTOMATIC = 11;
-    
+
     /* random */
     public static void scheduleRandomSurvey(Context context, boolean startFromNoon, boolean autoTriggered) {
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        
+
         Calendar c = Calendar.getInstance();
         c.set(Calendar.HOUR_OF_DAY, 23);//23
         c.set(Calendar.MINUTE, 59);//59
@@ -180,8 +180,8 @@ public class Util {
 
                 strArr[i] = sdf.format(c2.getTime());
                 i++;
-                
-                
+
+
                 Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY_TRIGGER);
                 itTrigger.putExtra(Utilities.SV_NAME, i);
                 PendingIntent piTrigger = PendingIntent.getBroadcast(context, i, itTrigger, Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -202,21 +202,21 @@ public class Util {
         Utilities.getSP(context, Utilities.SP_RANDOM_TIME).edit().putString(Utilities.SP_KEY_RANDOM_TIME_SET, random_schedule).commit();
 
     }
-    
-    
+
+
     public static List<SurveyInfo> getSurverList(Context context) throws IOException{
         //Try to read surveys from give file
         return new XMLConfigParser().parseQuestion(new InputSource(context.getAssets().open("config.xml")));
     }
 
-    
+
     /*************************************************************************************************************/
     /*Morning & bedtime*/
-    
+
     public static void scheduleMorningSurvey(Context context){
-        
+
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        
+
         //default time to 12:00 at noon
         Calendar c = Utilities.getDefaultMorningCal(context);
         long defTime = c.getTimeInMillis();
@@ -224,55 +224,55 @@ public class Util {
 
         time = Utilities.getSP(context, Util.SP_BEDTIME).getLong(Util.SP_BEDTIME_KEY_LONG, defTime);
         Util.Log_debug(TAG, "---MorningSruvey scheduled at "+Utilities.getTimeFromLong(time)+" context "+context.hashCode());
-        
+
         Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY_TRIGGER);
         itTrigger.putExtra(Utilities.SV_NAME, Utilities.SV_NAME_MORNING);
         PendingIntent piTrigger = PendingIntent.getBroadcast(context, 1, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
-        
+
         am.setExact(AlarmManager.RTC_WAKEUP, time, piTrigger);
     }
-    
+
     /**
      * This is called when you not sure whether or not it's right time to schedule morning survey.
      * like what it needs to restore from reboot.
      */
     public static void rescheduleMorningSurvey(Context context){
-        
+
     }
-    
-    
+
+
     public static void activateToday(){
-        
+
     }
-    
+
     public static void deActivateToday(){
-        
+
     }
-    
-    
+
+
     /**
      * deactivate and cancel surveys today,
      * schedule for next morning survey.
      */
     public static void bedtimeComplete(Context context){
-        
+
         deActivateToday();
-        
+
         scheduleMorningSurvey(context);
     }
-    
-    
+
+
     /**
      * Morning scheduler just set for hour and minute, call this to get proper date information.
      * @param hour
      * @param minute
      * @return
-     * if set before midnight(after 9pm), morning alarm day is tomorrow, 
+     * if set before midnight(after 9pm), morning alarm day is tomorrow,
      * else if set before 3am, morning alarm day is today.
      */
     public static Calendar getProperMorningScheduleTime(int hour, int minute){
         Calendar c = Calendar.getInstance();
-        
+
         if(c.get(Calendar.HOUR_OF_DAY) > 3){
             //next day
             c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) + 1);
@@ -283,24 +283,24 @@ public class Util {
 
         return c;
     }
-    
+
     /*/Morning & bedtime*/
-    
-    
+
+
     /**
      * when app reboot, check if there is any suspension at the time phone shut down.
      * if it still under that time period, set suspension again,
      * if it expired, clear the suspension flag.
      */
     public static void restoreSuspension(){
-        
+
     }
-    
+
     public static boolean isSuspension(){
         return false;
     }
-    
-    
+
+
     /**
      * start recording location with condition checking first
      * check if today is activated (from activated time to 3am next day)
@@ -310,16 +310,16 @@ public class Util {
             startRecordingLocation();
         }
     }
-    
+
     public static void startRecordingLocation(){
-        
+
     }
-    
+
     public static void stopRecordingLocation(){
-        
+
     }
-    
-    
+
+
     /**
      * @return
      */

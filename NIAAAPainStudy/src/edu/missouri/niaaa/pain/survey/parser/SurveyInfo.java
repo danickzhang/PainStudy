@@ -2,12 +2,12 @@ package edu.missouri.niaaa.pain.survey.parser;
 
 import java.util.HashMap;
 
-/** 
+/**
  * @author Chen
  * data: 06/13/2015
  * change methods of launching to action
  * make type for id of surveys
- * 
+ *
  * @author Chen
  * date: 06/07/2015
  * start using survey type for methods of launching
@@ -61,7 +61,7 @@ public class SurveyInfo {
     public String getDisplayName(){
         return this.surveyDisplayName;
     }
-    
+
     /**
      * @return the id of the survey, which is used in app to specify survey type.
      */
@@ -90,7 +90,7 @@ public class SurveyInfo {
     public String getAction(){
         return this.surveyAction;
     }
-    
+
     /**
      *     A1. auto triggered - do not shown on menu</br>
      *     M2. manually launched </br>

@@ -192,7 +192,7 @@ public class Utilities {
 
 
 /*  shared preferences*/
-    
+
     public final static String SP_KEY_MORNING_COMPLETE_TIME = "MORNING_COMPLETE_TIME";
 
     /*random time set*/

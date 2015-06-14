@@ -9,7 +9,7 @@
             <answer id = "2" skip = "11q23">No</answer>
         </question>
     </category>
-    
+
     <externalsource baseid="11q" filename="_RecentPainMedicationRandom.xml"></externalsource>
 
     <!-- <RECENT DRINKING> -->

@@ -33,7 +33,7 @@ public class SurveyBroadcast extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         // TODO Auto-generated method stub
-        
+
         XMLConfigParser configParser = new XMLConfigParser();
         try {
             List<SurveyInfo> surveys = configParser.parseQuestion(new InputSource(context.getAssets().open("config.xml")));
@@ -41,7 +41,7 @@ public class SurveyBroadcast extends BroadcastReceiver {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-        
+
         Utilities.Log_sys(TAG, "broadcast on receive"+intent.getAction());
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 

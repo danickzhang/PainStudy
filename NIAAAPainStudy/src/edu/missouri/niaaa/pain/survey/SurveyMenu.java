@@ -131,7 +131,7 @@ public class SurveyMenu extends Activity {
                                 launchSurvey(temp.getType(), false);
                             }
                         }
-                        
+
                     }
                 });
 
@@ -191,7 +191,7 @@ public class SurveyMenu extends Activity {
         if(man){
             launchIntent.putExtra(Util.SV_MANUAL, true);
         }
-        
+
 //      if (surveyName.equalsIgnoreCase("RANDOM_ASSESSMENT"))
 //          launchIntent.putExtra("random_sequence", randomSeq);
 

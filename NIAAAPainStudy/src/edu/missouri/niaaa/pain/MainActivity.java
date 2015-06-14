@@ -69,7 +69,7 @@ public class MainActivity extends Activity {
     static final int INTENT_REQUEST_MAMAGE = 2;
     static final int INTENT_REQUEST_WAKEUP = 3;
     static final int INTENT_REQUEST_SUSPENSION = 4;
-    
+
 
     private Button section_1;
     private Button section_2;
@@ -83,10 +83,10 @@ public class MainActivity extends Activity {
 
     /*adapter for bluetooth switch*/
     private BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-    
-    private SharedPreferences shp = null; 
+
+    private SharedPreferences shp = null;
     private InputMethodManager imm = null;
-    
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,15 +114,15 @@ public class MainActivity extends Activity {
 
         shp = getSharedPreferences(Util.SP_LOGIN, Context.MODE_PRIVATE);
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        
+
         setContentView(R.layout.activity_main);
 
         setListeners();
-        
+
         registerReceiver(suspensionReceiver, new IntentFilter(Util.BD_ACTION_SUSPENSION));
 
     }
-    
+
 
     @Override
     protected void onResume() {
@@ -139,7 +139,7 @@ public class MainActivity extends Activity {
          * */
         checkUserStatus();
         //restoreStatus();
-        
+
     }
 
 
@@ -153,7 +153,7 @@ public class MainActivity extends Activity {
         //check if device is assigned with an ID
         String ID = shp.getString(Util.SP_LOGIN_KEY_USERID, "");
         String PWD = shp.getString(Util.SP_LOGIN_KEY_USERPWD, "");
-        
+
         Util.Log_debug(TAG, "assigned user ID is "+ID);
 
         if(ID.equals("")){
@@ -166,22 +166,22 @@ public class MainActivity extends Activity {
 
         }else{
             Util.Log_debug(TAG, "assigned user PWD is "+PWD);
-            
+
             //with full ID and PWD
-            
+
             /*is app launched by RebootReceiver*/
             if(getIntent().getBooleanExtra(RebootReceiver.REBOOT, false)){
                 Util.Log_debug(TAG, "app is just launched by RebootReceiver");
-                
+
                 restoreStatusForTheFirstTime();
-                
+
             }else{
                 restoreStatus();
             }
-            
+
         }
     }
-    
+
 
     /**
      * jump to admin manage page for assign ID
@@ -209,23 +209,23 @@ public class MainActivity extends Activity {
         }
 
     }
-    
+
     /**
-     * Similar with {@link #restoreStatus()}, but this is called for 
+     * Similar with {@link #restoreStatus()}, but this is called for
      * the first time ID is assigned
      */
     private void restoreStatusForTheFirstTime(){
-        
-        //schedule 
+
+        //schedule
         //or reschedule if already there
         //Util.scheduleRandomSurvey(MainActivity.this, true, true);
         //scheduleAll();
 
-        
-        
+
+
         Utilities.scheduleDaemon(MainActivity.this);
 //      startSService();
-        
+
         restoreStatus();
     }
 
@@ -304,7 +304,7 @@ public class MainActivity extends Activity {
                             //format check
 
                             shp.edit().putString(Util.SP_LOGIN_KEY_USERPWD, pinStr).commit();
-                            
+
                             restoreStatusForTheFirstTime();
 
                         }else{
@@ -345,7 +345,7 @@ public class MainActivity extends Activity {
         return builder.create();
     }
 
-    
+
     private void setListeners() {
         // TODO Auto-generated method stub
 
@@ -438,7 +438,7 @@ public class MainActivity extends Activity {
 
             }
         });
-        
+
         setSuspensionText();
         section_6.setOnClickListener(new OnClickListener(){
 
@@ -531,7 +531,7 @@ public class MainActivity extends Activity {
                 startActivity(new Intent(MainActivity.this, SupportActivity.class));
             }
         });
-        
+
         section_8.setOnClickListener(new OnClickListener(){
 
             @Override
@@ -539,20 +539,20 @@ public class MainActivity extends Activity {
                 // TODO Auto-generated method stub
                 Utilities.Log(TAG, "section 8 on click listener");
 
-                
+
                 AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                
+
                 Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY_TRIGGER);
                 itTrigger.putExtra(Util.SV_TYPE, Util.SV_NAME_MORNING);
                 PendingIntent piTrigger = PendingIntent.getBroadcast(MainActivity.this, 1, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
-                
+
                 am.setExact(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis()+500, piTrigger);
             }
         });
-        
+
     }
-    
-    
+
+
     private void setSuspensionText(){
         section_6.setText(!Utilities.getSP(MainActivity.this, Utilities.SP_SURVEY).getBoolean(Utilities.SP_KEY_SURVEY_SUSPENSION, false)?R.string.section_6:R.string.section_62);
     }
@@ -766,7 +766,7 @@ public class MainActivity extends Activity {
                     finish();
                 }
                 break;
-                
+
             case INTENT_REQUEST_WAKEUP:
                 if(resultCode == Activity.RESULT_OK){
                     //write
@@ -775,7 +775,7 @@ public class MainActivity extends Activity {
 
                     Toast.makeText(getApplicationContext(), getString(R.string.bedtime_set)+" "+ DateFormat.getDateTimeInstance().format(morning.getTime()),Toast.LENGTH_LONG).show();
                     Util.Log_debug(TAG, "Morning Survey scheduled at " + DateFormat.getDateTimeInstance().format(morning.getTime()));
-                    
+
                     //keep delivered
                     try {
                         Utilities.writeEventToFile(MainActivity.this, Utilities.CODE_BEDTIME,
@@ -788,7 +788,7 @@ public class MainActivity extends Activity {
                     }
                 }
                 else{ //if(resultCode == Activity.RESULT_CANCELED){
-                
+
                 }
                 break;
 
@@ -823,7 +823,7 @@ public class MainActivity extends Activity {
         // TODO Auto-generated method stub
         super.onPause();
         Util.Log_lifeCycle(TAG, "OnPause~~~");
-        
+
         if(getIntent().getBooleanExtra(RebootReceiver.REBOOT, false)){
             Intent i = getIntent();
             i.removeExtra(RebootReceiver.REBOOT);
@@ -844,7 +844,7 @@ public class MainActivity extends Activity {
         Util.Log_lifeCycle(TAG, "onDestroy~~~");
         // implementation here
         unregisterReceiver(suspensionReceiver);
-        
+
         super.onDestroy();
     }
 

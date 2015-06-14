@@ -15,13 +15,13 @@ import edu.missouri.niaaa.pain.Utilities;
  * @author Chen
  *
  * @params
- * 
+ *
  */
 public class DaemonReceiver extends BroadcastReceiver {
 
     final static String TAG = "DaemonReceiver.java";
     boolean logEnable = true;
-    
+
     long tolerace = 60*1000;
 
     @Override

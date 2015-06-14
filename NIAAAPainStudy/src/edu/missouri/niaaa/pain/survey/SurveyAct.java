@@ -45,7 +45,7 @@ import edu.missouri.niaaa.pain.survey.parser.XMLParser;
 public class SurveyAct extends Activity {
     String TAG = "SurveyActivity.java";
     boolean logEnable = true;
-    
+
     /*survey init variables*/
     List<SurveyInfo> surveys = null;
     int surveyType = -1;
@@ -55,11 +55,11 @@ public class SurveyAct extends Activity {
     String surveyDisplayName;
     String surveyFileName;
     String pinCheckDialogTitle;
-    
+
     /*dialogs*/
     Dialog pinCheckDialog;
     Dialog retryPinDialog;
-    
+
     /*used by survey layout*/
     //Button used to submit each question
     Button submitButton;
@@ -77,7 +77,7 @@ public class SurveyAct extends Activity {
     LinkedHashMap<String, List<String>> answerMap;
     //List of read categories
     ArrayList<Category> cats = null;
-    
+
     /*sound*/
     SoundPool soundpool;
     private SparseIntArray soundMap;
@@ -86,14 +86,14 @@ public class SurveyAct extends Activity {
     int soundStreamID;
     int soundPlayAfter = 1000;
     Vibrator vibrator;
-    
+
     WakeLock wakelock;
-    
+
     //
     SharedPreferences shp;
-    
 
-    
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,33 +101,33 @@ public class SurveyAct extends Activity {
         super.onCreate(savedInstanceState);
         Util.Log_lifeCycle(TAG, "OnCreate~~~");
         Util.Log_debug(TAG, "~~~"+getIntent().getIntExtra(Util.SV_TYPE, -1)+" "+getIntent().getIntExtra(Util.SV_SEQ, -1)+" "+getIntent().getIntExtra(Util.SV_REMIND_SEQ, -1));
-        
+
         wakelock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, TAG);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         soundpool = new SoundPool(2, AudioManager.STREAM_MUSIC, 100);
         soundMap = new SparseIntArray();
         soundMap.put(1, soundpool.load(this, R.raw.alarm_sound, 1));
         soundTimer = new Timer();
-        
-        
+
+
         getSurveyList();
-        
+
         init();
-        
+
         setTitle(surveyDisplayName);
         setContentView(R.layout.survey_layout);
         setListeners();
-        
+
         initializeSurveyLayout();
-        
+
     }
 
 
     private void init() {
         // TODO Auto-generated method stub
-        
+
         initializeVariable();
-        
+
         checkStatue();
     }
 
@@ -138,40 +138,40 @@ public class SurveyAct extends Activity {
         surveySeq = getIntent().getIntExtra(Util.SV_SEQ, -1);// protect for -1
         remindSeq = getIntent().getIntExtra(Util.SV_REMIND_SEQ, -1);// protect for -1
         manualTrigger = getIntent().getBooleanExtra(Util.SV_MANUAL, false);
-        
+
         SurveyInfo si = surveys.get(surveyType-1);
         surveyDisplayName = (Util.RELEASE ? si.getDisplayName() : num2seq(surveySeq) + si.getDisplayName());
         surveyFileName = si.getFileName();
-        
+
         pinCheckDialogTitle = (Util.RELEASE ? getString(R.string.pin_title) : getString(R.string.pin_title) + " for reminder "+remindSeq);
     }
 
-    
+
     private void checkStatue() {
         // TODO Auto-generated method stub
         acquireWakeLock();
-        
+
         pinCheckDialog = userPinCheckDialog(this);
         retryPinDialog = retryUserPinDialog();
-        
+
         if(manualTrigger){
-            
+
         }
         else{
             playSound();
-            
+
         }
-        
+
         if(pinCheckDialog.isShowing()) {
             pinCheckDialog.dismiss();
         }
         pinCheckDialog.show();
     }
-    
+
 
     private void getSurveyList() {
         // TODO Auto-generated method stub
-        
+
         /*prepare survey info*/
         try {
             surveys = Util.getSurverList(this);
@@ -179,8 +179,8 @@ public class SurveyAct extends Activity {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-        
-        //print 
+
+        //print
         for(SurveyInfo survey: surveys){
             Util.Log_debug(TAG, false, survey.getType()+" "+survey.getDisplayName()+" "+survey.getAction()+" "+SurveyInfo.TYPE_SHOWN_MAP.get(survey.getAction()));
         }
@@ -189,10 +189,10 @@ public class SurveyAct extends Activity {
 
     private void initializeSurveyLayout() {
         // TODO Auto-generated method stub
-        
+
         //Initialize map that will pass questions and answers to service
         answerMap = new LinkedHashMap<String, List<String>>();
-        
+
         //Tell the parser which survey to use
         Util.Log_debug(TAG, "survey file is "+surveyFileName);
 
@@ -226,7 +226,7 @@ public class SurveyAct extends Activity {
             }
         }
     }
-    
+
 
 
     private void setListeners() {
@@ -280,21 +280,21 @@ public class SurveyAct extends Activity {
 
 
     }
-    
-    
+
+
     private void surveyStart(){
         // TODO Auto-generated method stub
         Util.Log_debug(TAG, "~~~Survey Start");
     }
-    
-    
+
+
     private void surveyComplete() {
         // TODO Auto-generated method stub
         Util.Log_debug(TAG, "~~~Survey Complete");
     }
-    
-    
-    
+
+
+
     /**
      * @return Get the next question to be displayed
      */
@@ -364,7 +364,7 @@ public class SurveyAct extends Activity {
 
     }
 
-    
+
     /**
      * @return
      */
@@ -423,7 +423,7 @@ public class SurveyAct extends Activity {
 
         return currentQuestion.prepareLayout(this);
     }
-    
+
 
     /**
      * @param layout
@@ -480,9 +480,9 @@ public class SurveyAct extends Activity {
             return sv;
         }
     }
-    
-    
-    
+
+
+
     private Dialog retryUserPinDialog(){
 
         return new AlertDialog.Builder(this)
@@ -502,10 +502,10 @@ public class SurveyAct extends Activity {
         })
         .create();
     }
-    
-    
+
+
     private Dialog userPinCheckDialog(final Context context) {
-        
+
         LayoutInflater inflater = LayoutInflater.from(context);
         final View DialogView = inflater.inflate(R.layout.pin_input, null);
         TextView pinText = (TextView) DialogView.findViewById(R.id.pin_text);
@@ -549,31 +549,31 @@ public class SurveyAct extends Activity {
 
         return builder.create();
     }
-    
-    
 
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     protected void onStart() {
         // TODO Auto-generated method stub
         super.onStart();
         Util.Log_lifeCycle(TAG, "onStart~~~");
-        
-        
+
+
     }
 
     @Override
@@ -581,8 +581,8 @@ public class SurveyAct extends Activity {
         // TODO Auto-generated method stub
         super.onRestart();
         Util.Log_lifeCycle(TAG, "onRestart~~~");
-        
-        
+
+
     }
 
     @Override
@@ -590,8 +590,8 @@ public class SurveyAct extends Activity {
         // TODO Auto-generated method stub
         super.onResume();
         Util.Log_lifeCycle(TAG, "onResume~~~");
-        
-        
+
+
     }
 
     @Override
@@ -600,62 +600,62 @@ public class SurveyAct extends Activity {
         super.onNewIntent(intent);
         /*set new intent*/
         setIntent(intent);
-        
+
         Util.Log_lifeCycle(TAG, "onNewIntent~~~");
         Util.Log_debug(TAG, "~~~"+getIntent().getIntExtra(Util.SV_TYPE, -1)+" "+getIntent().getIntExtra(Util.SV_SEQ, -1)+" "+getIntent().getIntExtra(Util.SV_REMIND_SEQ, -1));
-        
+
         /*actually only auto triggered survey can be here*/
         init();
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /*screen lock*/
-    
+
     private void acquireWakeLock() {
         // TODO Auto-generated method stub
         wakelock.acquire();
     }
-    
+
     private void releaseWakeLock() {
         // TODO Auto-generated method stub
         if(wakelock.isHeld()) {
             wakelock.release();
         }
     }
-    
-    
+
+
     /*sound & vibrator*/
-    
+
     private void playSoundOnprepared(){
         soundpool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
 
             @Override
             public void onLoadComplete(SoundPool arg0, int arg1, int arg2) {
                 // TODO Auto-generated method stub
-                
+
                 playSound();
             }
         });
     }
-    
+
     private void playSound(){
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         am.setStreamVolume(AudioManager.STREAM_MUSIC, Util.VOLUME, AudioManager.FLAG_PLAY_SOUND);
@@ -663,7 +663,7 @@ public class SurveyAct extends Activity {
         soundTask = new StartTask();
         soundTimer.schedule(soundTask,soundPlayAfter);
 
-        
+
         vibrator.vibrate(5000);
     }
 
@@ -679,12 +679,12 @@ public class SurveyAct extends Activity {
 //        soundTimer.cancel();
         if(soundTask != null)
         soundTask.cancel();
-        
+
         soundpool.stop(soundStreamID);
-        
+
         vibrator.cancel();
     }
-    
+
     private void releaseSound(){
         stopSound();
         soundpool.release();
@@ -692,11 +692,11 @@ public class SurveyAct extends Activity {
         soundTimer.purge();
         soundTimer = null;
     }
-    
-    
-    
+
+
+
     /*some utilities*/
-    
+
     private String num2seq(int num){
         String seq = "";
         switch(num){
@@ -714,8 +714,8 @@ public class SurveyAct extends Activity {
         }
         return seq;
     }
-    
-    
+
+
     private void printCategoryForDebug(ArrayList<Category> cats, boolean able) {
         // TODO Auto-generated method stub
         Util.Log_debug(TAG, able, "-------------^^^^^^^^______________");
@@ -731,15 +731,15 @@ public class SurveyAct extends Activity {
             }
         }
     }
-    
+
     /******************************************************************************************************************************************/
-    
+
     @Override
     protected void onPause() {
         // TODO Auto-generated method stub
         super.onPause();
         Util.Log_lifeCycle(TAG, "onPause~~~");
-        
+
         stopSound();
         releaseWakeLock();
     }
@@ -749,21 +749,21 @@ public class SurveyAct extends Activity {
         // TODO Auto-generated method stub
         super.onStop();
         Util.Log_lifeCycle(TAG, "onStop~~~");
-        
+
     }
 
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
         Util.Log_lifeCycle(TAG, "onDestroy~~~");
-        
+
         releaseSound();
-        
+
         if(pinCheckDialog.isShowing())
             pinCheckDialog.dismiss();
         if(retryPinDialog.isShowing())
             retryPinDialog.dismiss();
-        
+
         super.onDestroy();
     }
 
@@ -771,7 +771,7 @@ public class SurveyAct extends Activity {
     public void onBackPressed() {
         // TODO Auto-generated method stub
         Util.Log_lifeCycle(TAG, "onBackPressed~~~");
-        
+
         new AlertDialog.Builder(this)
         .setTitle(R.string.survey_cancel_title)
         .setMessage(R.string.survey_cancel_msg)
@@ -805,7 +805,7 @@ public class SurveyAct extends Activity {
             }
         }).create().show();
     }
-    
-    
-    
+
+
+
 }

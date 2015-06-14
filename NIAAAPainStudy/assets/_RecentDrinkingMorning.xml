@@ -18,7 +18,7 @@
             <text id = "9">Since I drank alcohol, I forgot about my problems.</text>
             <text id = "10">Since I drank alcohol, I feel less depressed.</text>
         </questionblock>
-        
+
         <question id = "11" type = "number">
             <text>HOW MANY DRINKS did you consume SINCE wake-up? Please remember to answer in STANDARD drinks.</text>
             <answer id = "item">drink(s)</answer>
