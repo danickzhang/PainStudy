@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.missouri.niaaa.pain"
-    android:versionCode="1"
+    android:versionCode="9"
     android:versionName="1.2" >
 
     <uses-sdk
@@ -39,7 +39,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -85,6 +84,7 @@
             <intent-filter>
                 <action android:name="edu.missouri.niaaa.pain.SURVEY_TRIGGER" />
                 <action android:name="edu.missouri.niaaa.pain.SURVEY_REMINDS" />
+                <action android:name="edu.missouri.niaaa.pain.SURVEY_ISOLATE" />
                 <action android:name="edu.missouri.niaaa.pain.SUSPENSION" />
 
             </intent-filter>

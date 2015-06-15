@@ -20,10 +20,10 @@ import edu.missouri.niaaa.pain.Util;
 import edu.missouri.niaaa.pain.Utilities;
 
 public class SuspensionTimePicker extends Activity {
-
-    String TAG = "Suspension time picker";
+    String TAG = "SuspensionTimePicker.java";
+    
 //  String[] display = {"  15 minutes  ","  30 minutes  ","  45 minutes  ","  60 minutes  ","  1 hour & 15 minutes  ","  1 & half hour  ","  1 hour & 45 minutes  ","  2 hours  "};
-    int seq = 0;
+    int selection = 0;
     int interval = Utilities.SUSPENSION_INTERVAL_IN_SECOND;
 
     @Override
@@ -50,9 +50,9 @@ public class SuspensionTimePicker extends Activity {
             @Override
             public void onValueChange(NumberPicker picker, int oldValue, int newValue) {
                 // TODO Auto-generated method stub
-                Utilities.Log(TAG, "selection is "+seq+" and item is "+Utilities.SUSPENSION_DISPLAY[seq]);
+                Util.Log_debug(TAG, "selection is "+selection+" and item is "+Utilities.SUSPENSION_DISPLAY[selection]);
 
-                seq = newValue;
+                selection = newValue;
             }});
 
         setPicker.setOnClickListener(new OnClickListener(){
@@ -63,7 +63,7 @@ public class SuspensionTimePicker extends Activity {
 
 //              section_6.setText("Break Suspension");
                 Utilities.getSP(SuspensionTimePicker.this, Utilities.SP_SURVEY).edit().putBoolean(Utilities.SP_KEY_SURVEY_SUSPENSION, true).commit();
-                sp.edit().putInt(Utilities.SP_KEY_SUSPENSION_CHOICE, seq + 1).commit();
+                sp.edit().putInt(Utilities.SP_KEY_SUSPENSION_CHOICE, selection + 1).commit();
 
                 //set suspension alarm
                 AlarmManager am = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
@@ -73,14 +73,14 @@ public class SuspensionTimePicker extends Activity {
                 PendingIntent breakPi = PendingIntent.getBroadcast(getApplicationContext(), 0, breakIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
 //              getApplicationContext().sendBroadcast(breakIntent);
 
-                am.setExact(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis()+(seq+1)*interval*1000, breakPi);
+                am.setExact(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis()+(selection+1)*interval*1000, breakPi);
 
                 //close volume
                 AudioManager audiom = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
                 audiom.setStreamVolume(AudioManager.STREAM_MUSIC, 3, AudioManager.FLAG_PLAY_SOUND);
 
                 //set result and finish
-                setResult(1);// set text to break suspension
+                setResult(Activity.RESULT_OK);// set text to break suspension
                 finish();
             }
         });

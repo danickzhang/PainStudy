@@ -546,7 +546,19 @@ public class MainActivity extends Activity {
                 itTrigger.putExtra(Util.SV_TYPE, Util.SV_NAME_MORNING);
                 PendingIntent piTrigger = PendingIntent.getBroadcast(MainActivity.this, 1, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                am.setExact(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis()+500, piTrigger);
+                am.setExact(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis(), piTrigger);//do not add any delay in real use
+            }
+        });
+        
+        section_9.setOnClickListener(new OnClickListener(){
+
+            @Override
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+                Utilities.Log(TAG, "section 9 on click listener");
+
+                Util.Log_debug(TAG, ""+Util.isIsolateFlag(MainActivity.this));
+                
             }
         });
 
@@ -793,7 +805,7 @@ public class MainActivity extends Activity {
                 break;
 
             case INTENT_REQUEST_SUSPENSION:
-                if(resultCode == 1){
+                if(resultCode == Activity.RESULT_OK){
                     section_6.setText(R.string.section_62);
                 }
 

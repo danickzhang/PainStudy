@@ -90,6 +90,9 @@ public class SurveyAct extends Activity {
     WakeLock wakelock;
 
     //
+    public static final int REMIND_IGNORE = 0;
+    public static final int REMIND_TIMEOUT = -2;
+
     SharedPreferences shp;
 
 
@@ -162,6 +165,7 @@ public class SurveyAct extends Activity {
 
         }
 
+        /*user pin check dialog*/
         if(pinCheckDialog.isShowing()) {
             pinCheckDialog.dismiss();
         }
@@ -285,12 +289,24 @@ public class SurveyAct extends Activity {
     private void surveyStart(){
         // TODO Auto-generated method stub
         Util.Log_debug(TAG, "~~~Survey Start");
+        
+        //
+        Util.cancelSurveyReminders(this, surveyType, surveySeq);
+        
+        Util.scheduleSurveyTimeout(this, surveyType, surveySeq);
+        
     }
 
 
     private void surveyComplete() {
         // TODO Auto-generated method stub
         Util.Log_debug(TAG, "~~~Survey Complete");
+        
+        Util.cancelSurveyTimeout(this, surveyType, surveySeq);
+        
+        Util.scheduleSurveyIsolater(this);
+        
+        
     }
 
 
@@ -523,6 +539,7 @@ public class SurveyAct extends Activity {
                 Utilities.Log("Pin Dialog", "pin String is "+pinStr);
 
                 if (pinStr.equals(Utilities.getPWD(context))){
+                    
                     stopSound();
 
                     surveyStart();
@@ -781,6 +798,12 @@ public class SurveyAct extends Activity {
 
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
+                Util.Log_lifeCycle(TAG, "~~~onBackPressed YES");
+                
+                Util.cancelSurveyTimeout(SurveyAct.this, surveyType, surveySeq);
+                
+                //write
+                //##??
 
 //                String[] reminder = getReminderTimeStamp(context);
 //                try {

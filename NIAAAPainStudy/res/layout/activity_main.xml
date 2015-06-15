@@ -58,8 +58,7 @@
     <Button
         android:id="@+id/section_label9"
         style="@style/button_style"
-        android:text="reset"
-        android:visibility="gone"
+        android:text="button"
         />
 
 </LinearLayout>
