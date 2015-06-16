@@ -47,7 +47,7 @@ public class SurveyAct extends Activity {
     boolean logEnable = true;
 
     /*survey init variables*/
-    List<SurveyInfo> surveys = null;
+    List<SurveyInfo> surveylist = null;
     int surveyType = -1;
     int surveySeq = -1;
     int remindSeq = -1;
@@ -94,6 +94,7 @@ public class SurveyAct extends Activity {
     public static final int REMIND_TIMEOUT = -2;
 
     SharedPreferences shp;
+    boolean onGoing = false;
 
 
 
@@ -142,7 +143,7 @@ public class SurveyAct extends Activity {
         remindSeq = getIntent().getIntExtra(Util.SV_REMIND_SEQ, -1);// protect for -1
         manualTrigger = getIntent().getBooleanExtra(Util.SV_MANUAL, false);
 
-        SurveyInfo si = surveys.get(surveyType-1);
+        SurveyInfo si = surveylist.get(surveyType-1);
         surveyDisplayName = (Util.RELEASE ? si.getDisplayName() : num2seq(surveySeq) + si.getDisplayName());
         surveyFileName = si.getFileName();
 
@@ -166,9 +167,9 @@ public class SurveyAct extends Activity {
         }
 
         /*user pin check dialog*/
-        if(pinCheckDialog.isShowing()) {
-            pinCheckDialog.dismiss();
-        }
+//        if(pinCheckDialog.isShowing()) {
+//            pinCheckDialog.dismiss();
+//        }
         pinCheckDialog.show();
     }
 
@@ -178,14 +179,15 @@ public class SurveyAct extends Activity {
 
         /*prepare survey info*/
         try {
-            surveys = Util.getSurverList(this);
+            surveylist = null;
+            surveylist = Util.getSurveyList(this);
         } catch (IOException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
 
         //print
-        for(SurveyInfo survey: surveys){
+        for(SurveyInfo survey: surveylist){
             Util.Log_debug(TAG, false, survey.getType()+" "+survey.getDisplayName()+" "+survey.getAction()+" "+SurveyInfo.TYPE_SHOWN_MAP.get(survey.getAction()));
         }
     }
@@ -295,6 +297,7 @@ public class SurveyAct extends Activity {
         
         Util.scheduleSurveyTimeout(this, surveyType, surveySeq);
         
+        onGoing = true;
     }
 
 
@@ -306,9 +309,58 @@ public class SurveyAct extends Activity {
         
         Util.scheduleSurveyIsolater(this);
         
+        splitSurvey(this, surveyType, surveySeq);
         
+        workWithAnswers();
+        
+        finish();
     }
 
+
+
+    private void workWithAnswers() {
+        // TODO Auto-generated method stub
+        boolean hasTrigger = false;
+        //Fill answer map for when it is passed to service
+        for(Category cat: cats){
+//          Utilities.Log(TAG, "category is "+cat.getQuestionDesc());
+//          Utilities.Log(TAG, "category contains questions "+cat.totalQuestions());
+            for(Question question: cat.getQuestions()){
+//              Utilities.Log(TAG, "question id "+question.getId());
+                answerMap.put(question.getId(), question.getSelectedAnswers());
+                //Here to target the first question of Drinking Follow-up
+                for(Answer answer: question.getAnswers()){
+//                  Log.d("_________________________________","answer "+answer.getAnswerText()+" "+answer.getId()+" "+answer.hasSurveyTrigger());
+//                  Utilities.Log(TAG, "contains trigger "+answer.hasSurveyTrigger()+" is selected "+answer.isSelected());
+                    if(answer.isSelected() && answer.hasSurveyTrigger()){
+                        hasTrigger = true;
+//                      Log.d("_________________________________","has trigger");
+                    }
+                }
+
+//              for(String answer: question.getSelectedAnswers()){
+//                  Log.d("+++++++++++++++++++++++++++++","answer string "+answer);
+//              }
+            }
+        }
+        //answerMap.put(currentQuestion.getId(), currentQuestion.getSelectedAnswers());
+    }
+
+
+    private void splitSurvey(Context context, int surveyType, int surveySeq) {
+        // TODO Auto-generated method stub
+        switch(surveyType){
+        case Util.SV_NAME_MORNING:
+            
+            Util.morningComplete(context);
+            
+            break;
+            
+        default:
+            
+            break;
+        }
+    }
 
 
     /**

@@ -28,7 +28,7 @@ public class SurveyMenu extends Activity {
     String TAG = "SurveyMenu.java";
     boolean logEnable = true;
 
-    List<SurveyInfo> surveys;
+    List<SurveyInfo> surveylist;
     HashMap<View, SurveyInfo> buttonMap;
 
     @Override
@@ -47,12 +47,13 @@ public class SurveyMenu extends Activity {
 
         //Try to read surveys from give file
         try {
-            surveys = Util.getSurverList(this);
+            surveylist = null;
+            surveylist = Util.getSurveyList(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        if(surveys == null){
+        if(surveylist == null){
             Toast.makeText(this, "Invalid configuration file", Toast.LENGTH_LONG).show();
             Util.Log_debug(TAG, logEnable, "No surveys in config.xml");
             finish();
@@ -62,7 +63,7 @@ public class SurveyMenu extends Activity {
             TextView tv = new TextView(this);
             tv.setText(R.string.survey_menu_select);
             linearLayout.addView(tv);
-            for(SurveyInfo survey: surveys){
+            for(SurveyInfo survey: surveylist){
                 Util.Log_debug(TAG, logEnable, survey.getType()+" "+survey.getDisplayName()+" "+survey.getAction()+" "+SurveyInfo.TYPE_SHOWN_MAP.get(survey.getAction()));
                 Button b = new Button(this);
                 b.setText(survey.getDisplayName());

@@ -61,12 +61,12 @@ public class Util {
 
     public static final String BD_ACTION_DAEMON_FUNC    = "Intent_Daemon";
 
-    public static final String BD_ACTION_SURVEY_FUNC    = "Intent_Survey";
+//    public static final String BD_ACTION_SURVEY_FUNC    = "Intent_Survey";
 //    String schedule
 
-    public static final int SURVEY_TIMEOUT_IN_SECONDS           = 20;//7*60;
-    public static final int SURVEY_REMINDS_IN_SECONDS           = 5;//5*60;
-    public static final int SURVEY_ISOLATE_IN_SECONDS           = 30;//29*60;
+    public static final int SURVEY_TIMEOUT_IN_SECONDS           = 7*60;
+    public static final int SURVEY_REMINDS_IN_SECONDS           = 5*60;
+    public static final int SURVEY_ISOLATE_IN_SECONDS           = 29*60;
     public final static int SUSPENSION_INTERVAL_IN_SECOND       = 15*60;
 
 
@@ -86,8 +86,7 @@ public class Util {
     /*survey*/
     public static final String SP_SURVEY                        = SP_BASE + "SURVEY";
     public static final String SP_SURVEY_KEY_FLAG_ISOLATE       = "SURVEY_ISOLATE";
-    public static final String SP_SURVEY_KEY_FLAG_SUSPENSION    = "SURVEY_SUSPENSION";
-    public static final String SP_SURVEY_KEY_SUSPENSION_SELECT  = "SUSPENSION_SELECTION";  
+    public static final String SP_SURVEY_KEY_FLAG_SUSPENSION    = "SURVEY_SUSPENSION_e";//expire
 
 
 
@@ -143,7 +142,7 @@ public class Util {
 //    }
 
 
-    public static List<SurveyInfo> getSurverList(Context context) throws IOException{
+    public static List<SurveyInfo> getSurveyList(Context context) throws IOException{
         //Try to read surveys from give file
         return new XMLConfigParser().parseQuestion(new InputSource(context.getAssets().open("config.xml")));
     }
@@ -205,12 +204,16 @@ public class Util {
                 strArr[i] = sdf.format(c2.getTime());
                 i++;
 
-
                 Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY_TRIGGER);
-                itTrigger.putExtra(Utilities.SV_NAME, i);
+                itTrigger.putExtra(Util.SV_TYPE, Util.SV_NAME_RANDOM);
+                itTrigger.putExtra(Util.SV_SEQ, i);
+                
                 PendingIntent piTrigger = PendingIntent.getBroadcast(context, i, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
+                
                 long time = Long.parseLong(str);
+                am.cancel(piTrigger);
                 am.setExact(AlarmManager.RTC_WAKEUP, time, piTrigger);
+                
             }
 
 //            try {
@@ -250,7 +253,7 @@ public class Util {
             Util.Log_debug(TAG, "---suspension scheduled @time " + sdf.format(tempc.getTime()) + " for seconds: " + SUSPENSION_INTERVAL_IN_SECOND);
         }
         
-        setSuspensionFlag(context, time + (selection + 1) * SUSPENSION_INTERVAL_IN_SECOND * 1000, selection);
+        setSuspensionFlag(context, time + (selection + 1) * SUSPENSION_INTERVAL_IN_SECOND * 1000);
     }
     
     public static void cancelSuspension(Context context){
@@ -267,11 +270,10 @@ public class Util {
         resetSuspensionFlag(context);
     }
     
-    public static void setSuspensionFlag(Context context, long datetime, int selection){
+    public static void setSuspensionFlag(Context context, long datetime){
         SharedPreferences sp = Utilities.getSP(context, Utilities.SP_SURVEY);
         
         sp.edit().putLong(Util.SP_SURVEY_KEY_FLAG_SUSPENSION, datetime).commit();
-        sp.edit().putInt(Util.SP_SURVEY_KEY_SUSPENSION_SELECT, selection + 1).commit();
     }
     
     public static void resetSuspensionFlag(Context context){
@@ -466,25 +468,49 @@ public class Util {
     /*************************************************************************************************************/
     /*Morning & bedtime*/
 
-    public static void scheduleMorningSurvey(Context context){
+    public static void scheduleMorningSurvey(Context context, int hour, int minute){
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        //default time to 12:00 at noon
-        Calendar c = Utilities.getDefaultMorningCal(context);
-        long defTime = c.getTimeInMillis();
-        long time = Long.MAX_VALUE;
+//        Calendar c = Utilities.getDefaultMorningCal(context);
+        Calendar c = Util.getProperMorningScheduleTime(hour, minute);
+        long time = c.getTimeInMillis();
 
-        time = Utilities.getSP(context, Util.SP_BEDTIME).getLong(Util.SP_BEDTIME_KEY_LONG, defTime);
-        Util.Log_debug(TAG, "---MorningSruvey scheduled at "+Utilities.getTimeFromLong(time)+" context "+context.hashCode());
-
+        int seq = 0;
+        
         Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY_TRIGGER);
-        itTrigger.putExtra(Utilities.SV_NAME, Utilities.SV_NAME_MORNING);
-        PendingIntent piTrigger = PendingIntent.getBroadcast(context, 1, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
-
+        itTrigger.putExtra(Util.SV_TYPE, Util.SV_NAME_MORNING);
+        itTrigger.putExtra(Util.SV_SEQ, seq);
+        
+        PendingIntent piTrigger = PendingIntent.getBroadcast(context, seq, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
+        
+        am.cancel(piTrigger);
         am.setExact(AlarmManager.RTC_WAKEUP, time, piTrigger);
+        
+        Util.Log_debug(TAG, "---MorningSruvey scheduled at "+Utilities.getTimeFromLong(time)+" context "+context.hashCode());
+        
+        Utilities.getSP(context, Util.SP_BEDTIME).edit().putLong(Util.SP_BEDTIME_KEY_LONG, time).commit();
+        
+    }
+    
+    public static void cancelMorningSurvey(Context context){
+
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        int seq = 0;
+        
+        Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY_TRIGGER);
+        itTrigger.putExtra(Util.SV_TYPE, Util.SV_NAME_MORNING);
+        itTrigger.putExtra(Util.SV_SEQ, seq);
+        
+        PendingIntent piTrigger = PendingIntent.getBroadcast(context, seq, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        am.cancel(piTrigger);
+        
+        Util.Log_debug(TAG, "---MorningSruvey canceled");
     }
 
+    
     /**
      * This is called when you not sure whether or not it's right time to schedule morning survey.
      * like what it needs to restore from reboot.
@@ -494,8 +520,8 @@ public class Util {
     }
 
 
-    public static void activateToday(){
-
+    public static void activateToday(Context context){
+        scheduleRandomSurvey(context, true, true);
     }
 
     public static void deActivateToday(){
@@ -503,15 +529,31 @@ public class Util {
     }
 
 
+    public static void morningComplete(Context context){//??##
+         
+        activateToday(context);
+        
+        cancelDaemonNoon();
+        
+        cancelMorningSurvey(context);
+        
+    }
+    
+    private static void cancelDaemonNoon() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    
     /**
      * deactivate and cancel surveys today,
      * schedule for next morning survey.
      */
-    public static void bedtimeComplete(Context context){
+    public static void bedtimeComplete(Context context, int hour, int minute){
 
         deActivateToday();
 
-        scheduleMorningSurvey(context);
+        scheduleMorningSurvey(context, hour, minute);
     }
 
 

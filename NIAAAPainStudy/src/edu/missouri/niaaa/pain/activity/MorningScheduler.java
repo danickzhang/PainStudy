@@ -110,7 +110,7 @@ public class MorningScheduler extends Activity {
 
                     saveDefault();
 
-                    Util.bedtimeComplete(MorningScheduler.this);
+                    Util.bedtimeComplete(MorningScheduler.this, hour, minute);
 
                     Intent i = new Intent();
                     i.putExtra(INTENT_TS,bedtimeReportStartTS);
@@ -140,9 +140,6 @@ public class MorningScheduler extends Activity {
             sp.edit().putInt(Util.SP_BEDTIME_KEY_HOUR, -1).commit();
             sp.edit().putInt(Util.SP_BEDTIME_KEY_MINUTE, -1).commit();
         }
-
-        Calendar c = Util.getProperMorningScheduleTime(hour, minute);
-        sp.edit().putLong(Util.SP_BEDTIME_KEY_LONG, c.getTimeInMillis()).commit();
     }
 
 

@@ -20,7 +20,6 @@ import android.util.Log;
 import android.widget.Toast;
 import edu.missouri.niaaa.pain.Util;
 import edu.missouri.niaaa.pain.Utilities;
-import edu.missouri.niaaa.pain.survey.SurveyActivity;
 import edu.missouri.niaaa.pain.survey.parser.SurveyInfo;
 import edu.missouri.niaaa.pain.survey.parser.XMLConfigParser;
 

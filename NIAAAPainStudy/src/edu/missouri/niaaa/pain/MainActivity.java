@@ -478,31 +478,23 @@ public class MainActivity extends Activity {
                             @Override
                             public void onClick(DialogInterface arg0, int arg1) {
                                 section_6.setText(R.string.section_6);
-                                Utilities.getSP(MainActivity.this, Utilities.SP_SURVEY).edit().putBoolean(Utilities.SP_KEY_SURVEY_SUSPENSION, false).commit();
 
-                                //cancel suspension alarm
-                                AlarmManager am = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-
-                                Intent breakIntent = new Intent(Util.BD_ACTION_SUSPENSION);
-                                PendingIntent breakPi = PendingIntent.getBroadcast(getApplicationContext(), 0, breakIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
-            //                  getApplicationContext().sendBroadcast(breakIntent);
-
-                                am.cancel(breakPi);
+                                Util.cancelSuspension(MainActivity.this);
 
                                 //write to server
-                                Calendar c = Calendar.getInstance();
-                                SharedPreferences sp = getSharedPreferences(Util.SP_LOGIN, Context.MODE_PRIVATE);
-                                long startTimeStamp = sp.getLong(Utilities.SP_KEY_SUSPENSION_TS, c.getTimeInMillis());
-                                c.setTimeInMillis(startTimeStamp);
-
-                                try {
-                                    Utilities.writeEventToFile(MainActivity.this, Utilities.CODE_SUSPENSION, "", "", "", "",
-                                            Utilities.sdf.format(c.getTime()), Utilities.sdf.format(Calendar.getInstance().getTime()));
-                                } catch (IOException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                }
-                                sp.edit().remove(Utilities.SP_KEY_SUSPENSION_TS).commit();
+//                                Calendar c = Calendar.getInstance();
+//                                SharedPreferences sp = getSharedPreferences(Util.SP_LOGIN, Context.MODE_PRIVATE);
+//                                long startTimeStamp = sp.getLong(Utilities.SP_KEY_SUSPENSION_TS, c.getTimeInMillis());
+//                                c.setTimeInMillis(startTimeStamp);
+//
+//                                try {
+//                                    Utilities.writeEventToFile(MainActivity.this, Utilities.CODE_SUSPENSION, "", "", "", "",
+//                                            Utilities.sdf.format(c.getTime()), Utilities.sdf.format(Calendar.getInstance().getTime()));
+//                                } catch (IOException e) {
+//                                    // TODO Auto-generated catch block
+//                                    e.printStackTrace();
+//                                }
+//                                sp.edit().remove(Utilities.SP_KEY_SUSPENSION_TS).commit();
 
                                 //volume
                                 AudioManager audiom = (AudioManager) MainActivity.this.getSystemService(Context.AUDIO_SERVICE);
@@ -557,7 +549,9 @@ public class MainActivity extends Activity {
                 // TODO Auto-generated method stub
                 Utilities.Log(TAG, "section 9 on click listener");
 
-                Util.Log_debug(TAG, ""+Util.isIsolateFlag(MainActivity.this));
+//                Util.Log_debug(TAG, ""+Util.isIsolateFlag(MainActivity.this));
+//                Util.Log_debug(TAG, ""+Util.isSuspensionFlag(MainActivity.this));
+                Util.bedtimeComplete(MainActivity.this, 12, 23);
                 
             }
         });
@@ -566,13 +560,13 @@ public class MainActivity extends Activity {
 
 
     private void setSuspensionText(){
-        section_6.setText(!Utilities.getSP(MainActivity.this, Utilities.SP_SURVEY).getBoolean(Utilities.SP_KEY_SURVEY_SUSPENSION, false)?R.string.section_6:R.string.section_62);
+        section_6.setText(!Util.isSuspensionFlag(MainActivity.this) ? R.string.section_6:R.string.section_62);
     }
 
 
-    private boolean getSuspension(){
-        return Utilities.getSP(MainActivity.this, Utilities.SP_SURVEY).getBoolean(Utilities.SP_KEY_SURVEY_SUSPENSION, false);
-    }
+//    private boolean getSuspension(){
+//        return Utilities.getSP(MainActivity.this, Utilities.SP_SURVEY).getBoolean(Utilities.SP_KEY_SURVEY_SUSPENSION, false);
+//    }
 
     private void suspensionAlert(){
         Toast.makeText(getApplicationContext(), R.string.suspension_under, Toast.LENGTH_LONG).show();

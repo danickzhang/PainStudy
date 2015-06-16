@@ -3,10 +3,7 @@ package edu.missouri.niaaa.pain.activity;
 import java.util.Calendar;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -62,19 +59,9 @@ public class SuspensionTimePicker extends Activity {
                 // TODO Auto-generated method stub
 
 //              section_6.setText("Break Suspension");
-                Utilities.getSP(SuspensionTimePicker.this, Utilities.SP_SURVEY).edit().putBoolean(Utilities.SP_KEY_SURVEY_SUSPENSION, true).commit();
-                sp.edit().putInt(Utilities.SP_KEY_SUSPENSION_CHOICE, selection + 1).commit();
-
-                //set suspension alarm
-                AlarmManager am = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-
-                Intent breakIntent = new Intent(Util.BD_ACTION_SUSPENSION);
-                breakIntent.putExtra(Utilities.SV_NAME, Utilities.SV_NAME_RANDOM);//useless
-                PendingIntent breakPi = PendingIntent.getBroadcast(getApplicationContext(), 0, breakIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
-//              getApplicationContext().sendBroadcast(breakIntent);
-
-                am.setExact(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis()+(selection+1)*interval*1000, breakPi);
-
+                
+                Util.scheduleSuspension(SuspensionTimePicker.this, selection);
+                
                 //close volume
                 AudioManager audiom = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
                 audiom.setStreamVolume(AudioManager.STREAM_MUSIC, 3, AudioManager.FLAG_PLAY_SOUND);

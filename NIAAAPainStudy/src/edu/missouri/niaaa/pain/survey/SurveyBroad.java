@@ -1,6 +1,5 @@
 package edu.missouri.niaaa.pain.survey;
 
-import android.app.AlarmManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +14,7 @@ public class SurveyBroad extends BroadcastReceiver {
         Util.Log_lifeCycle(TAG, "OnReceive~~~ "+intent.getAction()+" "+intent.getIntExtra(Util.SV_TYPE, -1));
         Util.Log_lifeCycle(TAG, "~~~seq is "+intent.getIntExtra(Util.SV_SEQ, -1));
 
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+//        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         String action = intent.getAction();
 
         int surveyType = intent.getIntExtra(Util.SV_TYPE, -1);//protect -1 later
@@ -41,7 +40,15 @@ public class SurveyBroad extends BroadcastReceiver {
             context.startActivity(launchSurvey);
         }
         else if(action.equals(Util.BD_ACTION_SURVEY_ISOLATE)){
+            Util.Log_debug(TAG, "action~~~ "+action);
             
+            Util.cancelSurveyIsolater(context);
+            
+        }
+        else if(action.equals(Util.BD_ACTION_SUSPENSION)){
+            Util.Log_debug(TAG, "action~~~ "+action);
+            
+            Util.cancelSurveyIsolater(context);
         }
 
     }
