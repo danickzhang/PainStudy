@@ -23,10 +23,8 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -138,7 +136,6 @@ public class MainActivity extends Activity {
          * then, check if PWD is assigned
          * */
         checkUserStatus();
-        //restoreStatus();
 
     }
 
@@ -173,7 +170,7 @@ public class MainActivity extends Activity {
             if(getIntent().getBooleanExtra(RebootReceiver.REBOOT, false)){
                 Util.Log_debug(TAG, "app is just launched by RebootReceiver");
 
-                restoreStatusForTheFirstTime();
+                restoreStatusForTheFirstTime();//contain restoreStatus()
 
             }else{
                 restoreStatus();
@@ -199,12 +196,10 @@ public class MainActivity extends Activity {
      */
     private void restoreStatus() {
         // TODO Auto-generated method stub
+        
 
-        /*check suspension status*/
-        //if suspension expired, remove suspension flag
-
-      //restart gps
-        if(Utilities.completedMorningToday(this) || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 3){
+        //restart gps
+        if(Util.isTodayActive(this) || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 3){
             sendBroadcast(new Intent(LocationUtilities.ACTION_START_LOCATION));
         }
 
@@ -216,13 +211,13 @@ public class MainActivity extends Activity {
      */
     private void restoreStatusForTheFirstTime(){
 
+        /*check suspension status*/
+        Util.reScheduleSuspension(MainActivity.this);
+        
         //schedule
-        //or reschedule if already there
-        //Util.scheduleRandomSurvey(MainActivity.this, true, true);
-        //scheduleAll();
+        Util.rescheduleMorningSurvey(MainActivity.this);
 
-
-
+        //##??
         Utilities.scheduleDaemon(MainActivity.this);
 //      startSService();
 
@@ -394,7 +389,7 @@ public class MainActivity extends Activity {
                 // TODO Auto-generated method stub
                 Util.Log_debug(TAG, logEnable, "section 3 on click listener");
 
-                if(!Util.isSuspension()){
+                if(!Util.isSuspensionFlag(MainActivity.this)){
                     startActivity(new Intent(MainActivity.this, SurveyMenu.class));
                 }else{
                     suspensionAlert();
@@ -420,7 +415,7 @@ public class MainActivity extends Activity {
                 // TODO Auto-generated method stub
                 Utilities.Log(TAG, "section 5 on click listener");
 
-                if(!Util.isSuspension()){
+                if(!Util.isSuspensionFlag(MainActivity.this)){
                     int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
                     if(hour >= 21 || hour <3){
                         //verify user pin
@@ -447,7 +442,7 @@ public class MainActivity extends Activity {
                 // TODO Auto-generated method stub
                 Utilities.Log(TAG, "section 6 on click listener");
 
-                if(Utilities.completedMorningToday(MainActivity.this)){
+                if(Util.isTodayActive(MainActivity.this)){
                     if(section_6.getText().equals(MainActivity.this.getString(R.string.section_6))){
                         Log.d("test text 6", "suspension~~~~~~~~~~~");
 
@@ -479,23 +474,13 @@ public class MainActivity extends Activity {
                             public void onClick(DialogInterface arg0, int arg1) {
                                 section_6.setText(R.string.section_6);
 
-                                Util.cancelSuspension(MainActivity.this);
 
-                                //write to server
-//                                Calendar c = Calendar.getInstance();
-//                                SharedPreferences sp = getSharedPreferences(Util.SP_LOGIN, Context.MODE_PRIVATE);
-//                                long startTimeStamp = sp.getLong(Utilities.SP_KEY_SUSPENSION_TS, c.getTimeInMillis());
-//                                c.setTimeInMillis(startTimeStamp);
-//
-//                                try {
-//                                    Utilities.writeEventToFile(MainActivity.this, Utilities.CODE_SUSPENSION, "", "", "", "",
-//                                            Utilities.sdf.format(c.getTime()), Utilities.sdf.format(Calendar.getInstance().getTime()));
-//                                } catch (IOException e) {
-//                                    // TODO Auto-generated catch block
-//                                    e.printStackTrace();
-//                                }
-//                                sp.edit().remove(Utilities.SP_KEY_SUSPENSION_TS).commit();
-
+                                //write break suspension ###
+                                Util.Log_debug(TAG, "### write break suspension");
+                                
+                                Util.cancelSuspension(MainActivity.this, true);
+                                
+                                
                                 //volume
                                 AudioManager audiom = (AudioManager) MainActivity.this.getSystemService(Context.AUDIO_SERVICE);
                                 audiom.setStreamVolume(AudioManager.STREAM_MUSIC, Util.VOLUME, AudioManager.FLAG_PLAY_SOUND);
@@ -532,13 +517,7 @@ public class MainActivity extends Activity {
                 Utilities.Log(TAG, "section 8 on click listener");
 
 
-                AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-                Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY_TRIGGER);
-                itTrigger.putExtra(Util.SV_TYPE, Util.SV_NAME_MORNING);
-                PendingIntent piTrigger = PendingIntent.getBroadcast(MainActivity.this, 1, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
-
-                am.setExact(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis(), piTrigger);//do not add any delay in real use
+                Util.rescheduleMorningSurvey(MainActivity.this);
             }
         });
         
@@ -551,7 +530,11 @@ public class MainActivity extends Activity {
 
 //                Util.Log_debug(TAG, ""+Util.isIsolateFlag(MainActivity.this));
 //                Util.Log_debug(TAG, ""+Util.isSuspensionFlag(MainActivity.this));
-                Util.bedtimeComplete(MainActivity.this, 12, 23);
+//                Util.bedtimeComplete(MainActivity.this, 12, 23);
+//                Util.rescheduleMorningSurvey(MainActivity.this);
+                Util.Log_debug(TAG, ""+Util.isTodayActive(MainActivity.this));
+                
+//                Util.scheduleRandomSurvey(MainActivity.this, Util.setRandomSchedule(MainActivity.this, true, true));
                 
             }
         });
@@ -784,8 +767,9 @@ public class MainActivity extends Activity {
 
                     //keep delivered
                     try {
-                        Utilities.writeEventToFile(MainActivity.this, Utilities.CODE_BEDTIME,
-                                Utilities.sdf.format(morning.getTime()), "", "", "",
+                        Utilities.writeEventToFile(MainActivity.this, Util.CODE_BEDTIME,
+                                Util.sdf.format(morning.getTime()),
+                                "", "", "",
                                 Utilities.sdf.format(((Calendar)data.getSerializableExtra(MorningScheduler.INTENT_TS)).getTime()),
                                 Utilities.sdf.format(Calendar.getInstance().getTime()));
                     } catch (IOException e) {
@@ -801,6 +785,22 @@ public class MainActivity extends Activity {
             case INTENT_REQUEST_SUSPENSION:
                 if(resultCode == Activity.RESULT_OK){
                     section_6.setText(R.string.section_62);
+                    
+                    //write suspension ###
+                    Util.Log_debug(TAG, "### write suspension");
+                    
+                    Calendar c = Calendar.getInstance();
+                    
+                    Utilities.getSP(MainActivity.this, Util.SP_SURVEY).edit().putLong(Util.SP_SURVEY_KEY_SUSPENSION_START, c.getTimeInMillis()).commit();
+                    
+                    try {
+                        Utilities.writeEventToFile(MainActivity.this, Util.CODE_SUSPENSION, 
+                                "", "", "", "",
+                                Util.sdf.format(c.getTime()), "");
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
 
                 break;
@@ -864,7 +864,7 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * write the start and end timestamp to server
+     * change suspension text when breaking suspension
      */
     BroadcastReceiver suspensionReceiver = new BroadcastReceiver(){
 
@@ -873,25 +873,8 @@ public class MainActivity extends Activity {
             // TODO Auto-generated method stub
             Utilities.Log(TAG, "on receiver break suspension");
 
-//            section_6.setText(R.string.section_6);
-////          Uti.getSP(MainActivity.this, Uti.SP_SURVEY).edit().putBoolean(Uti.SP_KEY_SURVEY_SUSPENSION, false).commit();
-//
-//            //write to server
-//            Calendar c = Calendar.getInstance();
-//            SharedPreferences sp = getSharedPreferences(Uti.SP_LOGIN, Context.MODE_PRIVATE);
-//            long startTimeStamp = sp.getLong(Uti.SP_KEY_SUSPENSION_TS, c.getTimeInMillis());
-//            c.setTimeInMillis(startTimeStamp);
-//
-//            try {
-//                Uti.writeEventToFile(MainActivity.this, Uti.CODE_SUSPENSION, "", "", "", "",
-//                        Uti.sdf.format(c.getTime()), Uti.sdf.format(Calendar.getInstance().getTime()));
-//            } catch (IOException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
-//            sp.edit().remove(Uti.SP_KEY_SUSPENSION_TS).commit();
-//
-//            Toast.makeText(getApplicationContext(), R.string.suspension_end, Toast.LENGTH_LONG).show();
+            section_6.setText(R.string.section_6);
+            
         }
     };
 

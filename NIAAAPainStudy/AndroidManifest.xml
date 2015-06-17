@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.missouri.niaaa.pain"
-    android:versionCode="10"
+    android:versionCode="11"
     android:versionName="1.2" >
 
     <uses-sdk
@@ -55,22 +55,22 @@
             android:permission=".SurveyBroadcast"
             android:process=":remote">
             <intent-filter>
-                <action android:name="edu.missouri.niaaa.pain.ACTION_SCHEDULE_ALL" />
-                <action android:name="edu.missouri.niaaa.pain.REMINDER" />
-                <action android:name="edu.missouri.niaaa.pain.SUSPENSION" />
+<!--                 <action android:name="edu.missouri.niaaa.pain.ACTION_SCHEDULE_ALL" /> -->
+<!--                 <action android:name="edu.missouri.niaaa.pain.REMINDER" /> -->
+<!--                 <action android:name="edu.missouri.niaaa.pain.SUSPENSION" /> -->
 
-                <action android:name="edu.missouri.niaaa.pain.SCHEDULE_MORNING" />
-                <action android:name="edu.missouri.niaaa.pain.TRIGGER_MORNING" />
-                <action android:name="edu.missouri.niaaa.pain.SCHEDULE_RANDOM" />
-                <action android:name="edu.missouri.niaaa.pain.TRIGGER_RANDOM" />
-                <action android:name="edu.missouri.niaaa.pain.SCHEDUL_FOLLOWUP" />
-                <action android:name="edu.missouri.niaaa.pain.TRIGGER_FOLLOWUP" />
-                <action android:name="edu.missouri.niaaa.pain.REMINDER_MORNING" />
-                <action android:name="edu.missouri.niaaa.pain.REMINDER_RANDOM" />
-                <action android:name="edu.missouri.niaaa.pain.REMINDER_FOLLOWUP" />
-                <action android:name="edu.missouri.niaaa.pain.REMINDER_DRINKING" />
-                <action android:name="edu.missouri.niaaa.pain.REMINDER_MOOD" />
-                <action android:name="edu.missouri.niaaa.pain.REMINDER_CRAVING" />
+<!--                 <action android:name="edu.missouri.niaaa.pain.SCHEDULE_MORNING" /> -->
+<!--                 <action android:name="edu.missouri.niaaa.pain.TRIGGER_MORNING" /> -->
+<!--                 <action android:name="edu.missouri.niaaa.pain.SCHEDULE_RANDOM" /> -->
+<!--                 <action android:name="edu.missouri.niaaa.pain.TRIGGER_RANDOM" /> -->
+<!--                 <action android:name="edu.missouri.niaaa.pain.SCHEDUL_FOLLOWUP" /> -->
+<!--                 <action android:name="edu.missouri.niaaa.pain.TRIGGER_FOLLOWUP" /> -->
+<!--                 <action android:name="edu.missouri.niaaa.pain.REMINDER_MORNING" /> -->
+<!--                 <action android:name="edu.missouri.niaaa.pain.REMINDER_RANDOM" /> -->
+<!--                 <action android:name="edu.missouri.niaaa.pain.REMINDER_FOLLOWUP" /> -->
+<!--                 <action android:name="edu.missouri.niaaa.pain.REMINDER_DRINKING" /> -->
+<!--                 <action android:name="edu.missouri.niaaa.pain.REMINDER_MOOD" /> -->
+<!--                 <action android:name="edu.missouri.niaaa.pain.REMINDER_CRAVING" /> -->
 
 <!--                <action android:name="android.intent.action.DATE_CHANGED" /> -->
 
@@ -100,7 +100,7 @@
         </receiver>
 
         <receiver
-            android:name="edu.missouri.niaaa.pain.temp.DaemonReceiver"
+            android:name="edu.missouri.niaaa.pain.DaemonReceiver"
             android:exported="false" >
             <intent-filter >
 <!--                 <action android:name="edu.missouri.niaaa.pain.DAEMON_NOON" /> -->

@@ -1,4 +1,4 @@
-package edu.missouri.niaaa.pain.temp;
+package edu.missouri.niaaa.pain;
 
 import java.util.Calendar;
 
@@ -8,8 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
-import edu.missouri.niaaa.pain.Util;
-import edu.missouri.niaaa.pain.Utilities;
+import edu.missouri.niaaa.pain.location.LocationUtilities;
 
 /**
  * @author Chen
@@ -67,7 +66,7 @@ public class DaemonReceiver extends BroadcastReceiver {
             Utilities.Log(TAG, "on receiver daemon 1");
 
             //today at noon
-            Utilities.morningComplete(context, true);
+            Util.morningComplete(context, true, true);
 
             Toast.makeText(context, "Noon daemon trigger random popups for you.", Toast.LENGTH_LONG).show();
 
@@ -92,7 +91,7 @@ public class DaemonReceiver extends BroadcastReceiver {
 
 
             //cancel all survey (follow-ups are allowed base on new requirement)
-            Utilities.cancelSchedule(context);
+//            Utilities.cancelSchedule(context);
 
             //reset sp
 //          Utilitieslities.getSP(context, Utilitieslities.SP_RANDOM_TIME).edit().clear().commit();
@@ -112,32 +111,13 @@ public class DaemonReceiver extends BroadcastReceiver {
             Utilities.Log(TAG, "on receiver daemon 3");
 
             //close location
-//          context.sendBroadcast(new Intent(LocationUtilitieslities.ACTION_STOP_LOCATION));
+            context.sendBroadcast(new Intent(LocationUtilities.ACTION_STOP_LOCATION));
 
             //next day at 3
-            //default
-            Calendar d = Utilities.getDefaultMorningCal(context);
-            long defTime = d.getTimeInMillis();
-            int hour = d.get(Calendar.HOUR_OF_DAY);
-            int minute = d.get(Calendar.MINUTE);
-
-            //current
-            Calendar c = Calendar.getInstance();
-
-            //morning
-            Calendar m = Calendar.getInstance();
-            m.setTimeInMillis(Utilities.getSP(context, Util.SP_BEDTIME).getLong(Util.SP_BEDTIME_KEY_LONG, -1));
-
-            if(c.before(m)){
-                //set m as morning
-                hour = m.get(Calendar.HOUR_OF_DAY);
-                minute = m.get(Calendar.MINUTE);
-            }
-
-            Utilities.bedtimeComplete(context, hour, minute);
+            Util.rescheduleMorningSurvey(context);
 
             //cancel followup
-            Utilities.cancelTrigger(context);
+//            Utilities.cancelTrigger(context);
 
             //reset sp
 //          Utilitieslities.getSP(context, Utilitieslities.SP_RANDOM_TIME).edit().clear().commit();

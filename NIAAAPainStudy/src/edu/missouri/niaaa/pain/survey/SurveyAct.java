@@ -110,7 +110,11 @@ public class SurveyAct extends Activity {
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         soundpool = new SoundPool(2, AudioManager.STREAM_MUSIC, 100);
         soundMap = new SparseIntArray();
-        soundMap.put(1, soundpool.load(this, R.raw.alarm_sound, 1));
+        if(Util.RELEASE){
+            soundMap.put(1, soundpool.load(this, R.raw.alarm_sound, 1));
+        }else{
+            soundMap.put(1, soundpool.load(this, R.raw.alarm_sound_nodelay, 1));
+        }
         soundTimer = new Timer();
 
 
@@ -132,7 +136,16 @@ public class SurveyAct extends Activity {
 
         initializeVariable();
 
-        checkStatue();
+        checkStatus();
+    }
+    
+    private void reInit() {
+        // TODO Auto-generated method stub
+
+        initializeVariable();
+
+        recheckStatus();
+        
     }
 
 
@@ -151,18 +164,15 @@ public class SurveyAct extends Activity {
     }
 
 
-    private void checkStatue() {
+    private void checkStatus() {
         // TODO Auto-generated method stub
-        acquireWakeLock();
-
-        pinCheckDialog = userPinCheckDialog(this);
-        retryPinDialog = retryUserPinDialog();
-
+        
         if(manualTrigger){
 
         }
         else{
-            playSound();
+            acquireWakeLock();
+            playSoundOnPrepared();
 
         }
 
@@ -170,9 +180,28 @@ public class SurveyAct extends Activity {
 //        if(pinCheckDialog.isShowing()) {
 //            pinCheckDialog.dismiss();
 //        }
+        pinCheckDialog = userPinCheckDialog(this);
+        retryPinDialog = retryUserPinDialog();
         pinCheckDialog.show();
     }
 
+    private void recheckStatus(){
+        
+        if(manualTrigger){
+
+        }
+        else{
+            acquireWakeLock();
+            playSound();
+
+        }
+        
+        if(pinCheckDialog.isShowing()) {
+            pinCheckDialog.dismiss();
+        }
+        pinCheckDialog = userPinCheckDialog(this);
+        pinCheckDialog.show();
+    }
 
     private void getSurveyList() {
         // TODO Auto-generated method stub
@@ -309,7 +338,7 @@ public class SurveyAct extends Activity {
         
         Util.scheduleSurveyIsolater(this);
         
-        splitSurvey(this, surveyType, surveySeq);
+        splitSurveyWhenComplete(this, surveyType, surveySeq);
         
         workWithAnswers();
         
@@ -347,12 +376,12 @@ public class SurveyAct extends Activity {
     }
 
 
-    private void splitSurvey(Context context, int surveyType, int surveySeq) {
+    private void splitSurveyWhenComplete(Context context, int surveyType, int surveySeq) {
         // TODO Auto-generated method stub
         switch(surveyType){
         case Util.SV_NAME_MORNING:
             
-            Util.morningComplete(context);
+            Util.morningComplete(context, false, false);
             
             break;
             
@@ -674,7 +703,7 @@ public class SurveyAct extends Activity {
         Util.Log_debug(TAG, "~~~"+getIntent().getIntExtra(Util.SV_TYPE, -1)+" "+getIntent().getIntExtra(Util.SV_SEQ, -1)+" "+getIntent().getIntExtra(Util.SV_REMIND_SEQ, -1));
 
         /*actually only auto triggered survey can be here*/
-        init();
+        reInit();
     }
 
 
@@ -713,7 +742,7 @@ public class SurveyAct extends Activity {
 
     /*sound & vibrator*/
 
-    private void playSoundOnprepared(){
+    private void playSoundOnPrepared(){
         soundpool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
 
             @Override

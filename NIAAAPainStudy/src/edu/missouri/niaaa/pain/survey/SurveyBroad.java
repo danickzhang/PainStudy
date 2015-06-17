@@ -3,6 +3,8 @@ package edu.missouri.niaaa.pain.survey;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
+import edu.missouri.niaaa.pain.R;
 import edu.missouri.niaaa.pain.Util;
 
 public class SurveyBroad extends BroadcastReceiver {
@@ -22,6 +24,8 @@ public class SurveyBroad extends BroadcastReceiver {
 
         if(action.equals(Util.BD_ACTION_SURVEY_TRIGGER)){
             Util.Log_debug(TAG, "action~~~ "+action);
+            
+            //if morning, check if activate today, or bypass
             
             Util.scheduleSurveyReminders(context, surveyType, surveySeq);
             
@@ -48,7 +52,13 @@ public class SurveyBroad extends BroadcastReceiver {
         else if(action.equals(Util.BD_ACTION_SUSPENSION)){
             Util.Log_debug(TAG, "action~~~ "+action);
             
-            Util.cancelSurveyIsolater(context);
+            
+            //write break suspension ###
+            Util.Log_debug(TAG, "### write break suspension");
+            
+            Util.cancelSuspension(context, false);
+            
+            Toast.makeText(context, R.string.suspension_end, Toast.LENGTH_LONG).show();
         }
 
     }

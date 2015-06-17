@@ -20,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import edu.missouri.niaaa.pain.R;
 import edu.missouri.niaaa.pain.Util;
-import edu.missouri.niaaa.pain.Utilities;
 import edu.missouri.niaaa.pain.survey.parser.SurveyInfo;
 
 public class SurveyMenu extends Activity {
@@ -105,7 +104,7 @@ public class SurveyMenu extends Activity {
                             threeT.set(Calendar.MINUTE, 0);
                             threeT.set(Calendar.SECOND, 0);
 
-                            if(Utilities.completedMorningToday(SurveyMenu.this)){//??##
+                            if(Util.isTodayActive(SurveyMenu.this)){//??##
                                 Alert(R.string.morning_report_title,R.string.morning_report_msg);
                             }
                             else if(mT.after(noonT)){
@@ -120,7 +119,12 @@ public class SurveyMenu extends Activity {
                         }
                         else if(temp.getAction().equals("3")){//based on activateToday, initial is still able from deactivate to 3am
                             /*manually confirmation*/
-                            Alert(R.string.first_drink_title, R.string.first_drink_msg, temp);
+                            if(!Util.isTodayActive(SurveyMenu.this)){//??##
+                                Toast.makeText(SurveyMenu.this, R.string.morning_report_unfinished, Toast.LENGTH_LONG).show();
+                            }
+                            else{
+                                Alert(R.string.first_drink_title, R.string.first_drink_msg, temp);
+                            }
                         }
                         else if(temp.getAction().equals("2")){
                             /*maunally*/

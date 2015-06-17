@@ -110,7 +110,10 @@ public class MorningScheduler extends Activity {
 
                     saveDefault();
 
-                    Util.bedtimeComplete(MorningScheduler.this, hour, minute);
+                    Calendar c = Util.getProperMorningScheduleTime(hour, minute);
+                    long time = c.getTimeInMillis();
+                    
+                    Util.bedtimeComplete(MorningScheduler.this, time);
 
                     Intent i = new Intent();
                     i.putExtra(INTENT_TS,bedtimeReportStartTS);

@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
+import edu.missouri.niaaa.pain.location.LocationUtilities;
 import edu.missouri.niaaa.pain.survey.SurveyAct;
 import edu.missouri.niaaa.pain.survey.parser.SurveyInfo;
 import edu.missouri.niaaa.pain.survey.parser.XMLConfigParser;
@@ -23,6 +24,17 @@ public class Util {
 
     public static final String  ADMIN_UID = "0000";
 
+    public final static int CODE_NAME_MORNING = 1;
+    public final static int CODE_NAME_DRINKING = 2;
+    public final static int CODE_NAME_MOOD = 3;
+    public final static int CODE_NAME_CRAVING = 4;
+    public final static int CODE_NAME_RANDOM = 5;
+    public final static int CODE_NAME_FOLLOW = 6;
+    public final static int CODE_SUSPENSION             = 7;
+    public final static int CODE_BEDTIME                = 8;
+    public final static int CODE_SENSOR_CONN = 9;
+    public final static int CODE_SCHEDULE_MANUALLY = 10;
+    public final static int CODE_SCHEDULE_AUTOMATIC = 11;
 
 
 
@@ -85,8 +97,11 @@ public class Util {
     public static final String SP_BEDTIME_KEY_LONG              = "BEDTIME_LONG";
     /*survey*/
     public static final String SP_SURVEY                        = SP_BASE + "SURVEY";
-    public static final String SP_SURVEY_KEY_FLAG_ISOLATE       = "SURVEY_ISOLATE";
-    public static final String SP_SURVEY_KEY_FLAG_SUSPENSION    = "SURVEY_SUSPENSION_e";//expire
+    public static final String SP_SURVEY_KEY_FLAG_ISOLATE       = "SURVEY_ISOLATE_EXPIRE";
+    public static final String SP_SURVEY_KEY_FLAG_SUSPENSION    = "SURVEY_SUSPENSION_EXPIRE";
+    public static final String SP_SURVEY_KEY_SUSPENSION_START   = "SURVEY_SUSPENSION_START_DATETIME";
+    public static final String SP_SURVEY_KEY_FLAG_ACTIVATE      = "SURVEY_ACTIVATE_TIME";
+    public static final String SP_SURVEY_KEY_RANDOM_SETS        = "SURVEY_RANDOM_SETS";
 
 
 
@@ -159,17 +174,16 @@ public class Util {
     
     
 
-    public static final int CODE_SCHEDULE_MANUALLY = 10;
-    public static final int CODE_SCHEDULE_AUTOMATIC = 11;
-
+    /*************************************************************************************************************/
     /* random */
-    public static void scheduleRandomSurvey(Context context, boolean startFromNoon, boolean autoTriggered) {
-
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, 23);//23
-        c.set(Calendar.MINUTE, 59);//59
+    
+    public static String setRandomSchedule(Context context, boolean startFromNoon, boolean systemTriggered){
+        Util.Log_debug(TAG, "set Random Schedule time sets " + startFromNoon);
+        
+        Calendar midnight = Calendar.getInstance();
+        midnight.set(Calendar.HOUR_OF_DAY, 23);//23
+        midnight.set(Calendar.MINUTE, 59);//59
+        long peak = midnight.getTimeInMillis();
 
         long base = Calendar.getInstance().getTimeInMillis();
         if (startFromNoon) {
@@ -179,8 +193,8 @@ public class Util {
             b.set(Calendar.SECOND, 0);
             base = b.getTimeInMillis();
         }
-        long peak = c.getTimeInMillis();
-
+        
+        //calcuate MAX_TRIGGER_RANDOM random time sets
         long unit = (peak-base)/(MAX_TRIGGER_RANDOM+1);//7
         long r_unit = (peak-base)/((MAX_TRIGGER_RANDOM+1)*3);//21
 
@@ -189,74 +203,143 @@ public class Util {
         for(int i=1;i<MAX_TRIGGER_RANDOM+1;i++){//7
             random_schedule = random_schedule + (base+unit*i+(new Random().nextInt((int) (2*r_unit))-r_unit)+",");
         }
+        
+        
+        //write Random Survey Schedules
+        String strArr[] = random_schedule.split(",");
+        
+        int i =0;
+        for(String str: strArr){
+            Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(Long.parseLong(str));
 
+            strArr[i] = sdf.format(c.getTime());
+            i++;
+        }
+        
+        try {
+            //craving gonna be different
+            Utilities.writeEventToFile(context, (systemTriggered ? CODE_SCHEDULE_AUTOMATIC : CODE_SCHEDULE_MANUALLY),
+                    strArr[0], strArr[1], strArr[2], strArr[3], strArr[4], strArr[5]);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        return random_schedule;
+    }
+    
+    
+    public static void scheduleRandomSurvey(Context context, String time_sets){
+
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Calendar now = Calendar.getInstance();
 
         //write to file random schedule
-        String strArr[] = random_schedule.split(",");
+        String strArr[] = time_sets.split(",");
 
         if(strArr.length != 1){
+            
             int i =0;
             for(String str: strArr){
-                Calendar c2 = Calendar.getInstance();
-                c2.setTimeInMillis(Long.parseLong(str));
-                Log.d("Random Schedule ", "each item is "+str+" "+c2.get(Calendar.HOUR_OF_DAY)+":"+c2.get(Calendar.MINUTE));
-
-                strArr[i] = sdf.format(c2.getTime());
                 i++;
-
-                Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY_TRIGGER);
-                itTrigger.putExtra(Util.SV_TYPE, Util.SV_NAME_RANDOM);
-                itTrigger.putExtra(Util.SV_SEQ, i);
-                
-                PendingIntent piTrigger = PendingIntent.getBroadcast(context, i, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
-                
                 long time = Long.parseLong(str);
-                am.cancel(piTrigger);
-                am.setExact(AlarmManager.RTC_WAKEUP, time, piTrigger);
                 
+                Calendar r = Calendar.getInstance();
+                r.setTimeInMillis(time);
+                
+                if(r.after(now)){
+                    Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY_TRIGGER);
+                    itTrigger.putExtra(Util.SV_TYPE, Util.SV_NAME_RANDOM);
+                    itTrigger.putExtra(Util.SV_SEQ, i);
+                    
+                    PendingIntent piTrigger = PendingIntent.getBroadcast(context, i, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
+                    
+                    am.cancel(piTrigger);
+                    am.setExact(AlarmManager.RTC_WAKEUP, time, piTrigger);
+                    
+                    Log.d("Random Schedule ", "each item is "+i+" "+str+" "+r.get(Calendar.HOUR_OF_DAY)+":"+r.get(Calendar.MINUTE));
+                }
             }
-
-//            try {
-//                //craving gonna be different
-////                writeEventToFile(context, (autoTriggered ? CODE_SCHEDULE_AUTOMATIC : CODE_SCHEDULE_MANUALLY),
-////                        strArr[0], strArr[1], strArr[2], strArr[3], strArr[4], strArr[5]);
-//            } catch (IOException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
         }
 
-        Utilities.getSP(context, Utilities.SP_RANDOM_TIME).edit().putString(Utilities.SP_KEY_RANDOM_TIME_SET, random_schedule).commit();
+        SharedPreferences sp = Utilities.getSP(context, Util.SP_SURVEY);
+        sp.edit().putString(Util.SP_SURVEY_KEY_RANDOM_SETS, time_sets).commit();
+        
+        sp.edit().putLong(Util.SP_SURVEY_KEY_FLAG_ACTIVATE, Calendar.getInstance().getTimeInMillis()).commit();
 
     }
 
+    
+    
+    public static void cancelRandomSurvey(Context context){
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        
+        int num = MAX_TRIGGER_RANDOM + 1;//7
+        for(int i = 1; i < num; i++){
+            Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY_TRIGGER);
+            itTrigger.putExtra(Util.SV_TYPE, Util.SV_NAME_RANDOM);
+            itTrigger.putExtra(Util.SV_SEQ, i);
+
+            PendingIntent piTrigger = PendingIntent.getBroadcast(context, i, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
+            
+            am.cancel(piTrigger);
+            
+            cancelSurveyReminders(context, Util.SV_NAME_RANDOM, i);
+        }
+        
+        Util.Log_debug(TAG, "---reminder canceled");
+        
+        SharedPreferences sp = Utilities.getSP(context, Util.SP_SURVEY);
+        sp.edit().remove(Util.SP_SURVEY_KEY_RANDOM_SETS).commit();
+        
+//        sp.edit().remove(Util.SP_SURVEY_KEY_FLAG_ACTIVATE).commit();//leave not delete until ...
+    }
+    
+    
+    
+    
+    
+    public static void reScheduleRandomSurvey(Context context){
+        String sets = Utilities.getSP(context, Util.SP_SURVEY).getString(Util.SP_SURVEY_KEY_RANDOM_SETS, "");
+        
+        scheduleRandomSurvey(context, sets);
+    }
+    
+    
+    
+    
+    
+    
     
     /*************************************************************************************************************/
     /*suspension*/
     
-    public static void scheduleSuspension(Context context, int selection){
+    public static void scheduleSuspension(Context context, long expire){
         //set suspension alarm
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        Calendar c = Calendar.getInstance();
-        long time = c.getTimeInMillis()+500;
-        
         Intent suspensionIntent = new Intent(Util.BD_ACTION_SUSPENSION);
         
         PendingIntent piSuspension = PendingIntent.getBroadcast(context, 0, suspensionIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         am.cancel(piSuspension);
-        am.setExact(AlarmManager.RTC_WAKEUP, time + (selection + 1) * SUSPENSION_INTERVAL_IN_SECOND * 1000, piSuspension);
+        am.setExact(AlarmManager.RTC_WAKEUP, expire, piSuspension);
         
         if(DEBUG){
             Calendar tempc = Calendar.getInstance();
-            tempc.setTimeInMillis(time + (selection + 1) * SUSPENSION_INTERVAL_IN_SECOND * 1000);
+            tempc.setTimeInMillis(expire);
             Util.Log_debug(TAG, "---suspension scheduled @time " + sdf.format(tempc.getTime()) + " for seconds: " + SUSPENSION_INTERVAL_IN_SECOND);
         }
         
-        setSuspensionFlag(context, time + (selection + 1) * SUSPENSION_INTERVAL_IN_SECOND * 1000);
+        setSuspensionFlag(context, expire);
     }
     
-    public static void cancelSuspension(Context context){
+    
+    /**
+     * write datetime using "SP_SURVEY_KEY_SUSPENSION_START" before calling this function
+     * @param context
+     */
+    public static void cancelSuspension(Context context, boolean writeCurrentDatetime){
         //set suspension alarm
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
@@ -267,26 +350,50 @@ public class Util {
         
         Util.Log_debug(TAG, "---suspension canceled");
         
+        //write
+        SharedPreferences sp = Utilities.getSP(context, Util.SP_SURVEY);
+        
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(sp.getLong(Util.SP_SURVEY_KEY_SUSPENSION_START, 0));//protect 0
+        
+        Calendar c2 = Calendar.getInstance();
+        if(!writeCurrentDatetime){
+            c2.setTimeInMillis(sp.getLong(Util.SP_SURVEY_KEY_FLAG_SUSPENSION, 0));//protect 0
+        }
+        
+        try {
+            Utilities.writeEventToFile(context, Util.CODE_SUSPENSION, 
+                    "", "", "", "",
+                    Util.sdf.format(c.getTime()), Util.sdf.format(c2.getTime()));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
         resetSuspensionFlag(context);
     }
     
     public static void setSuspensionFlag(Context context, long datetime){
-        SharedPreferences sp = Utilities.getSP(context, Utilities.SP_SURVEY);
-        
+        SharedPreferences sp = Utilities.getSP(context, Util.SP_SURVEY);
         sp.edit().putLong(Util.SP_SURVEY_KEY_FLAG_SUSPENSION, datetime).commit();
+        
     }
     
     public static void resetSuspensionFlag(Context context){
-        Utilities.getSP(context, Util.SP_SURVEY).edit().remove(Util.SP_SURVEY_KEY_FLAG_SUSPENSION).commit();
+        SharedPreferences sp = Utilities.getSP(context, Util.SP_SURVEY);
+        sp.edit().remove(Util.SP_SURVEY_KEY_FLAG_SUSPENSION).commit();
+        
+        sp.edit().remove(Util.SP_SURVEY_KEY_SUSPENSION_START).commit();
+        
     }
     
     public static boolean isSuspensionFlag(Context context){
         
-        SharedPreferences sp = Utilities.getSP(context, Utilities.SP_SURVEY);
+        SharedPreferences sp = Utilities.getSP(context, Util.SP_SURVEY);
         Calendar now = Calendar.getInstance();
         Calendar expire = Calendar.getInstance();
         
-        if(!sp.contains(Util.SP_SURVEY_KEY_FLAG_ISOLATE)){
+        if(!sp.contains(Util.SP_SURVEY_KEY_FLAG_SUSPENSION)){
             return false;
         }
         else{
@@ -297,6 +404,38 @@ public class Util {
             }
             else{
                 return false;
+            }
+        }
+    }
+
+    
+    /**
+     * when app reboot, check if there is any suspension at the time phone shut down.
+     * if it still under that time period, set suspension again,
+     * if it expired, clear the suspension flag.
+     */
+    public static void reScheduleSuspension(Context context){
+        SharedPreferences sp = Utilities.getSP(context, Util.SP_SURVEY);
+
+        Calendar now = Calendar.getInstance();
+        Calendar expire = Calendar.getInstance();
+        
+        if(!sp.contains(Util.SP_SURVEY_KEY_FLAG_SUSPENSION)){
+            // do nothing
+            Util.Log_debug(TAG, "reschedule suspension ~ do nothing");
+        }
+        else{
+            expire.setTimeInMillis(sp.getLong(SP_SURVEY_KEY_FLAG_SUSPENSION, 0));
+            if(now.before(expire)){
+                //schedule
+                Util.Log_debug(TAG, "reschedule suspension ~ schedule @ "+sdf.format(expire.getTime()));
+                long datetime = sp.getLong(Util.SP_SURVEY_KEY_FLAG_SUSPENSION, 0);
+                scheduleSuspension(context, datetime);
+            }
+            else{
+                //cancel and write break suspension ###
+                Util.Log_debug(TAG, "reschedule suspension ~ cancel and write ###");
+                cancelSuspension(context, false);
             }
         }
     }
@@ -348,7 +487,7 @@ public class Util {
     
     public static boolean isIsolateFlag(Context context){
     
-        SharedPreferences sp = Utilities.getSP(context, Utilities.SP_SURVEY);
+        SharedPreferences sp = Utilities.getSP(context, Util.SP_SURVEY);
         Calendar now = Calendar.getInstance();
         Calendar expire = Calendar.getInstance();
         
@@ -468,13 +607,9 @@ public class Util {
     /*************************************************************************************************************/
     /*Morning & bedtime*/
 
-    public static void scheduleMorningSurvey(Context context, int hour, int minute){
+    public static void scheduleMorningSurvey(Context context, long expire){
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-//        Calendar c = Utilities.getDefaultMorningCal(context);
-        Calendar c = Util.getProperMorningScheduleTime(hour, minute);
-        long time = c.getTimeInMillis();
 
         int seq = 0;
         
@@ -485,11 +620,11 @@ public class Util {
         PendingIntent piTrigger = PendingIntent.getBroadcast(context, seq, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
         
         am.cancel(piTrigger);
-        am.setExact(AlarmManager.RTC_WAKEUP, time, piTrigger);
+        am.setExact(AlarmManager.RTC_WAKEUP, expire, piTrigger);
         
-        Util.Log_debug(TAG, "---MorningSruvey scheduled at "+Utilities.getTimeFromLong(time)+" context "+context.hashCode());
+        Util.Log_debug(TAG, "---MorningSruvey scheduled at "+Utilities.getTimeFromLong(expire)+" context "+context.hashCode());
         
-        Utilities.getSP(context, Util.SP_BEDTIME).edit().putLong(Util.SP_BEDTIME_KEY_LONG, time).commit();
+        Utilities.getSP(context, Util.SP_BEDTIME).edit().putLong(Util.SP_BEDTIME_KEY_LONG, expire).commit();
         
     }
     
@@ -506,57 +641,60 @@ public class Util {
         PendingIntent piTrigger = PendingIntent.getBroadcast(context, seq, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
 
         am.cancel(piTrigger);
+        cancelSurveyReminders(context, Util.SV_NAME_MORNING, seq);
         
         Util.Log_debug(TAG, "---MorningSruvey canceled");
+        
+        Utilities.getSP(context, Util.SP_BEDTIME).edit().remove(Util.SP_BEDTIME_KEY_LONG).commit();
     }
 
+    
     
     /**
      * This is called when you not sure whether or not it's right time to schedule morning survey.
      * like what it needs to restore from reboot.
      */
-    public static void rescheduleMorningSurvey(Context context){
+    public static void rescheduleMorningSurvey(Context context){//schedule all
+        SharedPreferences sp = Utilities.getSP(context, Util.SP_BEDTIME);
 
-    }
+        //noon
+        Calendar n = Calendar.getInstance();
+        n.set(Calendar.HOUR_OF_DAY, 12);
+        n.set(Calendar.MINUTE, 0);
+        n.set(Calendar.SECOND, 0);
 
+        //default time to 12:00 at noon
+        Calendar def = getDefaultMorningCal(context);
+        long defTime = def.getTimeInMillis();
 
-    public static void activateToday(Context context){
-        scheduleRandomSurvey(context, true, true);
-    }
+        //current
+        Calendar c = Calendar.getInstance();
 
-    public static void deActivateToday(){
+        //morning
+        Calendar expire = Calendar.getInstance();
+        expire.setTimeInMillis(sp.getLong(Util.SP_BEDTIME_KEY_LONG, defTime));
 
-    }
+        //set morning & schedule random
+        if(c.after(n) || isTodayActive(context)){
+            Util.Log_debug(TAG, "reschedule morning ~ after noon");
+            morningComplete(context, true, true);
+        }
 
+        //before previous set morning time & before noon
+        else if(c.before(expire)){
+            Util.Log_debug(TAG, "reschedule morning ~ schedule @ "+sdf.format(expire.getTime()));
 
-    public static void morningComplete(Context context){//??##
-         
-        activateToday(context);
-        
-        cancelDaemonNoon();
-        
-        cancelMorningSurvey(context);
-        
+            //if not activate today
+            scheduleMorningSurvey(context, expire.getTimeInMillis());
+        }
+        //after morning time but earlier than noon
+        else{
+            //do nothing
+            Util.Log_debug(TAG, "reschedule morning ~ do nothing waiting user manually do morning survey");
+        }
     }
     
-    private static void cancelDaemonNoon() {
-        // TODO Auto-generated method stub
-        
-    }
-
     
-    /**
-     * deactivate and cancel surveys today,
-     * schedule for next morning survey.
-     */
-    public static void bedtimeComplete(Context context, int hour, int minute){
-
-        deActivateToday();
-
-        scheduleMorningSurvey(context, hour, minute);
-    }
-
-
     /**
      * Morning scheduler just set for hour and minute, call this to get proper date information.
      * @param hour
@@ -578,26 +716,145 @@ public class Util {
 
         return c;
     }
+    
+    
+    public static Calendar getDefaultMorningCal(Context context){
 
-    /*/Morning & bedtime*/
+        SharedPreferences sp = Utilities.getSP(context, Util.SP_BEDTIME);
+        int hour = Utilities.defHour;
+        int minute = Utilities.defMinute;
 
+        boolean setDefault = (sp.getInt(Util.SP_BEDTIME_KEY_HOUR, -1) == -1?false:true);
+        if(setDefault){
+            hour = sp.getInt(Util.SP_BEDTIME_KEY_HOUR, -1);
+            minute = sp.getInt(Util.SP_BEDTIME_KEY_MINUTE, -1);
+        }
 
+        return Util.getProperMorningScheduleTime(hour, minute);
+    }
+    
+    
+    
+    /*************************************************************************************************************/
+    
+    
 
+    public static void activate(Context context, boolean startFromNoon, boolean systemTriggered){
+        
+        if(isActFlagToday(context)){
+            if(isTodayActive(context)){
+                reScheduleRandomSurvey(context);
+            }
+            else{
+                
+            }
+        }
+        else{
+            scheduleRandomSurvey(context, setRandomSchedule(context, startFromNoon, systemTriggered));
+        }
+        
+        //restart gps
+        if(Util.isTodayActive(context) || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 3){
+            context.sendBroadcast(new Intent(LocationUtilities.ACTION_START_LOCATION));
+        }
+    }
+
+    
+    public static void deActivate(Context context){
+        cancelRandomSurvey(context);
+    }
+
+    
+    
+    public static boolean isTodayActive(Context context){//##??
+        SharedPreferences sp = Utilities.getSP(context, Util.SP_SURVEY);
+        if(!isActFlagToday(context)){
+            return false;
+        }
+        else{
+            if(sp.contains(Util.SP_SURVEY_KEY_RANDOM_SETS)){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+    }
     
     
     /**
-     * when app reboot, check if there is any suspension at the time phone shut down.
-     * if it still under that time period, set suspension again,
-     * if it expired, clear the suspension flag.
+     * @return
      */
-    public static void restoreSuspension(){
-
+    public static boolean isActFlagToday(Context context){
+        
+        SharedPreferences sp = Utilities.getSP(context, Util.SP_SURVEY);
+        if(!sp.contains(Util.SP_SURVEY_KEY_FLAG_ACTIVATE)){
+            return false;
+        }
+        else{
+            Calendar now = Calendar.getInstance();
+            Calendar day = Calendar.getInstance();
+            day.setTimeInMillis(sp.getLong(SP_SURVEY_KEY_FLAG_ACTIVATE, 0));
+            Log.d(TAG, sdf.format(day.getTime()));
+            if(now.get(Calendar.HOUR_OF_DAY) < 3){
+                if(now.get(Calendar.DAY_OF_YEAR) == day.get(Calendar.DAY_OF_YEAR)+1){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+            else{
+                if(now.get(Calendar.DAY_OF_YEAR) == day.get(Calendar.DAY_OF_YEAR)){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+        }
     }
 
-    public static boolean isSuspension(){
-        return false;
+    /**
+     * when reboot from 3pm, this is called and should be good
+     * @param context
+     */
+    public static void morningComplete(Context context, boolean startFromNoon, boolean systemTriggered){
+         
+        activate(context, startFromNoon, systemTriggered);
+        
+        cancelDaemonNoon();//##??
+        
+        cancelMorningSurvey(context);
+        
+    }
+    
+    private static void cancelDaemonNoon() {
+        // TODO Auto-generated method stub
+        
     }
 
+    
+    /**
+     * deactivate and cancel surveys today,
+     * schedule for next morning survey.
+     */
+    public static void bedtimeComplete(Context context, long expire){
+
+        deActivate(context);
+
+        scheduleMorningSurvey(context, expire);
+    }
+
+
+
+
+
+
+
+    
+
+    /*GPS location*/
 
     /**
      * start recording location with condition checking first
@@ -618,12 +875,7 @@ public class Util {
     }
 
 
-    /**
-     * @return
-     */
-    public static boolean isTodayActivated(){
-        return false;
-    }
+
     
     
 }

@@ -58,9 +58,10 @@ public class SuspensionTimePicker extends Activity {
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
 
-//              section_6.setText("Break Suspension");
+                Calendar c = Calendar.getInstance();
+                long time = c.getTimeInMillis();
                 
-                Util.scheduleSuspension(SuspensionTimePicker.this, selection);
+                Util.scheduleSuspension(SuspensionTimePicker.this, time + (selection + 1) * Util.SUSPENSION_INTERVAL_IN_SECOND * 1000);
                 
                 //close volume
                 AudioManager audiom = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);

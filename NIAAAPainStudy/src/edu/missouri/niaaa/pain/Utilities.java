@@ -165,6 +165,7 @@ public class Utilities {
     public final static int CODE_SENSOR_CONN = 9;
     public final static int CODE_SCHEDULE_MANUALLY = 10;
     public final static int CODE_SCHEDULE_AUTOMATIC = 11;
+    
     public final static int CODE_SKIP_BLOCK_SURVEY_RANDOM = 12;
     public final static int CODE_SKIP_BLOCK_SURVEY_DRINKING = 13;
 
@@ -523,7 +524,7 @@ public class Utilities {
 
         //default time to 12:00 at noon
 //      Calendar d = getMorningCal(defHour, defMinute);
-        Calendar d = getDefaultMorningCal(context);
+        Calendar d = Util.getDefaultMorningCal(context);
 
         long defTime = d.getTimeInMillis();
 
@@ -831,7 +832,7 @@ public class Utilities {
         }
 
         //random
-        String strRandom[] = getSP(context, SP_RANDOM_TIME).getString(SP_KEY_RANDOM_TIME_SET, "").split(",");
+        String strRandom[] = getSP(context, Util.SP_SURVEY).getString(Util.SP_SURVEY_KEY_RANDOM_SETS, "").split(",");
         String random = "";
         if(strRandom.length != 1){
             for(String s: strRandom){
@@ -913,20 +914,7 @@ public class Utilities {
     }
 
 
-    public static Calendar getDefaultMorningCal(Context context){
 
-        SharedPreferences sp = getSP(context, Util.SP_BEDTIME);
-        int hour = defHour;
-        int minute = defMinute;
-
-        boolean setDefault = (sp.getInt(Util.SP_BEDTIME_KEY_HOUR, -1) == -1?false:true);
-        if(setDefault){
-            hour = sp.getInt(Util.SP_BEDTIME_KEY_HOUR, -1);
-            minute = sp.getInt(Util.SP_BEDTIME_KEY_MINUTE, -1);
-        }
-
-        return Util.getProperMorningScheduleTime(hour, minute);
-    }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1028,6 +1016,8 @@ public class Utilities {
     //upload
     public static void writeEventToFile(Context context, int type, String scheduleTS, String r1, String r2, String r3, String startTS, String endTS) throws IOException{
 
+        Log.d("###", "write evetn to file");
+        
         Calendar endCal = Calendar.getInstance();
 
         String userID = Utilities.getSP(context, Util.SP_LOGIN).getString(Util.SP_LOGIN_KEY_USERID, "0000");
