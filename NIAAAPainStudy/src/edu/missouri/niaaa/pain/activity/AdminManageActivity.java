@@ -53,7 +53,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import edu.missouri.niaaa.pain.R;
 import edu.missouri.niaaa.pain.Util;
-import edu.missouri.niaaa.pain.Utilities;
 
 /**
  * This Activity appears as a dialog. It lists any paired devices and
@@ -146,11 +145,11 @@ public class AdminManageActivity extends TabActivity {
 
                 EditText pinEdite = (EditText) textEntryView.findViewById(R.id.pin_edit);
                 String pinStr = pinEdite.getText().toString();
-                Utilities.Log("Pin Dialog", "pin String is "+pinStr);
+                Util.Log_debug("Pin Dialog", "pin String is "+pinStr);
 
                 String data = null;
                 try {
-                    data = Utilities.encryption(Util.ADMIN_UID + "," + "1" + "," + pinStr);
+                    data = Util.encryption(Util.ADMIN_UID + "," + "1" + "," + pinStr);
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
@@ -159,7 +158,7 @@ public class AdminManageActivity extends TabActivity {
 /*              check network*/
 
 /*              prepare params for server*/
-                HttpPost request = new HttpPost(Utilities.VALIDATE_ADDRESS);
+                HttpPost request = new HttpPost(Util.VALIDATE_ADDRESS);
 
                 List<NameValuePair> params = new ArrayList<NameValuePair>();
 
@@ -312,13 +311,13 @@ public class AdminManageActivity extends TabActivity {
 
                 String data = null;
                 try {
-                    data = Utilities.encryption(asedID + "," + "2");
+                    data = Util.encryption(asedID + "," + "2");
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
 
-                HttpPost request = new HttpPost(Utilities.VALIDATE_ADDRESS);
+                HttpPost request = new HttpPost(Util.VALIDATE_ADDRESS);
 
                 List<NameValuePair> params = new ArrayList<NameValuePair>();
 
@@ -395,10 +394,9 @@ public class AdminManageActivity extends TabActivity {
 
 
     private void cleanUp(Context context){
-        Utilities.getSP(context, Util.SP_BEDTIME).edit().clear().commit();
-        Utilities.getSP(context, Utilities.SP_RANDOM_TIME).edit().clear().commit();
-        Utilities.getSP(context, Utilities.SP_SURVEY).edit().clear().commit();
-        Utilities.getSP(context, Util.SP_LOGIN).edit().clear().commit();
+        Util.getSP(context, Util.SP_BEDTIME).edit().clear().commit();
+        Util.getSP(context, Util.SP_SURVEY).edit().clear().commit();
+        Util.getSP(context, Util.SP_LOGIN).edit().clear().commit();
     }
 
     private Dialog removeDialog(Context context){
@@ -511,7 +509,7 @@ public class AdminManageActivity extends TabActivity {
 
                     String UID = null;
                     try {
-                        UID = Utilities.encryption(asID.getText().toString());
+                        UID = Util.encryption(asID.getText().toString());
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -545,7 +543,7 @@ public class AdminManageActivity extends TabActivity {
         protected Boolean doInBackground(String... strings) {
             // TODO Auto-generated method stub
              String UID=strings[0];
-             HttpPost request = new HttpPost(Utilities.STUDY_DAY_MODIFY_ADDRESS);
+             HttpPost request = new HttpPost(Util.STUDY_DAY_MODIFY_ADDRESS);
              List<NameValuePair> params = new ArrayList<NameValuePair>();
              params.add(new BasicNameValuePair("UID",UID));
              //params.add(new BasicNameValuePair("userID", UID));

@@ -18,7 +18,6 @@ import android.widget.TimePicker.OnTimeChangedListener;
 import android.widget.Toast;
 import edu.missouri.niaaa.pain.R;
 import edu.missouri.niaaa.pain.Util;
-import edu.missouri.niaaa.pain.Utilities;
 
 public class MorningScheduler extends Activity {
 
@@ -31,8 +30,8 @@ public class MorningScheduler extends Activity {
     Button setPicker;
     Button backButton;
 
-    int hour = Utilities.defHour;
-    int minute = Utilities.defMinute;
+    int hour = Util.defHour;
+    int minute = Util.defMinute;
 
     SharedPreferences sp;
     Calendar bedtimeReportStartTS;
@@ -62,7 +61,7 @@ public class MorningScheduler extends Activity {
         backButton = (Button) findViewById(R.id.btnReturn);
 
         title.setText(bedtimeReportStartTS.get(Calendar.HOUR_OF_DAY)>3 ? R.string.morning_report_set_text1: R.string.morning_report_set_text2);
-        timeText.setText(Utilities.getMorningTimeWithFlag(this));
+        timeText.setText(Util.getMorningTimeWithFlag(this));
 
         timeBox.setChecked(setDefault);
         timeBox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
@@ -91,7 +90,7 @@ public class MorningScheduler extends Activity {
             public void onTimeChanged(TimePicker arg0, int arg1, int arg2) {
                 // TODO Auto-generated method stub
 
-                Utilities.Log(TAG, "on time changed listener");
+                Util.Log_debug(TAG, "on time changed listener");
 
                 hour = arg1;
                 minute = arg2;
@@ -104,7 +103,7 @@ public class MorningScheduler extends Activity {
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
 
-                Utilities.Log(TAG, ""+hour+":"+minute);
+                Util.Log_debug(TAG, ""+hour+":"+minute);
 
                 if(hour >= 3 && hour <12 || (hour == 12 && minute == 0)){
 

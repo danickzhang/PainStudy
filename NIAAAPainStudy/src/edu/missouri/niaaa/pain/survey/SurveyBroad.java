@@ -34,7 +34,7 @@ public class SurveyBroad extends BroadcastReceiver {
             int remind_seq = intent.getIntExtra(Util.SV_REMIND_SEQ, -1);//protect -1 later
             Util.Log_debug(TAG, "action~~~ "+action+" "+intent.getIntExtra(Util.SV_SEQ, -1)+" "+intent.getIntExtra(Util.SV_REMIND_SEQ, -1));
 
-            Intent launchSurvey = new Intent(context, SurveyAct.class);
+            Intent launchSurvey = new Intent(context, SurveyActivity.class);
             launchSurvey.putExtra(Util.SV_TYPE, surveyType);
             launchSurvey.putExtra(Util.SV_SEQ, surveySeq);
             launchSurvey.putExtra(Util.SV_REMIND_SEQ, remind_seq);

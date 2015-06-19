@@ -218,7 +218,7 @@ public class MainActivity extends Activity {
         Util.rescheduleMorningSurvey(MainActivity.this);
 
         //##??
-        Utilities.scheduleDaemon(MainActivity.this);
+        Util.scheduleDaemon(MainActivity.this);
 //      startSService();
 
         restoreStatus();
@@ -229,7 +229,7 @@ public class MainActivity extends Activity {
 
         //public key
         try {
-            Utilities.publicKey = getPublicKey();
+            Util.publicKey = getPublicKey();
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -258,11 +258,11 @@ public class MainActivity extends Activity {
 
                 EditText pinEdite = (EditText) textEntryView.findViewById(R.id.pin_edit);
                 String pinStr = pinEdite.getText().toString();
-                Utilities.Log("Pin Dialog", "pin String is "+pinStr);
+                Util.Log_debug("Pin Dialog", "pin String is "+pinStr);
 
                 String data = null;
                 try {
-                    data = Utilities.encryption(ID + "," + "3" + "," + pinStr);
+                    data = Util.encryption(ID + "," + "3" + "," + pinStr);
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
@@ -271,7 +271,7 @@ public class MainActivity extends Activity {
 /*              check network*/
 
 /*              prepare params for server*/
-                HttpPost request = new HttpPost(Utilities.VALIDATE_ADDRESS);
+                HttpPost request = new HttpPost(Util.VALIDATE_ADDRESS);
 
                 List<NameValuePair> params = new ArrayList<NameValuePair>();
 
@@ -403,7 +403,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
-                Utilities.Log(TAG, "section 4 on click listener");
+                Util.Log_debug(TAG, "section 4 on click listener");
 
             }
         });
@@ -413,7 +413,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
-                Utilities.Log(TAG, "section 5 on click listener");
+                Util.Log_debug(TAG, "section 5 on click listener");
 
                 if(!Util.isSuspensionFlag(MainActivity.this)){
                     int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
@@ -440,7 +440,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
-                Utilities.Log(TAG, "section 6 on click listener");
+                Util.Log_debug(TAG, "section 6 on click listener");
 
                 if(Util.isTodayActive(MainActivity.this)){
                     if(section_6.getText().equals(MainActivity.this.getString(R.string.section_6))){
@@ -503,7 +503,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
-                Utilities.Log(TAG, "section 7 on click listener");
+                Util.Log_debug(TAG, "section 7 on click listener");
 
                 startActivity(new Intent(MainActivity.this, SupportActivity.class));
             }
@@ -514,7 +514,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
-                Utilities.Log(TAG, "section 8 on click listener");
+                Util.Log_debug(TAG, "section 8 on click listener");
 
 
                 Util.rescheduleMorningSurvey(MainActivity.this);
@@ -526,7 +526,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
-                Utilities.Log(TAG, "section 9 on click listener");
+                Util.Log_debug(TAG, "section 9 on click listener");
 
 //                Util.Log_debug(TAG, ""+Util.isIsolateFlag(MainActivity.this));
 //                Util.Log_debug(TAG, ""+Util.isSuspensionFlag(MainActivity.this));
@@ -545,11 +545,6 @@ public class MainActivity extends Activity {
     private void setSuspensionText(){
         section_6.setText(!Util.isSuspensionFlag(MainActivity.this) ? R.string.section_6:R.string.section_62);
     }
-
-
-//    private boolean getSuspension(){
-//        return Utilities.getSP(MainActivity.this, Utilities.SP_SURVEY).getBoolean(Utilities.SP_KEY_SURVEY_SUSPENSION, false);
-//    }
 
     private void suspensionAlert(){
         Toast.makeText(getApplicationContext(), R.string.suspension_under, Toast.LENGTH_LONG).show();
@@ -584,9 +579,9 @@ public class MainActivity extends Activity {
 
                 EditText pinEdite = (EditText) DialogView.findViewById(R.id.pin_edit);
                 String pinStr = pinEdite.getText().toString();
-                Utilities.Log("Pin Dialog", "pin String is "+pinStr);
+                Util.Log_debug("Pin Dialog", "pin String is "+pinStr);
 
-                if (pinStr.equals(Utilities.getPWD(context))){
+                if (pinStr.equals(Util.getPWD(context))){
                     //Send the intent and trigger new Survey Activity....
                     bedtimeReportConfirmDialog();
                     dialog.cancel();
@@ -692,7 +687,7 @@ public class MainActivity extends Activity {
             Dialog alertDialog = new AlertDialog.Builder(MainActivity.this)
             .setCancelable(false)
             .setTitle(getString(R.string.menu_about)+"  ver."+versionName+"."+versionCode)
-            .setMessage("User ID: "+uid+"\n"+Utilities.getScheduleForToady(MainActivity.this))
+            .setMessage("User ID: "+uid+"\n"+Util.getScheduleForToady(MainActivity.this))
             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
                 @Override
@@ -760,18 +755,18 @@ public class MainActivity extends Activity {
                 if(resultCode == Activity.RESULT_OK){
                     //write
                     Calendar morning = Calendar.getInstance();
-                    morning.setTimeInMillis(Utilities.getSP(MainActivity.this, Util.SP_BEDTIME).getLong(Util.SP_BEDTIME_KEY_LONG, 0));
+                    morning.setTimeInMillis(Util.getSP(MainActivity.this, Util.SP_BEDTIME).getLong(Util.SP_BEDTIME_KEY_LONG, 0));
 
                     Toast.makeText(getApplicationContext(), getString(R.string.bedtime_set)+" "+ DateFormat.getDateTimeInstance().format(morning.getTime()),Toast.LENGTH_LONG).show();
                     Util.Log_debug(TAG, "Morning Survey scheduled at " + DateFormat.getDateTimeInstance().format(morning.getTime()));
 
                     //keep delivered
                     try {
-                        Utilities.writeEventToFile(MainActivity.this, Util.CODE_BEDTIME,
+                        Util.writeEventToFile(MainActivity.this, Util.CODE_BEDTIME,
                                 Util.sdf.format(morning.getTime()),
                                 "", "", "",
-                                Utilities.sdf.format(((Calendar)data.getSerializableExtra(MorningScheduler.INTENT_TS)).getTime()),
-                                Utilities.sdf.format(Calendar.getInstance().getTime()));
+                                Util.sdf.format(((Calendar)data.getSerializableExtra(MorningScheduler.INTENT_TS)).getTime()),
+                                Util.sdf.format(Calendar.getInstance().getTime()));
                     } catch (IOException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -791,10 +786,10 @@ public class MainActivity extends Activity {
                     
                     Calendar c = Calendar.getInstance();
                     
-                    Utilities.getSP(MainActivity.this, Util.SP_SURVEY).edit().putLong(Util.SP_SURVEY_KEY_SUSPENSION_START, c.getTimeInMillis()).commit();
+                    Util.getSP(MainActivity.this, Util.SP_SURVEY).edit().putLong(Util.SP_SURVEY_KEY_SUSPENSION_START, c.getTimeInMillis()).commit();
                     
                     try {
-                        Utilities.writeEventToFile(MainActivity.this, Util.CODE_SUSPENSION, 
+                        Util.writeEventToFile(MainActivity.this, Util.CODE_SUSPENSION, 
                                 "", "", "", "",
                                 Util.sdf.format(c.getTime()), "");
                     } catch (IOException e) {
@@ -871,7 +866,7 @@ public class MainActivity extends Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
             // TODO Auto-generated method stub
-            Utilities.Log(TAG, "on receiver break suspension");
+            Util.Log_debug(TAG, "on receiver break suspension");
 
             section_6.setText(R.string.section_6);
             

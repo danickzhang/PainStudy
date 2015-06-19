@@ -21,7 +21,6 @@ import android.widget.Toast;
 import edu.missouri.niaaa.mail.GmailSender;
 import edu.missouri.niaaa.pain.R;
 import edu.missouri.niaaa.pain.Util;
-import edu.missouri.niaaa.pain.Utilities;
 
 public class SupportActivity extends Activity {
 
@@ -52,7 +51,7 @@ public class SupportActivity extends Activity {
 
         setListener();
 
-        userID = Utilities.getSP(this, Util.SP_LOGIN).getString(Util.SP_LOGIN_KEY_USERID, "0000");
+        userID = Util.getSP(this, Util.SP_LOGIN).getString(Util.SP_LOGIN_KEY_USERID, "0000");
         try {
             PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_CONFIGURATIONS);
             appVersion = "ver." + pinfo.versionName + "." + pinfo.versionCode;
@@ -61,7 +60,7 @@ public class SupportActivity extends Activity {
             e.printStackTrace();
         }
 
-        dateTime = Utilities.sdf.format(Calendar.getInstance().getTime());
+        dateTime = Util.sdf.format(Calendar.getInstance().getTime());
         emailBody = "Technical Support Needed" + "\n"
                 + "User: " + userID + " running version on " + appVersion + " has reported on problem as follows:" + "\n\n"
 

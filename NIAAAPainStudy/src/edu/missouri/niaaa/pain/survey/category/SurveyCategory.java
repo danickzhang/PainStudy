@@ -33,11 +33,11 @@ public class SurveyCategory implements Category{
 
     @Override
     public Question nextQuestion(){
-//      Utilities.Log("~~~~~~~~~~~~~~~~~~~~f", "index "+nextQuestionNumber);
+//      Util.Log_debug("~~~~~~~~~~~~~~~~~~~~f", "index "+nextQuestionNumber);
         if((nextQuestionNumber) >= questions.size()){
             return null;
         }
-//      Utilities.Log("~~~~~~~~~~~~~~~~~~~~", "index ");
+//      Util.Log_debug("~~~~~~~~~~~~~~~~~~~~", "index ");
         //get starts from 0, get current then ++
         return questions.get(nextQuestionNumber++);
     }
@@ -45,11 +45,11 @@ public class SurveyCategory implements Category{
 
     @Override
     public Question lastQuestion(){
-//      Utilities.Log("~~~~~~~~~~~~~~~~~~~~p", "index "+nextQuestionNumber);
+//      Util.Log_debug("~~~~~~~~~~~~~~~~~~~~p", "index "+nextQuestionNumber);
         if(nextQuestionNumber == 0) {
             return null;
         } else {
-            //          Utilities.Log("~~~~~~~~~~~~~~~~~~~~pp", "q "+questions.get(nextQuestionNumber-1).getId());
+            //          Util.Log_debug("~~~~~~~~~~~~~~~~~~~~pp", "q "+questions.get(nextQuestionNumber-1).getId());
             return questions.get(--nextQuestionNumber);
         }
     }

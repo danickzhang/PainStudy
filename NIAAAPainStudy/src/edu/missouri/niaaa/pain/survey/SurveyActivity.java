@@ -34,7 +34,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import edu.missouri.niaaa.pain.R;
 import edu.missouri.niaaa.pain.Util;
-import edu.missouri.niaaa.pain.Utilities;
 import edu.missouri.niaaa.pain.survey.category.Answer;
 import edu.missouri.niaaa.pain.survey.category.Category;
 import edu.missouri.niaaa.pain.survey.category.Question;
@@ -42,7 +41,7 @@ import edu.missouri.niaaa.pain.survey.category.RandomCategory;
 import edu.missouri.niaaa.pain.survey.parser.SurveyInfo;
 import edu.missouri.niaaa.pain.survey.parser.XMLParser;
 
-public class SurveyAct extends Activity {
+public class SurveyActivity extends Activity {
     String TAG = "SurveyActivity.java";
     boolean logEnable = true;
 
@@ -306,7 +305,7 @@ public class SurveyAct extends Activity {
                     setContentView(vg);
                 }
 
-                if(backButton.getText().equals(SurveyAct.this.getString(R.string.btn_cancel))){
+                if(backButton.getText().equals(SurveyActivity.this.getString(R.string.btn_cancel))){
                     onBackPressed();
                 }
 
@@ -352,15 +351,15 @@ public class SurveyAct extends Activity {
         boolean hasTrigger = false;
         //Fill answer map for when it is passed to service
         for(Category cat: cats){
-//          Utilities.Log(TAG, "category is "+cat.getQuestionDesc());
-//          Utilities.Log(TAG, "category contains questions "+cat.totalQuestions());
+//          Util.Log_debug(TAG, "category is "+cat.getQuestionDesc());
+//          Util.Log_debug(TAG, "category contains questions "+cat.totalQuestions());
             for(Question question: cat.getQuestions()){
-//              Utilities.Log(TAG, "question id "+question.getId());
+//              Util.Log_debug(TAG, "question id "+question.getId());
                 answerMap.put(question.getId(), question.getSelectedAnswers());
                 //Here to target the first question of Drinking Follow-up
                 for(Answer answer: question.getAnswers()){
 //                  Log.d("_________________________________","answer "+answer.getAnswerText()+" "+answer.getId()+" "+answer.hasSurveyTrigger());
-//                  Utilities.Log(TAG, "contains trigger "+answer.hasSurveyTrigger()+" is selected "+answer.isSelected());
+//                  Util.Log_debug(TAG, "contains trigger "+answer.hasSurveyTrigger()+" is selected "+answer.isSelected());
                     if(answer.isSelected() && answer.hasSurveyTrigger()){
                         hasTrigger = true;
 //                      Log.d("_________________________________","has trigger");
@@ -396,7 +395,7 @@ public class SurveyAct extends Activity {
      * @return Get the next question to be displayed
      */
     protected LinearLayout nextQuestionLayout(){
-//      Utilities.Log("~~~~~~~~~~~~~~~~~~~~next", "currentQ" + (currentQuestion != null ? currentQuestion.getSelectedAnswers().get(0) + currentQuestion.getSkip() : "null"));
+//      Util.Log_debug("~~~~~~~~~~~~~~~~~~~~next", "currentQ" + (currentQuestion != null ? currentQuestion.getSelectedAnswers().get(0) + currentQuestion.getSkip() : "null"));
 
         Question temp = null;
         boolean done = false;
@@ -455,7 +454,7 @@ public class SurveyAct extends Activity {
         }
         else{
             currentQuestion = temp;
-//          Utilities.Log("~~~~~~~~~~~~~~~~~~~~n", currentQuestion.getId());
+//          Util.Log_debug("~~~~~~~~~~~~~~~~~~~~n", currentQuestion.getId());
             return currentQuestion.prepareLayout(this);
         }
 
@@ -466,11 +465,11 @@ public class SurveyAct extends Activity {
      * @return
      */
     protected LinearLayout lastQuestionLayout(){
-//      Utilities.Log("~~~~~~~~~~~~~~~~~~~~last", "skipFrom"+ skipFrom);
+//      Util.Log_debug("~~~~~~~~~~~~~~~~~~~~last", "skipFrom"+ skipFrom);
         Question temp = null;
 
         while(temp == null){
-//          Utilities.Log("~~~~~~~~~while", "0 skipfrom "+skipFrom+"skipTo "+skipTo);
+//          Util.Log_debug("~~~~~~~~~while", "0 skipfrom "+skipFrom+"skipTo "+skipTo);
             temp = currentCategory.lastQuestion();
             //Log.d(TAG,"Trying to get previous question");
             /*
@@ -478,7 +477,7 @@ public class SurveyAct extends Activity {
              * we need to go back to the previous category if it exists.
              */
             if(temp == null){
-//              Utilities.Log("~~~~~~~~~", "1");
+//              Util.Log_debug("~~~~~~~~~", "1");
                 //Log.d(TAG,"Temp is null, probably at begining of category");
                 /* Try to go back a category, get the question on
                  * the next iteration.
@@ -500,23 +499,23 @@ public class SurveyAct extends Activity {
              */
             else if(temp != null && !temp.validateSubmit()){
                 //Log.d(TAG, "No answer, skipping question");
-//              Utilities.Log("~~~~~~~~~", "2 "+temp.getId()+" "+temp.validateSubmit());
+//              Util.Log_debug("~~~~~~~~~", "2 "+temp.getId()+" "+temp.validateSubmit());
                 temp = null;
             }
 
             if(temp != null && hasSkip && !temp.getId().equals(skipFrom)){
-//              Utilities.Log("~~~~~~~~~", "3 skipfrom"+skipFrom);
+//              Util.Log_debug("~~~~~~~~~", "3 skipfrom"+skipFrom);
                 temp = null;
             }
             else if(temp != null && hasSkip){
-//              Utilities.Log("~~~~~~~~~", "4");
+//              Util.Log_debug("~~~~~~~~~", "4");
                 hasSkip = false;
                 skipFrom = null;
             }
             //Else: valid question, it will be returned.
         }
         currentQuestion = temp;
-//      Utilities.Log("~~~~~~~~~~~~~~~~~~~~l", currentQuestion.getId());
+//      Util.Log_debug("~~~~~~~~~~~~~~~~~~~~l", currentQuestion.getId());
 
         return currentQuestion.prepareLayout(this);
     }
@@ -617,9 +616,9 @@ public class SurveyAct extends Activity {
 
                 EditText pinEdite = (EditText) DialogView.findViewById(R.id.pin_edit);
                 String pinStr = pinEdite.getText().toString();
-                Utilities.Log("Pin Dialog", "pin String is "+pinStr);
+                Util.Log_debug("Pin Dialog", "pin String is "+pinStr);
 
-                if (pinStr.equals(Utilities.getPWD(context))){
+                if (pinStr.equals(Util.getPWD(context))){
                     
                     stopSound();
 
@@ -819,12 +818,12 @@ public class SurveyAct extends Activity {
         Util.Log_debug(TAG, able, "-------------^^^^^^^^______________");
         if(able)
         for(Category ca :cats){
-            Utilities.Log(TAG, "category is "+ca.getQuestionDesc());
-            Utilities.Log(TAG, "category contains questions "+ca.totalQuestions());
+            Util.Log_debug(TAG, "category is "+ca.getQuestionDesc());
+            Util.Log_debug(TAG, "category contains questions "+ca.totalQuestions());
             for(Question q: ca.getQuestions()){
-                Utilities.Log(TAG, "question id "+q.getId());
+                Util.Log_debug(TAG, "question id "+q.getId());
                 for(Answer a: q.getAnswers()){
-                    Utilities.Log(TAG, "contains trigger "+a.hasSurveyTrigger()+" is selected "+a.isSelected()+" answer skipto "+a.getSkip());
+                    Util.Log_debug(TAG, "contains trigger "+a.hasSurveyTrigger()+" is selected "+a.isSelected()+" answer skipto "+a.getSkip());
                 }
             }
         }
@@ -881,7 +880,7 @@ public class SurveyAct extends Activity {
             public void onClick(DialogInterface arg0, int arg1) {
                 Util.Log_lifeCycle(TAG, "~~~onBackPressed YES");
                 
-                Util.cancelSurveyTimeout(SurveyAct.this, surveyType, surveySeq);
+                Util.cancelSurveyTimeout(SurveyActivity.this, surveyType, surveySeq);
                 
                 //write
                 //##??
@@ -889,23 +888,23 @@ public class SurveyAct extends Activity {
 //                String[] reminder = getReminderTimeStamp(context);
 //                try {
 //                    String seq = "";
-//                    int surSeq = shp.getInt(Utilities.SP_KEY_TRIGGER_SEQ_MAP.get(surveyName), -1);
+//                    int surSeq = shp.getInt(Util.SP_KEY_TRIGGER_SEQ_MAP.get(surveyName), -1);
 //                    if (surSeq == 0) {
-//                        surSeq = Utilities.MAX_TRIGGER_MAP.get(surveyName);
+//                        surSeq = Util.MAX_TRIGGER_MAP.get(surveyName);
 //                    }
-//                    if (surveyName.equals(Utilities.SV_NAME_RANDOM)) {
+//                    if (surveyName.equals(Util.SV_NAME_RANDOM)) {
 //                        seq = "," + surSeq;
 //                    }
 //
-//                    Utilities.writeEventToFile(context, getSurveyType(), getScheduleTimeStamp(),
+//                    Util.writeEventToFile(context, getSurveyType(), getScheduleTimeStamp(),
 //                            reminder[0], reminder[1], reminder[2],
-//                            "", Utilities.sdf.format(Calendar.getInstance().getTime()) + seq);
+//                            "", Util.sdf.format(Calendar.getInstance().getTime()) + seq);
 //                } catch (IOException e) {
 //                    // TODO Auto-generated catch block
 //                    e.printStackTrace();
 //                }
 
-                SurveyAct.super.onBackPressed();
+                SurveyActivity.super.onBackPressed();
             }
         }).create().show();
     }

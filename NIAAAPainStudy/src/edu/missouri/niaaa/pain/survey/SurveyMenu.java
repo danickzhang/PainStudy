@@ -191,7 +191,7 @@ public class SurveyMenu extends Activity {
 
 
     private void launchSurvey(String type, boolean man){
-        Intent launchIntent = new Intent(getApplicationContext(), SurveyAct.class);
+        Intent launchIntent = new Intent(getApplicationContext(), SurveyActivity.class);
         launchIntent.putExtra(Util.SV_TYPE, (int)Integer.valueOf(type));
         if(man){
             launchIntent.putExtra(Util.SV_MANUAL, true);
