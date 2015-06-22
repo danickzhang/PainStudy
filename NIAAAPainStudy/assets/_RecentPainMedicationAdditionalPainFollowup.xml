@@ -31,7 +31,7 @@
             <text>Which OPIOID PAIN MEDICATION did you take?</text>
             <answer id = "1">Primary (the medication you take regularly)</answer>
             <answer id = "2">Secondary (the medication you take as needed)</answer>
-            <answer id = "3" skip = "11q15">Both</answer>
+            <answer id = "3" skip = "11q16">Both</answer>
         </question>
 
 <!--         //2 -->
