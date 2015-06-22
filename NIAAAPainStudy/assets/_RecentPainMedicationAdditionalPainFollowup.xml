@@ -82,7 +82,7 @@
     <category><!--Skip to here if no opioid use reported-->
         <description>OTHER PAIN MEDICATION USE</description>
         <question id = "23" type = "radio">
-            <text>Besides opioid pain medication, have you taken any OTHER pain medications since the last survey you answered?</text>
+            <text>Besides OPIOID pain medication, have you taken any OTHER pain medications since the last survey you answered?</text>
             <answer id = "1">Yes</answer>
             <answer id = "2" skip = "4q1">No</answer>
         </question>
