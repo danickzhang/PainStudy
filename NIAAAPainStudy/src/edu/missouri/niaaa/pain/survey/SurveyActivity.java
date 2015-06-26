@@ -1,12 +1,24 @@
 package edu.missouri.niaaa.pain.survey;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import org.xml.sax.InputSource;
 
 import android.app.Activity;
@@ -18,10 +30,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.Vibrator;
+import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +48,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import edu.missouri.niaaa.pain.R;
 import edu.missouri.niaaa.pain.Util;
 import edu.missouri.niaaa.pain.survey.category.Answer;
@@ -52,6 +69,7 @@ public class SurveyActivity extends Activity {
     int remindSeq = -1;
     boolean manualTrigger = false;
     String surveyDisplayName;
+    String surveyName;
     String surveyFileName;
     String pinCheckDialogTitle;
 
@@ -89,11 +107,12 @@ public class SurveyActivity extends Activity {
     WakeLock wakelock;
 
     //
-    public static final int REMIND_IGNORE = 0;
+    public static final int REMIND_LASTTIME = 0;
     public static final int REMIND_TIMEOUT = -2;
 
     SharedPreferences shp;
     boolean onGoing = false;
+    Calendar surveyStartDatetime;
 
 
 
@@ -121,34 +140,29 @@ public class SurveyActivity extends Activity {
 
         init();
 
+    }
+
+
+    private void initSurveyLayout() {
+        // TODO Auto-generated method stub
         setTitle(surveyDisplayName);
         setContentView(R.layout.survey_layout);
         setListeners();
 
-        initializeSurveyLayout();
-
+        setSurveyLayout();
     }
 
 
     private void init() {
         // TODO Auto-generated method stub
 
-        initializeVariable();
+        initVariable();
 
         checkStatus();
     }
+
     
-    private void reInit() {
-        // TODO Auto-generated method stub
-
-        initializeVariable();
-
-        recheckStatus();
-        
-    }
-
-
-    private void initializeVariable() {
+    private void initVariable() {
         // TODO Auto-generated method stub
         surveyType = getIntent().getIntExtra(Util.SV_TYPE, -1);// protect for -1 //onNewIntent, should be same, is there any chance that type changes??
         surveySeq = getIntent().getIntExtra(Util.SV_SEQ, -1);// protect for -1
@@ -157,51 +171,243 @@ public class SurveyActivity extends Activity {
 
         SurveyInfo si = surveylist.get(surveyType-1);
         surveyDisplayName = (Util.RELEASE ? si.getDisplayName() : num2seq(surveySeq) + si.getDisplayName());
+        surveyName = si.getName();
         surveyFileName = si.getFileName();
 
         pinCheckDialogTitle = (Util.RELEASE ? getString(R.string.pin_title) : getString(R.string.pin_title) + " for reminder "+remindSeq);
     }
 
 
+    /*
+     * if manually
+     *      timeout     x
+     *      remind0     x
+     *      survey      without sound alarm
+     * else (auto)
+     *      timeout     finish + write with expire time (previous swipe quit)
+     *      remind0     finish + write if needed
+     *      remind123   survey with sound alarm
+     * 
+     * */
     private void checkStatus() {
         // TODO Auto-generated method stub
         
-        if(manualTrigger){
-
+        if(remindSeq == REMIND_TIMEOUT){
+            Util.Log_debug(TAG, "### write event, timeout -> oncreate previous swipe quit, survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
+            
+            //write
+//            Util.writeEvent(this, Util.getSurveyCode(surveyType), "", "", "", "", "", ""); without schedule time
+            
+            Toast.makeText(this, "onCreate previous survey timeout unnormally", Toast.LENGTH_LONG).show();
+            finish();
+        }
+        else if(remindSeq == REMIND_LASTTIME){
+            Util.Log_debug(TAG, "### write event, last ignore -> oncreate previous swipe quit, survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
+            
+            //write
+            
+            Toast.makeText(this, "onCreate previous survey ignored unnormally", Toast.LENGTH_LONG).show();
+            finish();
+        }
+        
+        else if(manualTrigger){
+            //do nothing
+            
+            pinLayout();
         }
         else{
+            //pin + sound
             acquireWakeLock();
             playSoundOnPrepared();
-
+            
+            pinLayout();
+            
+            if(surveyType == Util.SV_NAME_RANDOM){
+                writeCompliance(surveySeq, true);
+            }
         }
-
-        /*user pin check dialog*/
-//        if(pinCheckDialog.isShowing()) {
-//            pinCheckDialog.dismiss();
-//        }
+    }
+    
+    private void pinLayout(){
+      //show user pin check dialog
         pinCheckDialog = userPinCheckDialog(this);
-        retryPinDialog = retryUserPinDialog();
+        retryPinDialog = singleOptionDialog(R.string.pin_title_wrong, R.string.pin_message_wrong, DIALOG_RETRY); 
         pinCheckDialog.show();
+
+        initSurveyLayout();
+    }
+    
+    private void reInit(Intent newIntent) {
+        // TODO Auto-generated method stub
+
+        initVariable();// generate old vars
+        //debug - old vars
+        Util.Log_debug(TAG, "Old intent "+"survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq+" man? "+manualTrigger+" ondoing "+onGoing);
+
+        reCheckStatus(newIntent);
+        
+    }
+    
+    
+    /*
+     * (new survey can only be auto)
+     * if onGoing
+     *      if new survey is same survey
+     *          if old survey is man or auto
+     *              timeout     write with new survey
+     *              remind1230  x
+     *      else (other new survey)
+     *          if old survey is man or auto
+     *              timeout     x
+     *              remind123   noPrompt write with new survey info
+     *              remind0     write if need
+     * else (not input pin) - setNewIntent if needed
+     *      if new survey is same survey
+     *          if old survey is man
+     *              x
+     *          else (old auto)
+     *              timeout     x
+     *              remind0     finish + write ignored with old survey info
+     *              remind123   sound alarm + write ignored with old survey info
+     *      else (other new survey)
+     *          if old survey is man
+     *              timeout     x
+     *              remind123   new survey with sound alarm
+     *              remind0     write if need
+     *          else (old auto) 
+     *              timeout     x
+     *              remind0     write if need
+     *              remind123   noPrompt write with new survey info
+     * 
+     * 
+     * look up all the x to see if they need finish()
+     * */
+    private void reCheckStatus(Intent newIntent){
+        
+        int newSurveyType = newIntent.getIntExtra(Util.SV_TYPE, -1);
+        int newSurveySeq = newIntent.getIntExtra(Util.SV_SEQ, -1);
+        int newRemindSeq = newIntent.getIntExtra(Util.SV_REMIND_SEQ, -1);
+        boolean sameSurvey = (surveyType == newSurveyType && surveySeq == newSurveySeq);
+        
+        if(onGoing){//keep old intent
+            if(sameSurvey){
+                if(newRemindSeq == REMIND_TIMEOUT){
+                    //normal timeout
+                    
+                    //write
+                    Util.Log_debug(TAG, "### write event, timeout -> onNewIntent, survey: "+newSurveyType+" seq: "+newSurveySeq+" remind: "+newRemindSeq);
+                    
+                    Util.writeEvent(this, Util.getSurveyCode(newSurveyType) + Util.CODE_SV_TIMEOUT, 
+                            "", 
+                            "", "", "", 
+                            Util.sdf.format(surveyStartDatetime.getTime()), Util.sdf.format(Calendar.getInstance().getTime()));
+                    
+                    //wait OK to be finish
+                    singleOptionDialog(R.string.morning_report_title4, R.string.survey_timeout, DIALOG_TIMEOUT).show();//##?? change to start new dialog activity and finish self!!!
+                }
+                else{//remind1230
+                    Util.Log_debug(TAG, "############# something happen place 1");
+                }
+            }
+            else{//diff survey
+                if(newRemindSeq == REMIND_TIMEOUT){
+                    Util.Log_debug(TAG, "############# something happen place 2");
+                }
+                else if(newRemindSeq == REMIND_LASTTIME){
+                    // write if need
+                }
+                else{//remind123
+                    
+                    //normal NoPrompt_underDoing
+                    Util.Log_debug(TAG, "### write event, noPrompt_underDoing -> onNewIntent, survey: "+newSurveyType+" seq: "+newSurveySeq+" remind: "+newRemindSeq);
+                    
+                    //write
+                    Util.writeEvent(this, Util.getSurveyCode(newSurveyType) + Util.CODE_SV_NO_PROMPT, 
+                            "", 
+                            "", "", "", 
+                            "", Util.sdf.format(Calendar.getInstance().getTime()));
+                    
+                    Toast.makeText(this, "An auto-triggered survey is just blocked by what you are doning right now!", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+        
+        else{//not input pin yet
+            if(sameSurvey){
+                if(newRemindSeq == REMIND_TIMEOUT){
+                    Util.Log_debug(TAG, "############# something happen place 3");
+                }
+                else{//remind1230
+                    
+                    //normal re-alarm
+                    Util.Log_debug(TAG, "### write event, ignored -> onNewIntent, old survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
+                    
+                    //write ignored for old reminder
+                    Util.writeEvent(this, Util.getSurveyCode(surveyType) + Util.CODE_SV_IGNORED, 
+                            "", 
+                            "", ""+remindSeq, "",//##?? 
+                            "", Util.sdf.format(Calendar.getInstance().getTime()));
+                    
+                    //if remind0
+                    if(newRemindSeq == REMIND_LASTTIME){
+                        finish();
+                    }
+                    
+                    setIntent(newIntent);
+                    initVariable();// generate new vars
+                    
+                    //sound + pin
+                    pinSound();
+                }
+            }
+            else{//diff survey
+                if(newRemindSeq == REMIND_TIMEOUT){
+                    Util.Log_debug(TAG, "############# something happen place 4");
+                }
+                else if(newRemindSeq == REMIND_TIMEOUT){
+                    Util.Log_debug(TAG, "############# something happen place 5");
+                }
+                else{//remind123
+                    if(manualTrigger){
+                        //new survey
+                        setIntent(newIntent);
+                        initVariable();// generate new vars
+                        
+                        //sound + pin
+                        pinSound();
+                        
+                        //load survey with new intent
+                        initSurveyLayout();
+                    }
+                    else{//old auto
+                        //normal NoPrompt_underDoing
+                        Util.Log_debug(TAG, "### write event, noPrompt_underDoing -> onNewIntent, survey: "+newSurveyType+" seq: "+newSurveySeq+" remind: "+newRemindSeq);
+                        
+                        //write
+                        Util.writeEvent(this, Util.getSurveyCode(newSurveyType) + Util.CODE_SV_NO_PROMPT, 
+                                "", 
+                                "", "", "", 
+                                "", Util.sdf.format(Calendar.getInstance().getTime()));
+                        
+                        Toast.makeText(this, "An auto-triggered survey is just blocked by what you are doning right now!", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        }
     }
 
-    private void recheckStatus(){
-        
-        if(manualTrigger){
+    
+    private void pinSound(){
+        acquireWakeLock();
+        playSound();
 
-        }
-        else{
-            acquireWakeLock();
-            playSound();
-
-        }
-        
         if(pinCheckDialog.isShowing()) {
             pinCheckDialog.dismiss();
         }
         pinCheckDialog = userPinCheckDialog(this);
         pinCheckDialog.show();
     }
-
+    
     private void getSurveyList() {
         // TODO Auto-generated method stub
 
@@ -221,7 +427,7 @@ public class SurveyActivity extends Activity {
     }
 
 
-    private void initializeSurveyLayout() {
+    private void setSurveyLayout() {
         // TODO Auto-generated method stub
 
         //Initialize map that will pass questions and answers to service
@@ -288,9 +494,6 @@ public class SurveyActivity extends Activity {
                     }
                     backButton.setText(R.string.btn_previous);
                 }
-
-//              setTitle(surveyName);
-
             }
         });
 
@@ -308,7 +511,6 @@ public class SurveyActivity extends Activity {
                 if(backButton.getText().equals(SurveyActivity.this.getString(R.string.btn_cancel))){
                     onBackPressed();
                 }
-
             }
         });
 
@@ -322,10 +524,32 @@ public class SurveyActivity extends Activity {
         
         //
         Util.cancelSurveyReminders(this, surveyType, surveySeq);
-        
         Util.scheduleSurveyTimeout(this, surveyType, surveySeq);
         
         onGoing = true;
+        surveyStartDatetime = Calendar.getInstance();
+        
+        splitSurveyOnStart();
+    }
+
+
+    private void splitSurveyOnStart() {
+        // TODO Auto-generated method stub
+        switch(surveyType){
+        case Util.SV_NAME_MORNING:
+            
+            break;
+            
+        case Util.SV_NAME_RANDOM:
+            
+            
+            
+            break;
+            
+        default:
+            
+            break;
+        }
     }
 
 
@@ -334,10 +558,9 @@ public class SurveyActivity extends Activity {
         Util.Log_debug(TAG, "~~~Survey Complete");
         
         Util.cancelSurveyTimeout(this, surveyType, surveySeq);
-        
         Util.scheduleSurveyIsolater(this);
         
-        splitSurveyWhenComplete(this, surveyType, surveySeq);
+        splitSurveyOnComplete(this, surveyType, surveySeq);
         
         workWithAnswers();
         
@@ -372,15 +595,35 @@ public class SurveyActivity extends Activity {
             }
         }
         //answerMap.put(currentQuestion.getId(), currentQuestion.getSelectedAnswers());
+        
+        //write
+        //recording
+        try {
+            writeSurveyToFile(answerMap);
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        Toast.makeText(this, R.string.survey_completed, Toast.LENGTH_LONG).show();
     }
 
 
-    private void splitSurveyWhenComplete(Context context, int surveyType, int surveySeq) {
+    private void splitSurveyOnComplete(Context context, int surveyType, int surveySeq) {
         // TODO Auto-generated method stub
         switch(surveyType){
         case Util.SV_NAME_MORNING:
             
             Util.morningComplete(context, false, false);
+            
+            //craving only, start up an alert.
+            
+            break;
+            
+        case Util.SV_NAME_RANDOM:
+            
+            writeCompliance(surveySeq, false);
             
             break;
             
@@ -578,22 +821,38 @@ public class SurveyActivity extends Activity {
     }
 
 
-
-    private Dialog retryUserPinDialog(){
+    private final int DIALOG_RETRY = 1;
+    private final int DIALOG_TIMEOUT = 2;
+    
+    private Dialog singleOptionDialog(int title, int message, final int flag){
 
         return new AlertDialog.Builder(this)
         .setCancelable(false)
-        .setTitle(R.string.pin_title_wrong)
-        .setMessage(R.string.pin_message_wrong)
+        .setTitle(title)
+        .setMessage(message)
         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // TODO Auto-generated method stub
 
-                pinCheckDialog.show();
-                dialog.cancel();
-
+                switch(flag){
+                case DIALOG_RETRY:
+                    
+                    pinCheckDialog.show();
+                    dialog.cancel();
+                    break;
+                    
+                case DIALOG_TIMEOUT:
+                    
+                    dialog.cancel();
+                    finish();
+                    break;
+                    
+                default:
+                    
+                    break;
+                }
             }
         })
         .create();
@@ -639,6 +898,17 @@ public class SurveyActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
 
+                
+                //write refused
+                Util.Log_debug(TAG, "### write event, refused -> survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
+                
+                //write
+                Util.writeEvent(SurveyActivity.this, Util.getSurveyCode(surveyType) + Util.CODE_SV_REFUSED, 
+                        "", 
+                        "", "", "", 
+                        "", Util.sdf.format(Calendar.getInstance().getTime()));
+                
+                //stop sound and quit
                 stopSound();
                 finish();
             }
@@ -695,14 +965,11 @@ public class SurveyActivity extends Activity {
     protected void onNewIntent(Intent intent) {
         // TODO Auto-generated method stub
         super.onNewIntent(intent);
-        /*set new intent*/
-        setIntent(intent);
-
+        
         Util.Log_lifeCycle(TAG, "onNewIntent~~~");
-        Util.Log_debug(TAG, "~~~"+getIntent().getIntExtra(Util.SV_TYPE, -1)+" "+getIntent().getIntExtra(Util.SV_SEQ, -1)+" "+getIntent().getIntExtra(Util.SV_REMIND_SEQ, -1));
+        Util.Log_debug(TAG, "~~~"+intent.getIntExtra(Util.SV_TYPE, -1)+" "+intent.getIntExtra(Util.SV_SEQ, -1)+" "+intent.getIntExtra(Util.SV_REMIND_SEQ, -1));
 
-        /*actually only auto triggered survey can be here*/
-        reInit();
+        reInit(intent);
     }
 
 
@@ -847,6 +1114,7 @@ public class SurveyActivity extends Activity {
         super.onStop();
         Util.Log_lifeCycle(TAG, "onStop~~~");
 
+        releaseWakeLock();
     }
 
     @Override
@@ -855,10 +1123,11 @@ public class SurveyActivity extends Activity {
         Util.Log_lifeCycle(TAG, "onDestroy~~~");
 
         releaseSound();
+//        Util.cancelSurveyTimeout(SurveyActivity.this, surveyType, surveySeq);// cannot success.
 
-        if(pinCheckDialog.isShowing())
+        if(pinCheckDialog != null && pinCheckDialog.isShowing())
             pinCheckDialog.dismiss();
-        if(retryPinDialog.isShowing())
+        if(retryPinDialog !=null &&retryPinDialog.isShowing())
             retryPinDialog.dismiss();
 
         super.onDestroy();
@@ -882,27 +1151,14 @@ public class SurveyActivity extends Activity {
                 
                 Util.cancelSurveyTimeout(SurveyActivity.this, surveyType, surveySeq);
                 
+                //write quit
+                Util.Log_debug(TAG, "### write event, quit -> survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
+                
                 //write
-                //##??
-
-//                String[] reminder = getReminderTimeStamp(context);
-//                try {
-//                    String seq = "";
-//                    int surSeq = shp.getInt(Util.SP_KEY_TRIGGER_SEQ_MAP.get(surveyName), -1);
-//                    if (surSeq == 0) {
-//                        surSeq = Util.MAX_TRIGGER_MAP.get(surveyName);
-//                    }
-//                    if (surveyName.equals(Util.SV_NAME_RANDOM)) {
-//                        seq = "," + surSeq;
-//                    }
-//
-//                    Util.writeEventToFile(context, getSurveyType(), getScheduleTimeStamp(),
-//                            reminder[0], reminder[1], reminder[2],
-//                            "", Util.sdf.format(Calendar.getInstance().getTime()) + seq);
-//                } catch (IOException e) {
-//                    // TODO Auto-generated catch block
-//                    e.printStackTrace();
-//                }
+                Util.writeEvent(SurveyActivity.this, Util.getSurveyCode(surveyType) + Util.CODE_SV_QUIT, 
+                        "", 
+                        "", "", "", 
+                        "", Util.sdf.format(Calendar.getInstance().getTime()));
 
                 SurveyActivity.super.onBackPressed();
             }
@@ -910,5 +1166,257 @@ public class SurveyActivity extends Activity {
     }
 
 
+    /*************************************************************************************************************/
+    
+    
+    protected void writeSurveyToFile(HashMap<String, List<String>> surveyData) throws IOException{
 
+        Util.Log_debug(TAG, "### write survey, fully finished, survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq+" surveyName "+surveyName);
+        
+        Calendar endCal = Calendar.getInstance();
+
+        String userID = Util.getSP(this, Util.SP_LOGIN).getString(Util.SP_LOGIN_KEY_USERID, "");
+        int studyDay = Util.getStudyDay(this);
+        String code = Util.getSurveyCode(surveyType)+Util.CODE_SV_FULLY_FINISHED;
+
+//      long scheduleTimeStamp = getScheduleTimeStamp();
+        String scheduleTS = "";//getScheduleTimeStamp();##??
+
+        String startTS = Util.sdf.format(surveyStartDatetime.getTime());
+        String endTS = Util.sdf.format(endCal.getTime());
+
+
+
+
+
+        StringBuilder sb = new StringBuilder(100);
+
+//      Calendar c = Calendar.getInstance();
+//      c.setTimeInMillis(time);
+        sb.append(endCal.getTime().toString());
+        sb.append(",");
+
+//        String[] rem = getReminderTimeStamp(SurveyActivity.this);
+        sb.append(userID + "," + studyDay + "," + code + "," + scheduleTS + "," + "," +  "," +  "," + startTS + "," + endTS + ",");
+
+        List<String> sorted = new ArrayList<String>(surveyData.keySet());
+        Collections.sort(sorted);
+
+        for(int i = 0; i < sorted.size(); i++){
+            String key = sorted.get(i);
+            List<String> data = surveyData.get(key);
+            sb.append(key+":");
+            if(data == null || data.isEmpty()){
+                sb.append("-1");
+            }
+            else{
+                for(int j = 0; j < data.size(); j++){
+                    sb.append(data.get(j));
+                    if(i != data.size()-1) {
+                        sb.append("");
+                    }
+                }
+            }
+            if(i != sorted.size()-1) {
+                sb.append(",");
+            }
+        }
+
+        //Ricky 2014/4/1
+        //dealing with the random sequence
+        if (surveyType == Util.SV_NAME_RANDOM) {
+            //random sequence
+            sb.append(",seq:"+ surveySeq);
+        }
+//      sb.append("\n");
+
+
+
+        //file name
+            Calendar c=Calendar.getInstance();
+            SimpleDateFormat curFormater = new SimpleDateFormat("MMMMM_dd");
+            String dateObj =curFormater.format(c.getTime());
+            String file_name=surveyName+"."+userID+"."+dateObj+".txt";
+
+        StringBuilder prefix_sb = new StringBuilder(Util.PREFIX_LEN);
+        String prefix = surveyName + "." + userID + "." + dateObj;
+        prefix_sb.append(prefix);
+
+        for (int i = prefix.length(); i <= Util.PREFIX_LEN; i++) {
+            prefix_sb.append(" ");
+        }
+
+        /************************************************************************
+         * Chen
+         *
+         * Data encryption
+         * Stringbuilder sb -> String ensb
+         */
+        String ensb = null;
+        try {
+            ensb = Util.encryption(prefix_sb.toString() + sb.toString());
+
+            if(Util.WRITE_RAW) {
+                Util.writeToFile(file_name, sb.toString());
+            } else{
+                Util.writeToFileEnc(file_name, ensb);
+            }
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
+        //Ricky 2013/12/09
+        TransmitData transmitData=new TransmitData();
+        transmitData.execute(ensb);
+
+
+        //for debug
+        Util.writeToFile("Event.txt",sb.substring(0, sb.indexOf("q"))+
+                (surveyType == Util.SV_NAME_RANDOM ?  "seq:"+surveySeq : ""));
+
+    }
+
+
+
+    private class TransmitData extends AsyncTask<String,Void, Boolean>
+    {
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            // TODO Auto-generated method stub
+            String data = strings[0];
+
+            //          String fileName=strings[0];
+            //          String dataToSend=strings[1];
+            if(checkDataConnectivity())
+            {
+
+            Log.d("((((((((((((((((((((((((", ""+Thread.currentThread().getId());
+             HttpPost request = new HttpPost(Util.UPLOAD_ADDRESS);
+             List<NameValuePair> params = new ArrayList<NameValuePair>();
+                params.add(new BasicNameValuePair("data", data));
+
+                //           //file_name
+                //           params.add(new BasicNameValuePair("file_name",fileName));
+                //           //data
+                //           params.add(new BasicNameValuePair("data",dataToSend));
+             try {
+
+                 request.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+                 HttpResponse response = new DefaultHttpClient().execute(request);
+                 if(response.getStatusLine().getStatusCode() == 200){
+                     String result = EntityUtils.toString(response.getEntity());
+                     Log.d("Sensor Data Point Info",result);
+                    // Log.d("Wrist Sensor Data Point Info","Data Point Successfully Uploaded!");
+                 }
+                 return true;
+             }
+             catch (Exception e)
+             {
+                 e.printStackTrace();
+                 return false;
+             }
+          }
+
+         else
+         {
+            Log.d("Sensor Data Point Info","No Network Connection:Data Point was not uploaded");
+            Toast.makeText(SurveyActivity.this, "@#$", Toast.LENGTH_LONG).show();
+            return false;
+          }
+
+        }
+
+    }
+
+
+    
+    
+    
+    
+    
+    
+    private void writeCompliance(int randomSeq, boolean start){
+        
+        String rsID = String.valueOf(randomSeq);
+        Calendar rsT = Calendar.getInstance();
+        String rsDate = (rsT.get(Calendar.MONTH)+1)+"/"+rsT.get(Calendar.DAY_OF_MONTH)+"/"+rsT.get(Calendar.YEAR);
+        String uID = Util.getSP(this, Util.SP_LOGIN).getString(Util.SP_LOGIN_KEY_USERID, "");
+
+        String data = null;
+        String phase = start ? "trigger" : "complete";
+        try {
+            data = Util.encryption(uID + "," + rsDate + "," + rsID + "," + phase);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        Util.Log_debug(TAG, false, "---write compliance user is "+uID+" type "+surveyType+surveySeq+" seq "+randomSeq+" "+phase);
+
+        ComplianceSignal triggerSignal = new ComplianceSignal();
+        triggerSignal.execute(data);
+    }
+    
+    
+    //haidong from ricky//##??
+    private class ComplianceSignal extends AsyncTask<String,Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            // TODO Auto-generated method stub
+            String data = strings[0];
+            //           String UID = strings[0];
+            //           String Date = strings[1];
+            //           String RSID = strings[2];
+            //           String CMD = strings[3];
+            if(checkDataConnectivity()){
+                HttpPost request = new HttpPost(Util.COMPLIANCE_ADDRESS);
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                params.add(new BasicNameValuePair("data", data));
+//                params.add(new BasicNameValuePair("category",CMD));
+//                params.add(new BasicNameValuePair("UID",UID));
+//                params.add(new BasicNameValuePair("Date",Date));
+//                params.add(new BasicNameValuePair("RSID",RSID));
+
+                try {
+
+                    request.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+                    HttpResponse response = new DefaultHttpClient().execute(request);
+                    if(response.getStatusLine().getStatusCode() == 200){
+                        String result = EntityUtils.toString(response.getEntity());
+                    }
+                    return true;
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+            else{
+                return false;
+            }
+        }
+    }
+
+    public boolean checkDataConnectivity() {
+        ConnectivityManager connectivity = (ConnectivityManager) SurveyActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+            if (info != null) {
+                for (int i = 0; i < info.length; i++) {
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    
+    
 }

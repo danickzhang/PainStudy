@@ -7,7 +7,7 @@ import android.widget.Toast;
 import edu.missouri.niaaa.pain.R;
 import edu.missouri.niaaa.pain.Util;
 
-public class SurveyBroad extends BroadcastReceiver {
+public class SurveyBroadcast extends BroadcastReceiver {
     String TAG = "SurveyBroad.java";
 
     @Override

@@ -52,19 +52,27 @@ import edu.missouri.niaaa.pain.survey.parser.XMLConfigParser;
 public class Util {
     static String TAG = "Util.java";
 
-    public static final String  ADMIN_UID = "00000";
+    public static final String  ADMIN_UID = "0000";
 
-    public final static int CODE_NAME_MORNING = 1;
-    public final static int CODE_NAME_DRINKING = 2;
-    public final static int CODE_NAME_MOOD = 3;
-    public final static int CODE_NAME_CRAVING = 4;
-    public final static int CODE_NAME_RANDOM = 5;
-    public final static int CODE_NAME_FOLLOW = 6;
-    public final static int CODE_SUSPENSION             = 7;
-    public final static int CODE_BEDTIME                = 8;
-    public final static int CODE_SENSOR_CONN = 9;
-    public final static int CODE_SCHEDULE_MANUALLY = 10;
-    public final static int CODE_SCHEDULE_AUTOMATIC = 11;
+    public final static String CODE_NAME_MORNING = "1";
+    public final static String CODE_NAME_DRINKING = "2";
+    public final static String CODE_NAME_MOOD = "3";
+    public final static String CODE_NAME_CRAVING = "4";
+    public final static String CODE_NAME_RANDOM = "5";
+    public final static String CODE_NAME_FOLLOW = "6";
+    
+    public final static String CODE_SUSPENSION          = "7";//12
+    public final static String CODE_BEDTIME             = "8";//13
+    public final static int CODE_SENSOR_CONN = 9;//14
+    public final static String CODE_SCHEDULE_MANUALLY   = "10";
+    public final static String CODE_SCHEDULE_AUTOMATIC  = "11";
+    
+    public final static String CODE_SV_FULLY_FINISHED   = "_20";
+    public final static String CODE_SV_IGNORED          = "_21";
+    public final static String CODE_SV_QUIT             = "_22";
+    public final static String CODE_SV_TIMEOUT          = "_23";
+    public final static String CODE_SV_REFUSED          = "_24";
+    public final static String CODE_SV_NO_PROMPT       = "_25";
 
 
 
@@ -82,7 +90,7 @@ public class Util {
     public static final int MAX_TRIGGER_RANDOM = 6;//6
     public static final int MAX_TRIGGER_FOLLOWUP = 3;//3
     public static final int VOLUME = 2;//10
-    public static final String PHONE_BASE_PATH = "sdcard/TestResult_craving/";
+    public static final String PHONE_BASE_PATH = "sdcard/TestResult_pain/";
 
     /*survey type*/
     public static final String SV_TYPE                      = "Survey_Type";
@@ -107,7 +115,7 @@ public class Util {
 //    public static final String BD_ACTION_SURVEY_FUNC    = "Intent_Survey";
 //    String schedule
 
-    public static final int SURVEY_TIMEOUT_IN_SECONDS           = 7*60;
+    public static final int SURVEY_TIMEOUT_IN_SECONDS           = 7;//*60;
     public static final int SURVEY_REMINDS_IN_SECONDS           = 5*60;
     public static final int SURVEY_ISOLATE_IN_SECONDS           = 29*60;
     public final static int SUSPENSION_INTERVAL_IN_SECOND       = 15*60;
@@ -166,11 +174,11 @@ public class Util {
     /*server addresses*/
 
     /*Craving Study*/
-    public final static String VALIDATE_ADDRESS = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/Crt2/validateUserDec.php";
-    public final static String WRITE_ARRAY_TO_FILE =        "http://dslsrv8.cs.missouri.edu/~hw85f/Server/Crt2/writeArrayToFile.php";
-    public final static String WRITE_ARRAY_TO_FILE_DEC =    "http://dslsrv8.cs.missouri.edu/~hw85f/Server/Crt2/writeArrayToFileDec.php";
-    public final static String COMPLIANCE_ADDRESS = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/Crt2/complianceDec.php";
-    public final static String STUDY_DAY_MODIFY_ADDRESS = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/Crt2/changeStudyWeekDec.php";
+    public final static String VALIDATE_ADDRESS             = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/Crt2/validateUserDec.php";
+    public final static String WRITE_ARRAY_TO_FILE          = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/Crt2/writeArrayToFile.php";
+    public final static String WRITE_ARRAY_TO_FILE_DEC      = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/Crt2/writeArrayToFileDec.php";
+    public final static String COMPLIANCE_ADDRESS           = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/Crt2/complianceDec.php";
+    public final static String STUDY_DAY_MODIFY_ADDRESS     = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/Crt2/changeStudyWeekDec.php";
 
     /*EMA-STL Study*/
 //  public final static String VALIDATE_ADDRESS =           "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtEMA/validateUser.php";
@@ -244,9 +252,35 @@ public class Util {
         return PWD;
     }
 
+    public static String getSurveyCode(int surveyType){
+        
+        switch(surveyType){
+        case 1:
+            return CODE_NAME_MORNING;
+        case 2:
+            return CODE_NAME_RANDOM;
+        case 3:
     
+        case 4:
     
+        case 5:
+            return CODE_NAME_DRINKING;
+        case 6:
+            return CODE_NAME_FOLLOW;
+        case 7:
+            return CODE_NAME_MOOD;//##??
+        default:
+            return "-1";
+        }
+    }
     
+//    public static final int SV_NAME_MORNING              = 1;
+//    public static final int SV_NAME_RANDOM               = 2;
+//    public static final int SV_NAME_PAIN                 = 3;
+//    public static final int SV_NAME_PAIN_FOLLOWUP        = 4;
+//    public static final int SV_NAME_DRINKING             = 5;
+//    public static final int SV_NAME_DRINKING_FOLLOWUP    = 6;
+//    public static final int SV_NAME_DUAL_FOLLOWUP        = 7;
     
     
     
@@ -256,8 +290,8 @@ public class Util {
     /*************************************************************************************************************/
     /* random */
     
-    public static String setRandomSchedule(Context context, boolean startFromNoon, boolean systemTriggered){
-        Util.Log_debug(TAG, "set Random Schedule time sets " + startFromNoon);
+    public static String getNewRandomSchedules(Context context, boolean startFromNoon, boolean systemTriggered){
+        Util.Log_debug(TAG, "get Random Schedule : create new start from noon? " + startFromNoon);
         
         Calendar midnight = Calendar.getInstance();
         midnight.set(Calendar.HOUR_OF_DAY, 23);//23
@@ -308,6 +342,11 @@ public class Util {
         return random_schedule;
     }
     
+    public static String getExistRandomSchedules(Context context){
+        Util.Log_debug(TAG, "get Random Schedule from existing. ");
+        return getSP(context, Util.SP_SURVEY).getString(Util.SP_SURVEY_KEY_RANDOM_SETS, "");
+    }
+    
     
     public static void scheduleRandomSurvey(Context context, String time_sets){
 
@@ -337,7 +376,7 @@ public class Util {
                     am.cancel(piTrigger);
                     am.setExact(AlarmManager.RTC_WAKEUP, time, piTrigger);
                     
-                    Log.d("Random Schedule ", "each item is "+i+" "+str+" "+r.get(Calendar.HOUR_OF_DAY)+":"+r.get(Calendar.MINUTE));
+                    Log.d("Random Schedule ", "each time is "+i+" "+str+" "+r.get(Calendar.HOUR_OF_DAY)+":"+r.get(Calendar.MINUTE)+":"+r.get(Calendar.SECOND));
                 }
             }
         }
@@ -372,7 +411,7 @@ public class Util {
         SharedPreferences sp = getSP(context, Util.SP_SURVEY);
         sp.edit().remove(Util.SP_SURVEY_KEY_RANDOM_SETS).commit();
         
-//        sp.edit().remove(Util.SP_SURVEY_KEY_FLAG_ACTIVATE).commit();//leave not delete until ...
+//        sp.edit().remove(Util.SP_SURVEY_KEY_FLAG_ACTIVATE).commit();//leave not delete until delete user id...
     }
     
     
@@ -380,9 +419,8 @@ public class Util {
     
     
     public static void reScheduleRandomSurvey(Context context){
-        String sets = getSP(context, Util.SP_SURVEY).getString(Util.SP_SURVEY_KEY_RANDOM_SETS, "");
         
-        scheduleRandomSurvey(context, sets);
+        scheduleRandomSurvey(context, getExistRandomSchedules(context));
     }
     
     
@@ -754,7 +792,7 @@ public class Util {
         expire.setTimeInMillis(sp.getLong(Util.SP_BEDTIME_KEY_LONG, defTime));
 
         //set morning & schedule random
-        if(c.after(n) || isTodayActive(context)){
+        if(c.after(n) || isTodayActivated(context)){//##??
             Util.Log_debug(TAG, "reschedule morning ~ after noon");
             morningComplete(context, true, true);
         }
@@ -820,20 +858,21 @@ public class Util {
 
     public static void activate(Context context, boolean startFromNoon, boolean systemTriggered){
         
-        if(isActFlagToday(context)){
-            if(isTodayActive(context)){
+        if(hasTodayActivated(context)){
+            if(isTodayActivated(context)){
                 reScheduleRandomSurvey(context);
             }
             else{
+                //do nothing
                 
             }
         }
         else{
-            scheduleRandomSurvey(context, setRandomSchedule(context, startFromNoon, systemTriggered));
+            scheduleRandomSurvey(context, getNewRandomSchedules(context, startFromNoon, systemTriggered));
         }
         
         //restart gps
-        if(Util.isTodayActive(context) || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 3){
+        if(Util.isTodayActivated(context) || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 3){
             context.sendBroadcast(new Intent(LocationUtilities.ACTION_START_LOCATION));
         }
     }
@@ -845,9 +884,16 @@ public class Util {
 
     
     
-    public static boolean isTodayActive(Context context){//##??
+    /**
+     * Test if today is activated.
+     * it will test is today has been activated before, if so, then test if random schedule set is there? 
+     * Then indicates today is now being activated. 
+     * @param context
+     * @return
+     */
+    public static boolean isTodayActivated(Context context){//##??
         SharedPreferences sp = getSP(context, Util.SP_SURVEY);
-        if(!isActFlagToday(context)){
+        if(!hasTodayActivated(context)){
             return false;
         }
         else{
@@ -864,7 +910,7 @@ public class Util {
     /**
      * @return
      */
-    public static boolean isActFlagToday(Context context){
+    public static boolean hasTodayActivated(Context context){
         
         SharedPreferences sp = getSP(context, Util.SP_SURVEY);
         if(!sp.contains(Util.SP_SURVEY_KEY_FLAG_ACTIVATE)){
@@ -874,7 +920,7 @@ public class Util {
             Calendar now = Calendar.getInstance();
             Calendar day = Calendar.getInstance();
             day.setTimeInMillis(sp.getLong(SP_SURVEY_KEY_FLAG_ACTIVATE, 0));
-            Log.d(TAG, sdf.format(day.getTime()));
+//            Log.d(TAG, sdf.format(day.getTime()));
             if(now.get(Calendar.HOUR_OF_DAY) < 3){
                 if(now.get(Calendar.DAY_OF_YEAR) == day.get(Calendar.DAY_OF_YEAR)+1){
                     return true;
@@ -902,15 +948,17 @@ public class Util {
          
         activate(context, startFromNoon, systemTriggered);
         
-        cancelDaemonNoon();//##??
+        cancelDaemonNoon(context);//##??
         
         cancelMorningSurvey(context);
         
     }
     
-    private static void cancelDaemonNoon() {
+    private static void cancelDaemonNoon(Context context) {
         // TODO Auto-generated method stub
-        
+        Intent i = new Intent(Util.BD_ACTION_DAEMON);
+        i.putExtra(Util.BD_ACTION_DAEMON_FUNC, -1);
+        context.sendBroadcast(i);
     }
 
     
@@ -1163,10 +1211,21 @@ public class Util {
         transmitData.execute(toWriteArr);
 
     }
+    
+    
+    
+    public static void writeEvent(Context context, String code, String scheduleTS, String r1, String r2, String r3, String startTS, String endTS){
+        try {
+            writeEventToFile(context, code, scheduleTS, r1, r2, r3, startTS, endTS);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
 
     //upload
-    public static void writeEventToFile(Context context, int type, String scheduleTS, String r1, String r2, String r3, String startTS, String endTS) throws IOException{
+    public static void writeEventToFile(Context context, String code, String scheduleTS, String r1, String r2, String r3, String startTS, String endTS) throws IOException{
 
         Log.d("###", "write evetn to file");
         
@@ -1183,7 +1242,7 @@ public class Util {
         sb.append(endCal.getTime().toString());
         sb.append(",");
 
-        sb.append(userID+","+studyDay+","+type+","+scheduleTS+","+r1+","+r2+","+r3+","+startTS+","+endTS+",");
+        sb.append(userID+","+studyDay+","+code+","+scheduleTS+","+r1+","+r2+","+r3+","+startTS+","+endTS+",");
 //      sb.append("\n");
 
         Calendar cl = Calendar.getInstance();

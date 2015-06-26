@@ -104,7 +104,7 @@ public class SurveyMenu extends Activity {
                             threeT.set(Calendar.MINUTE, 0);
                             threeT.set(Calendar.SECOND, 0);
 
-                            if(Util.isTodayActive(SurveyMenu.this)){//??##
+                            if(Util.isTodayActivated(SurveyMenu.this)){
                                 Alert(R.string.morning_report_title,R.string.morning_report_msg);
                             }
                             else if(mT.after(noonT)){
@@ -119,7 +119,7 @@ public class SurveyMenu extends Activity {
                         }
                         else if(temp.getAction().equals("3")){//based on activateToday, initial is still able from deactivate to 3am
                             /*manually confirmation*/
-                            if(!Util.isTodayActive(SurveyMenu.this)){//??##
+                            if(!Util.isTodayActivated(SurveyMenu.this)){//??##
                                 Toast.makeText(SurveyMenu.this, R.string.morning_report_unfinished, Toast.LENGTH_LONG).show();
                             }
                             else{

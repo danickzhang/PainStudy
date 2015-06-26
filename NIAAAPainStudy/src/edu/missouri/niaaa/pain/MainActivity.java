@@ -199,7 +199,7 @@ public class MainActivity extends Activity {
         
 
         //restart gps
-        if(Util.isTodayActive(this) || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 3){
+        if(Util.isTodayActivated(this) || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 3){
             sendBroadcast(new Intent(LocationUtilities.ACTION_START_LOCATION));
         }
 
@@ -218,7 +218,7 @@ public class MainActivity extends Activity {
         Util.rescheduleMorningSurvey(MainActivity.this);
 
         //##??
-        Util.scheduleDaemon(MainActivity.this);
+        Util.scheduleDaemon(MainActivity.this);//maybe put in restore...
 //      startSService();
 
         restoreStatus();
@@ -442,7 +442,7 @@ public class MainActivity extends Activity {
                 // TODO Auto-generated method stub
                 Util.Log_debug(TAG, "section 6 on click listener");
 
-                if(Util.isTodayActive(MainActivity.this)){
+                if(Util.isTodayActivated(MainActivity.this)){
                     if(section_6.getText().equals(MainActivity.this.getString(R.string.section_6))){
                         Log.d("test text 6", "suspension~~~~~~~~~~~");
 
@@ -532,7 +532,8 @@ public class MainActivity extends Activity {
 //                Util.Log_debug(TAG, ""+Util.isSuspensionFlag(MainActivity.this));
 //                Util.bedtimeComplete(MainActivity.this, 12, 23);
 //                Util.rescheduleMorningSurvey(MainActivity.this);
-                Util.Log_debug(TAG, ""+Util.isTodayActive(MainActivity.this));
+                Util.Log_debug(TAG, ""+Util.isTodayActivated(MainActivity.this));
+                Util.Log_debug(TAG, ""+Util.hasTodayActivated(MainActivity.this));
                 
 //                Util.scheduleRandomSurvey(MainActivity.this, Util.setRandomSchedule(MainActivity.this, true, true));
                 
