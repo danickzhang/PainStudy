@@ -51,6 +51,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import edu.missouri.niaaa.pain.R;
 import edu.missouri.niaaa.pain.Util;
+import edu.missouri.niaaa.pain.activity.DialogActivity;
 import edu.missouri.niaaa.pain.survey.category.Answer;
 import edu.missouri.niaaa.pain.survey.category.Category;
 import edu.missouri.niaaa.pain.survey.category.Question;
@@ -303,7 +304,13 @@ public class SurveyActivity extends Activity {
                             Util.sdf.format(surveyStartDatetime.getTime()), Util.sdf.format(Calendar.getInstance().getTime()));
                     
                     //wait OK to be finish
-                    singleOptionDialog(R.string.morning_report_title4, R.string.survey_timeout, DIALOG_TIMEOUT).show();//##?? change to start new dialog activity and finish self!!!
+//                    singleOptionDialog(R.string.morning_report_title4, R.string.survey_timeout, DIALOG_TIMEOUT).show();//##?? change to start new dialog activity and finish self!!!
+                    
+                    Intent timeoutIntent = new Intent(this, DialogActivity.class);
+                    timeoutIntent.putExtra(DialogActivity.DIALOG_FLAG, DialogActivity.DIALOG_TIMEOUT);
+                    startActivity(timeoutIntent);
+                    
+                    finish();
                 }
                 else{//remind1230
                     Util.Log_debug(TAG, "############# something happen place 1");
@@ -563,6 +570,11 @@ public class SurveyActivity extends Activity {
         splitSurveyOnComplete(this, surveyType, surveySeq);
         
         workWithAnswers();
+        
+
+        Intent completeIntent = new Intent(this, DialogActivity.class);
+        completeIntent.putExtra(DialogActivity.DIALOG_FLAG, DialogActivity.DIALOG_FINISH);
+        startActivity(completeIntent);
         
         finish();
     }
@@ -842,13 +854,11 @@ public class SurveyActivity extends Activity {
                     pinCheckDialog.show();
                     dialog.cancel();
                     break;
-                    
                 case DIALOG_TIMEOUT:
                     
                     dialog.cancel();
                     finish();
                     break;
-                    
                 default:
                     
                     break;

@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
+import edu.missouri.niaaa.pain.activity.DialogActivity;
 import edu.missouri.niaaa.pain.location.LocationUtilities;
 
 /**
@@ -146,10 +147,11 @@ public class DaemonReceiver extends BroadcastReceiver {
             //          am.set(AlarmManager.RTC_WAKEUP, getProperTime(3, 0)+getDayLong(), piTrigger3);
         }
         else if (fun == 4) {// 9pm alarm dialog
-//          Intent i = new Intent(context.getApplicationContext(), ChargeReminderActivity.class);
-//          i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//          context.startActivity(i);
+            Intent timeoutIntent = new Intent(context, DialogActivity.class);
+            timeoutIntent.putExtra(DialogActivity.DIALOG_FLAG, DialogActivity.DIALOG_CHARGE_REMIND);
+            context.startActivity(timeoutIntent);
 
+            //
             Intent itTrigger4 = new Intent(Util.BD_ACTION_DAEMON);
             itTrigger4.putExtra(Util.BD_ACTION_DAEMON_FUNC, 4);// int
             PendingIntent piTrigger4 = PendingIntent.getBroadcast(context, 4, itTrigger4, Intent.FLAG_ACTIVITY_NEW_TASK);
