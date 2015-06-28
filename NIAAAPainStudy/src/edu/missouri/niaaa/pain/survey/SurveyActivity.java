@@ -329,7 +329,7 @@ public class SurveyActivity extends Activity {
                     Util.Log_debug(TAG, "### write event, noPrompt_underDoing -> onNewIntent, survey: "+newSurveyType+" seq: "+newSurveySeq+" remind: "+newRemindSeq);
                     
                     //write
-                    Util.writeEvent(this, Util.getSurveyCode(newSurveyType) + Util.CODE_SV_NO_PROMPT, 
+                    Util.writeEvent(this, Util.getSurveyCode(newSurveyType) + Util.CODE_SV_NO_PROMPT + "_3", 
                             "", 
                             "", "", "", 
                             "", Util.sdf.format(Calendar.getInstance().getTime()));
@@ -391,7 +391,7 @@ public class SurveyActivity extends Activity {
                         Util.Log_debug(TAG, "### write event, noPrompt_underDoing -> onNewIntent, survey: "+newSurveyType+" seq: "+newSurveySeq+" remind: "+newRemindSeq);
                         
                         //write
-                        Util.writeEvent(this, Util.getSurveyCode(newSurveyType) + Util.CODE_SV_NO_PROMPT, 
+                        Util.writeEvent(this, Util.getSurveyCode(newSurveyType) + Util.CODE_SV_NO_PROMPT + "_3", 
                                 "", 
                                 "", "", "", 
                                 "", Util.sdf.format(Calendar.getInstance().getTime()));
@@ -565,7 +565,7 @@ public class SurveyActivity extends Activity {
         Util.Log_debug(TAG, "~~~Survey Complete");
         
         Util.cancelSurveyTimeout(this, surveyType, surveySeq);
-        Util.scheduleSurveyIsolater(this);
+        Util.scheduleSurveyIsolater(this, Calendar.getInstance().getTimeInMillis());
         
         splitSurveyOnComplete(this, surveyType, surveySeq);
         

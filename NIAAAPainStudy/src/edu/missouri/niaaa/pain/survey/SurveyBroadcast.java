@@ -1,5 +1,7 @@
 package edu.missouri.niaaa.pain.survey;
 
+import java.util.Calendar;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,17 +33,44 @@ public class SurveyBroadcast extends BroadcastReceiver {
             
         }
         else if(action.equals(Util.BD_ACTION_SURVEY_REMINDS)){
-            int remind_seq = intent.getIntExtra(Util.SV_REMIND_SEQ, -1);//protect -1 later
+            int remindSeq = intent.getIntExtra(Util.SV_REMIND_SEQ, -1);//protect -1 later
             Util.Log_debug(TAG, "action~~~ "+action+" "+intent.getIntExtra(Util.SV_SEQ, -1)+" "+intent.getIntExtra(Util.SV_REMIND_SEQ, -1));
 
             Intent launchSurvey = new Intent(context, SurveyActivity.class);
             launchSurvey.putExtra(Util.SV_TYPE, surveyType);
             launchSurvey.putExtra(Util.SV_SEQ, surveySeq);
-            launchSurvey.putExtra(Util.SV_REMIND_SEQ, remind_seq);
+            launchSurvey.putExtra(Util.SV_REMIND_SEQ, remindSeq);
 
             launchSurvey.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             launchSurvey.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            context.startActivity(launchSurvey);
+            
+            if(Util.isSuspensionFlag(context)){
+                //under suspension
+                Util.Log_debug(TAG, "### write event, noPrompt_under Suspension ->  survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
+                
+                //write
+                Util.writeEvent(context, Util.getSurveyCode(surveyType) + Util.CODE_SV_NO_PROMPT + "_1", 
+                        "", 
+                        "", "", "", 
+                        "", Util.sdf.format(Calendar.getInstance().getTime()));
+                
+                Toast.makeText(context, "An auto-triggered survey is just blocked by suspension!", Toast.LENGTH_LONG).show();
+            }
+            else if(Util.isIsolateFlag(context)){
+              //under survey isolater
+                Util.Log_debug(TAG, "### write event, noPrompt_under survey isolater ->  survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
+                
+                //write
+                Util.writeEvent(context, Util.getSurveyCode(surveyType) + Util.CODE_SV_NO_PROMPT + "_4", 
+                        "", 
+                        "", "", "", 
+                        "", Util.sdf.format(Calendar.getInstance().getTime()));
+                
+                Toast.makeText(context, "An auto-triggered survey is just blocked by survey isolating!", Toast.LENGTH_LONG).show();
+            }
+            else{
+                context.startActivity(launchSurvey);
+            }
         }
         else if(action.equals(Util.BD_ACTION_SURVEY_ISOLATE)){
             Util.Log_debug(TAG, "action~~~ "+action);

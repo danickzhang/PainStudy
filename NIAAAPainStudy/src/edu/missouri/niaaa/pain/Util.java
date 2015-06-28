@@ -146,9 +146,9 @@ public class Util {
     public static final String SP_BEDTIME_KEY_LONG              = "BEDTIME_LONG";
     /*survey*/
     public static final String SP_SURVEY                        = SP_BASE + "SURVEY";
-    public static final String SP_SURVEY_KEY_FLAG_ISOLATE       = "SURVEY_ISOLATE_EXPIRE";
-    public static final String SP_SURVEY_KEY_FLAG_SUSPENSION    = "SURVEY_SUSPENSION_EXPIRE";
-    public static final String SP_SURVEY_KEY_SUSPENSION_START   = "SURVEY_SUSPENSION_START_DATETIME";
+    public static final String SP_SURVEY_KEY_ISOLATE_START      = "SURVEY_ISOLATE_START_DT";
+    public static final String SP_SURVEY_KEY_SUSPENSION_EXPIRE  = "SURVEY_SUSPENSION_EXPIRE_DT";
+    public static final String SP_SURVEY_KEY_SUSPENSION_START   = "SURVEY_SUSPENSION_START_DT";
     public static final String SP_SURVEY_KEY_FLAG_ACTIVATE      = "SURVEY_ACTIVATE_TIME";
     public static final String SP_SURVEY_KEY_RANDOM_SETS        = "SURVEY_RANDOM_SETS";
     
@@ -475,7 +475,7 @@ public class Util {
         
         Calendar c2 = Calendar.getInstance();
         if(!writeCurrentDatetime){
-            c2.setTimeInMillis(sp.getLong(Util.SP_SURVEY_KEY_FLAG_SUSPENSION, 0));//protect 0
+            c2.setTimeInMillis(sp.getLong(Util.SP_SURVEY_KEY_SUSPENSION_EXPIRE, 0));//protect 0
         }
         
         try {
@@ -492,13 +492,13 @@ public class Util {
     
     public static void setSuspensionFlag(Context context, long datetime){
         SharedPreferences sp = getSP(context, Util.SP_SURVEY);
-        sp.edit().putLong(Util.SP_SURVEY_KEY_FLAG_SUSPENSION, datetime).commit();
+        sp.edit().putLong(Util.SP_SURVEY_KEY_SUSPENSION_EXPIRE, datetime).commit();
         
     }
     
     public static void resetSuspensionFlag(Context context){
         SharedPreferences sp = getSP(context, Util.SP_SURVEY);
-        sp.edit().remove(Util.SP_SURVEY_KEY_FLAG_SUSPENSION).commit();
+        sp.edit().remove(Util.SP_SURVEY_KEY_SUSPENSION_EXPIRE).commit();
         
         sp.edit().remove(Util.SP_SURVEY_KEY_SUSPENSION_START).commit();
         
@@ -510,11 +510,11 @@ public class Util {
         Calendar now = Calendar.getInstance();
         Calendar expire = Calendar.getInstance();
         
-        if(!sp.contains(Util.SP_SURVEY_KEY_FLAG_SUSPENSION)){
+        if(!sp.contains(Util.SP_SURVEY_KEY_SUSPENSION_EXPIRE)){
             return false;
         }
         else{
-            expire.setTimeInMillis(sp.getLong(SP_SURVEY_KEY_FLAG_SUSPENSION, 0));
+            expire.setTimeInMillis(sp.getLong(SP_SURVEY_KEY_SUSPENSION_EXPIRE, 0));
             Log.d(TAG, sdf.format(expire.getTime()));
             if(now.before(expire)){
                 return true;
@@ -537,16 +537,16 @@ public class Util {
         Calendar now = Calendar.getInstance();
         Calendar expire = Calendar.getInstance();
         
-        if(!sp.contains(Util.SP_SURVEY_KEY_FLAG_SUSPENSION)){
+        if(!sp.contains(Util.SP_SURVEY_KEY_SUSPENSION_EXPIRE)){
             // do nothing
             Util.Log_debug(TAG, "reschedule suspension ~ do nothing");
         }
         else{
-            expire.setTimeInMillis(sp.getLong(SP_SURVEY_KEY_FLAG_SUSPENSION, 0));
+            expire.setTimeInMillis(sp.getLong(SP_SURVEY_KEY_SUSPENSION_EXPIRE, 0));
             if(now.before(expire)){
                 //schedule
                 Util.Log_debug(TAG, "reschedule suspension ~ schedule @ "+sdf.format(expire.getTime()));
-                long datetime = sp.getLong(Util.SP_SURVEY_KEY_FLAG_SUSPENSION, 0);
+                long datetime = sp.getLong(Util.SP_SURVEY_KEY_SUSPENSION_EXPIRE, 0);
                 scheduleSuspension(context, datetime);
             }
             else{
@@ -560,11 +560,10 @@ public class Util {
     /*************************************************************************************************************/
     /*Survey scheduler*/
     
-    public static void scheduleSurveyIsolater(Context context){
+    public static void scheduleSurveyIsolater(Context context, long start){
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         
-        Calendar c = Calendar.getInstance();
-        long time = c.getTimeInMillis()+500;
+        long time = start+500;
         
         Intent itTrigger =  new Intent(Util.BD_ACTION_SURVEY_ISOLATE);
 
@@ -595,11 +594,11 @@ public class Util {
     }
     
     public static void setIsolateFlag(Context context, long datetime){
-        getSP(context, Util.SP_SURVEY).edit().putLong(Util.SP_SURVEY_KEY_FLAG_ISOLATE, datetime).commit();
+        getSP(context, Util.SP_SURVEY).edit().putLong(Util.SP_SURVEY_KEY_ISOLATE_START, datetime).commit();
     }
     
     public static void resetIsolateFlag(Context context){
-        getSP(context, Util.SP_SURVEY).edit().remove(Util.SP_SURVEY_KEY_FLAG_ISOLATE).commit();
+        getSP(context, Util.SP_SURVEY).edit().remove(Util.SP_SURVEY_KEY_ISOLATE_START).commit();
     }
     
     public static boolean isIsolateFlag(Context context){
@@ -608,11 +607,11 @@ public class Util {
         Calendar now = Calendar.getInstance();
         Calendar expire = Calendar.getInstance();
         
-        if(!sp.contains(Util.SP_SURVEY_KEY_FLAG_ISOLATE)){
+        if(!sp.contains(Util.SP_SURVEY_KEY_ISOLATE_START)){
             return false;
         }
         else{
-            expire.setTimeInMillis(sp.getLong(Util.SP_SURVEY_KEY_FLAG_ISOLATE, 0)+Util.SURVEY_ISOLATE_IN_SECONDS*1000);
+            expire.setTimeInMillis(sp.getLong(Util.SP_SURVEY_KEY_ISOLATE_START, 0) + SURVEY_ISOLATE_IN_SECONDS * 1000);
             Log.d(TAG, sdf.format(expire.getTime()));
             if(now.before(expire)){//not after
                 return true;
@@ -622,6 +621,41 @@ public class Util {
             }
         }
     }
+    
+    
+    /**
+     * when app reboot, check if there is any survey isolater at the time phone shut down.
+     * if it still under that time period, set isolater again,
+     * if it expired, clear the isolater flag.
+     */
+    public static void reScheduleSurveyIsolater(Context context){
+        SharedPreferences sp = getSP(context, Util.SP_SURVEY);
+
+        Calendar now = Calendar.getInstance();
+        Calendar expire = Calendar.getInstance();
+        
+        if(!sp.contains(Util.SP_SURVEY_KEY_ISOLATE_START)){
+            // do nothing
+            Util.Log_debug(TAG, "reschedule survey isolater ~ do nothing");
+        }
+        else{
+            expire.setTimeInMillis(sp.getLong(SP_SURVEY_KEY_ISOLATE_START, 0) + SURVEY_ISOLATE_IN_SECONDS * 1000);
+            if(now.before(expire)){
+                //schedule
+                Util.Log_debug(TAG, "reschedule survey isolater ~ schedule @ "+sdf.format(expire.getTime()));
+                long datetime = sp.getLong(Util.SP_SURVEY_KEY_ISOLATE_START, 0);
+                scheduleSurveyIsolater(context, datetime);
+            }
+            else{
+                //cancel and clear survey isolater ###
+                Util.Log_debug(TAG, "reschedule survey isolater ~ cancel and write ###");
+                cancelSurveyIsolater(context);
+            }
+        }
+    }
+
+    
+    
     
     /*--*/
     

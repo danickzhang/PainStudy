@@ -214,6 +214,9 @@ public class MainActivity extends Activity {
         /*check suspension status*/
         Util.reScheduleSuspension(MainActivity.this);
         
+        /*check survey isolater status*/
+        Util.reScheduleSurveyIsolater(MainActivity.this);
+        
         //schedule
         Util.rescheduleMorningSurvey(MainActivity.this);
 
@@ -534,6 +537,8 @@ public class MainActivity extends Activity {
 //                Util.rescheduleMorningSurvey(MainActivity.this);
                 Util.Log_debug(TAG, ""+Util.isTodayActivated(MainActivity.this));
                 Util.Log_debug(TAG, ""+Util.hasTodayActivated(MainActivity.this));
+                Util.Log_debug(TAG, ""+Util.isSuspensionFlag(MainActivity.this));
+                Util.Log_debug(TAG, ""+Util.isIsolateFlag(MainActivity.this));
                 
 //                Util.scheduleRandomSurvey(MainActivity.this, Util.setRandomSchedule(MainActivity.this, true, true));
                 
