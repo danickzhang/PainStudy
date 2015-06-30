@@ -1,13 +1,6 @@
 package edu.missouri.niaaa.pain;
 
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.math.BigInteger;
-import java.security.KeyFactory;
-import java.security.PublicKey;
-import java.security.spec.RSAPublicKeySpec;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -197,11 +190,15 @@ public class MainActivity extends Activity {
     private void restoreStatus() {
         // TODO Auto-generated method stub
         
+        //daemon
+        
 
         //restart gps
         if(Util.isTodayActivated(this) || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 3){
             sendBroadcast(new Intent(LocationUtilities.ACTION_START_LOCATION));
         }
+        
+        //recording
 
     }
 
@@ -230,19 +227,8 @@ public class MainActivity extends Activity {
 
     private void setSharedValue(){
 
-        //public key
-        try {
-            Util.publicKey = getPublicKey();
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            Toast.makeText(getApplicationContext(), R.string.public_key_lost, Toast.LENGTH_SHORT).show();
-            finish();
-        }
-
         //ID
 
-//      locationM = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     }
 
 
@@ -265,7 +251,7 @@ public class MainActivity extends Activity {
 
                 String data = null;
                 try {
-                    data = Util.encryption(ID + "," + "3" + "," + pinStr);
+                    data = Util.encryption(MainActivity.this, ID + "," + "3" + "," + pinStr);
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
@@ -519,7 +505,7 @@ public class MainActivity extends Activity {
                 // TODO Auto-generated method stub
                 Util.Log_debug(TAG, "section 8 on click listener");
 
-
+                Util.scheduleDaemon(MainActivity.this);
                 Util.rescheduleMorningSurvey(MainActivity.this);
             }
         });
@@ -718,23 +704,6 @@ public class MainActivity extends Activity {
 
 
 
-
-    private PublicKey getPublicKey() throws Exception {
-        // TODO Auto-generated method stub
-        InputStream is = getResources().openRawResource(R.raw.publickey);
-        ObjectInputStream ois = new ObjectInputStream(is);
-
-        BigInteger m = (BigInteger)ois.readObject();
-        BigInteger e = (BigInteger)ois.readObject();
-        RSAPublicKeySpec keySpec = new RSAPublicKeySpec(m, e);
-
-
-        KeyFactory fact = KeyFactory.getInstance("RSA", "BC");
-        PublicKey pubKey = fact.generatePublic(keySpec);
-
-        return pubKey;
-    }
-
 //================================================================================================================================
 //================================================================================================================================
 
@@ -767,16 +736,11 @@ public class MainActivity extends Activity {
                     Util.Log_debug(TAG, "Morning Survey scheduled at " + DateFormat.getDateTimeInstance().format(morning.getTime()));
 
                     //keep delivered
-                    try {
-                        Util.writeEventToFile(MainActivity.this, Util.CODE_BEDTIME,
-                                Util.sdf.format(morning.getTime()),
-                                "", "", "",
-                                Util.sdf.format(((Calendar)data.getSerializableExtra(MorningScheduler.INTENT_TS)).getTime()),
-                                Util.sdf.format(Calendar.getInstance().getTime()));
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                    Util.writeEvent(MainActivity.this, Util.CODE_BEDTIME,
+                            Util.sdf.format(morning.getTime()),
+                            "", "", "",
+                            Util.sdf.format(((Calendar)data.getSerializableExtra(MorningScheduler.INTENT_TS)).getTime()),
+                            Util.sdf.format(Calendar.getInstance().getTime()));
                 }
                 else{ //if(resultCode == Activity.RESULT_CANCELED){
 
@@ -794,14 +758,9 @@ public class MainActivity extends Activity {
                     
                     Util.getSP(MainActivity.this, Util.SP_SURVEY).edit().putLong(Util.SP_SURVEY_KEY_SUSPENSION_START, c.getTimeInMillis()).commit();
                     
-                    try {
-                        Util.writeEventToFile(MainActivity.this, Util.CODE_SUSPENSION, 
-                                "", "", "", "",
-                                Util.sdf.format(c.getTime()), "");
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                    Util.writeEvent(MainActivity.this, Util.CODE_SUSPENSION, 
+                            "", "", "", "",
+                            Util.sdf.format(c.getTime()), "");
                 }
 
                 break;

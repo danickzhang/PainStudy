@@ -52,8 +52,28 @@ import edu.missouri.niaaa.pain.survey.parser.XMLConfigParser;
 public class Util {
     static String TAG = "Util.java";
 
-    public static final String  ADMIN_UID = "0000";
-
+    public static final String ADMIN_UID = "00000";
+    public static final String PHONE_BASE_PATH = "sdcard/TestResult_pain/";
+    public static final String PKG_BASE = "edu.missouri.niaaa.pain.";
+    
+    /*for debug*/
+    public static final boolean DEBUG_LIFECYCLE         = true;
+    public static final boolean DEBUG                   = true;
+    public static final boolean RELEASE                 = false;
+    public static final boolean REMIND_SEPLIT = true;
+    public final static boolean WRITE_RAW               = !RELEASE;
+    
+    /*survey type*/
+    public static final int SV_NAME_MORNING             = 1;
+    public static final int SV_NAME_RANDOM              = 2;
+    public static final int SV_NAME_MOOD                = 3;
+    public static final int SV_NAME_PAIN_FOLLOWUP       = 4;
+    public static final int SV_NAME_DRINKING            = 5;
+    public static final int SV_NAME_DRINKING_FOLLOWUP   = 6;
+    public static final int SV_NAME_DUAL_FOLLOWUP       = 7;
+    
+    
+    /*uploading code*/
     public final static String CODE_NAME_MORNING = "1";
     public final static String CODE_NAME_DRINKING = "2";
     public final static String CODE_NAME_MOOD = "3";
@@ -72,67 +92,48 @@ public class Util {
     public final static String CODE_SV_QUIT             = "_22";
     public final static String CODE_SV_TIMEOUT          = "_23";
     public final static String CODE_SV_REFUSED          = "_24";
-    public final static String CODE_SV_NO_PROMPT       = "_25";
-
-
-
-    /*for debug*/
-    public static final boolean DEBUG_LIFECYCLE = true;
-    public static final boolean DEBUG           = true;
-    public static final boolean RELEASE         = false;
-    public static final boolean REMIND_SEPLIT   = true;
-    public final static boolean WRITE_RAW       = !Util.RELEASE;
+    public final static String CODE_SV_NO_PROMPT        = "_25";
 
 
     /*survey config*/
-    public static final int MAX_REMINDER = 3;
-    public static final int MAX_TRIGGER_MORNING = 1;//1
-    public static final int MAX_TRIGGER_RANDOM = 6;//6
-    public static final int MAX_TRIGGER_FOLLOWUP = 3;//3
-    public static final int VOLUME = 2;//10
-    public static final String PHONE_BASE_PATH = "sdcard/TestResult_pain/";
-
-    /*survey type*/
-    public static final String SV_TYPE                      = "Survey_Type";
-    public static final String SV_SEQ                       = "Survey_Seq";
-    public static final String SV_REMIND_SEQ                = "Survey_Reminder_Seq";
-    public static final String SV_MANUAL                    = "Survey_manual_triggered";
-
-    public static final int SV_NAME_MORNING              = 1;
-    public static final int SV_NAME_RANDOM               = 2;
-    public static final int SV_NAME_PAIN                 = 3;
-    public static final int SV_NAME_PAIN_FOLLOWUP        = 4;
-    public static final int SV_NAME_DRINKING             = 5;
-    public static final int SV_NAME_DRINKING_FOLLOWUP    = 6;
-    public static final int SV_NAME_DUAL_FOLLOWUP        = 7;
-
+    public static final int MAX_REMINDER                = 3;
+    public static final int MAX_TRIGGER_RANDOM          = 6;//6
+    public static final int MAX_TRIGGER_FOLLOWUP        = 3;//3
+    public static final int VOLUME                      = 2;//10
+    
 
     /*constant value*/
-    public static final String PKG_BASE = "edu.missouri.niaaa.pain.";
-
-    public static final String BD_ACTION_DAEMON_FUNC    = "Intent_Daemon";
-
-//    public static final String BD_ACTION_SURVEY_FUNC    = "Intent_Survey";
-//    String schedule
-
     public static final int SURVEY_TIMEOUT_IN_SECONDS           = 7*60;
     public static final int SURVEY_REMINDS_IN_SECONDS           = 5*60;
     public static final int SURVEY_ISOLATE_IN_SECONDS           = 29*60;
-    public final static int SUSPENSION_INTERVAL_IN_SECOND       = 15*60;
-    public final static int FOLLOWUP_IN_SECONDS = 30*60;
+    public final static int SUSPENSION_INTERVAL_IN_SECONDS      = 15*60;
+    public final static int FOLLOWUP_IN_SECONDS                 = 30*60;
 
     public final static String TIME_NONE = "none";
     public final static int defHour = 12;
     public final static int defMinute = 0;
     public final static int PREFIX_LEN = 35;
-    public static PublicKey publicKey = null;
+    
+    public static final String SV_TYPE                  = "Survey_Type";
+    public static final String SV_SEQ                   = "Survey_Seq";
+    public static final String SV_REMIND_SEQ            = "Survey_Reminder_Seq";
+    public static final String SV_MANUAL                = "Survey_manual_triggered";
 
-    public final static String[] SUSPENSION_DISPLAY = {"  15 minutes  ","  30 minutes  ","  45 minutes  ","  60 minutes  ",
-        "  1 hour & 15 minutes  ","  1 & half hour  ","  1 hour & 45 minutes  ","  2 hours  "};
+    public final static String[] SUSPENSION_DISPLAY     = { "  15 minutes  ",
+                                                            "  30 minutes  ",
+                                                            "  45 minutes  ",
+                                                            "  60 minutes  ",
+                                                            "  1 hour & 15 minutes  ",
+                                                            "  1 & half hour  ",
+                                                            "  1 hour & 45 minutes  ",
+                                                            "  2 hours  "
+                                                          };
+    
+    public static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
 
     //*sharedPreference*//
-    public static final String SP_BASE = PKG_BASE;
+    public static final String SP_BASE                          = PKG_BASE;
 
     /*login info*/
     public static final String SP_LOGIN                         = SP_BASE + "LOGIN";
@@ -155,10 +156,8 @@ public class Util {
     public final static String SP_KEY_SENSOR_CONN_TS = "SENSOR_CONN_TS";
 
 
-
-
     /*broadcast actions*/
-    public static final String BD_ACTION_BASE           = PKG_BASE;//+"action.";
+    public static final String BD_ACTION_BASE           = PKG_BASE + "action.";
 
     public static final String BD_ACTION_DAEMON         = BD_ACTION_BASE    + "DAEMON";
 
@@ -167,8 +166,6 @@ public class Util {
     public static final String BD_ACTION_SURVEY_ISOLATE = BD_ACTION_BASE    + "SURVEY_ISOLATE";
 
     public static final String BD_ACTION_SUSPENSION     = BD_ACTION_BASE    + "SUSPENSION";
-
-
     
     
     /*server addresses*/
@@ -181,26 +178,24 @@ public class Util {
     public final static String STUDY_DAY_MODIFY_ADDRESS     = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/Crt2/changeStudyWeekDec.php";
 
     /*EMA-STL Study*/
-//  public final static String VALIDATE_ADDRESS =           "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtEMA/validateUser.php";
-//  public final static String WRITE_ARRAY_TO_FILE =        "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtEMA/writeArrayToFile.php";
-//  public final static String WRITE_ARRAY_TO_FILE_DEC =    "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtEMA/writeArrayToFileDec.php";
-//  public final static String COMPLIANCE_ADDRESS =         "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtEMA/compliance.php";
-//  public final static String STUDY_DAY_MODIFY_ADDRESS =   "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtEMA/changeStudyWeek.php";
+//    public final static String VALIDATE_ADDRESS             = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtEMA/validateUser.php";
+//    public final static String WRITE_ARRAY_TO_FILE          = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtEMA/writeArrayToFile.php";
+//    public final static String WRITE_ARRAY_TO_FILE_DEC      = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtEMA/writeArrayToFileDec.php";
+//    public final static String COMPLIANCE_ADDRESS           = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtEMA/compliance.php";
+//    public final static String STUDY_DAY_MODIFY_ADDRESS     = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtEMA/changeStudyWeek.php";
 
     /*NIMH Emotion Study*/
-//  public final static String VALIDATE_ADDRESS =           "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtNIMH/validateUser.php";
-//  public final static String WRITE_ARRAY_TO_FILE =        "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtNIMH/writeArrayToFile.php";
-//  public final static String WRITE_ARRAY_TO_FILE_DEC =    "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtNIMH/writeArrayToFileDec.php";
-//  public final static String COMPLIANCE_ADDRESS =         "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtNIMH/compliance.php";
-//  public final static String STUDY_DAY_MODIFY_ADDRESS =   "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtNIMH/changeStudyWeek.php";
+//    public final static String VALIDATE_ADDRESS             = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtNIMH/validateUserDec.php";
+//    public final static String WRITE_ARRAY_TO_FILE          = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtNIMH/writeArrayToFile.php";
+//    public final static String WRITE_ARRAY_TO_FILE_DEC      = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtNIMH/writeArrayToFileDec.php";
+//    public final static String COMPLIANCE_ADDRESS           = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtNIMH/complianceDec.php";
+//    public final static String STUDY_DAY_MODIFY_ADDRESS     = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtNIMH/changeStudyWeekDec.php";
 
 //  public final static String UPLOAD_ADDRESS = WRITE_ARRAY_TO_FILE;
     public final static String UPLOAD_ADDRESS = WRITE_ARRAY_TO_FILE_DEC;
-    public static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
     
 
-
-
+    
     /**
      * Logs to debug system life cycle, which is triggered by system inherently.
      *
@@ -229,12 +224,9 @@ public class Util {
         }
     }
 
-//    public static void Log_debug(String s1, boolean enableByClass, String s2, boolean enable){
-//        if(enable)
-//            Log_debug(s1, enableByClass, s2);
-//    }
 
-
+    
+    /*survey getters*/
     public static List<SurveyInfo> getSurveyList(Context context) throws IOException{
         //Try to read surveys from give file
         return new XMLConfigParser().parseQuestion(new InputSource(context.getAssets().open("config.xml")));
@@ -246,11 +238,21 @@ public class Util {
     }
     
     public static String getPWD(Context context){// need modify
-        SharedPreferences shp = context.getSharedPreferences(Util.SP_LOGIN, Context.MODE_PRIVATE);
+        SharedPreferences shp = context.getSharedPreferences(SP_LOGIN, Context.MODE_PRIVATE);
 //      ID = shp.getString(AdminManageActivity.ASID, "");
-        String PWD = shp.getString(Util.SP_LOGIN_KEY_USERPWD, "");
+        String PWD = shp.getString(SP_LOGIN_KEY_USERPWD, "");
         return PWD;
     }
+
+
+//    public static final int SV_NAME_MORNING              = 1;
+//    public static final int SV_NAME_RANDOM               = 2;
+//    public static final int SV_NAME_PAIN                 = 3;
+//    public static final int SV_NAME_PAIN_FOLLOWUP        = 4;
+//    public static final int SV_NAME_DRINKING             = 5;
+//    public static final int SV_NAME_DRINKING_FOLLOWUP    = 6;
+//    public static final int SV_NAME_DUAL_FOLLOWUP        = 7;
+
 
     public static String getSurveyCode(int surveyType){
         
@@ -274,16 +276,68 @@ public class Util {
         }
     }
     
-//    public static final int SV_NAME_MORNING              = 1;
-//    public static final int SV_NAME_RANDOM               = 2;
-//    public static final int SV_NAME_PAIN                 = 3;
-//    public static final int SV_NAME_PAIN_FOLLOWUP        = 4;
-//    public static final int SV_NAME_DRINKING             = 5;
-//    public static final int SV_NAME_DRINKING_FOLLOWUP    = 6;
-//    public static final int SV_NAME_DUAL_FOLLOWUP        = 7;
+    
+    public static String getSurveyScheduleDT(Context context, int surveyType, int surveySeq){
+        Util.Log_debug(TAG, "get scheduled time "+surveyType+" "+surveySeq);
+        
+        long datetime = -1;
+        Calendar cal = Calendar.getInstance();
+        
+        switch(surveyType){
+        case 1:
+            datetime = getSP(context, SP_BEDTIME).getLong(SP_BEDTIME_KEY_LONG, -1);
+        case 2:
+            String set = getExistRandomSchedules(context);
+            if(!set.equals("")){
+                String strRandom[] = set.split(",");
+                if(set.length() != 1){
+                    try{
+                        datetime = Long.parseLong(strRandom[surveySeq-1]);
+                    }
+                    catch(Exception e){
+                        datetime = -1;
+                    }
+                }
+            }
+        case 3:
+        default:
+        }
+        
+        if(datetime == -1){
+            return "";
+        }
+        else{
+            cal.setTimeInMillis(datetime);
+            return sdf.format(cal.getTime());
+        }
+    }
     
     
-    
+    public static String getSurveyAlarmDT(Calendar cal, int remindSeq){
+
+        String str = ",,";
+        if(cal == null){
+            return str;
+        }
+
+        Util.Log_debug(TAG, "get survey alarm time "+cal.getTime()+" "+remindSeq);
+        String datetime = sdf.format(cal.getTime());
+        
+        switch(remindSeq){
+        case 1:
+            str = datetime+",,"; 
+            break;
+        case 2:
+            str = ","+datetime+",";
+            break;
+        case 3:
+            str = ",,"+datetime;
+            break;
+        default:
+            break;
+        }
+        return str;
+    }
     
     
 
@@ -291,7 +345,7 @@ public class Util {
     /* random */
     
     public static String getNewRandomSchedules(Context context, boolean startFromNoon, boolean systemTriggered){
-        Util.Log_debug(TAG, "get Random Schedule : create new start from noon? " + startFromNoon);
+        Log_debug(TAG, "get Random Schedule : create new start from noon? " + startFromNoon);
         
         Calendar midnight = Calendar.getInstance();
         midnight.set(Calendar.HOUR_OF_DAY, 23);//23
@@ -343,8 +397,8 @@ public class Util {
     }
     
     public static String getExistRandomSchedules(Context context){
-        Util.Log_debug(TAG, "get Random Schedule from existing. ");
-        return getSP(context, Util.SP_SURVEY).getString(Util.SP_SURVEY_KEY_RANDOM_SETS, "");
+        Log_debug(TAG, "get Random Schedule from existing. ");
+        return getSP(context, SP_SURVEY).getString(SP_SURVEY_KEY_RANDOM_SETS, "");
     }
     
     
@@ -367,9 +421,9 @@ public class Util {
                 r.setTimeInMillis(time);
                 
                 if(r.after(now)){
-                    Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY_TRIGGER);
-                    itTrigger.putExtra(Util.SV_TYPE, Util.SV_NAME_RANDOM);
-                    itTrigger.putExtra(Util.SV_SEQ, i);
+                    Intent itTrigger = new Intent(BD_ACTION_SURVEY_TRIGGER);
+                    itTrigger.putExtra(SV_TYPE, SV_NAME_RANDOM);
+                    itTrigger.putExtra(SV_SEQ, i);
                     
                     PendingIntent piTrigger = PendingIntent.getBroadcast(context, i, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
                     
@@ -381,10 +435,10 @@ public class Util {
             }
         }
 
-        SharedPreferences sp = getSP(context, Util.SP_SURVEY);
-        sp.edit().putString(Util.SP_SURVEY_KEY_RANDOM_SETS, time_sets).commit();
+        SharedPreferences sp = getSP(context, SP_SURVEY);
+        sp.edit().putString(SP_SURVEY_KEY_RANDOM_SETS, time_sets).commit();
         
-        sp.edit().putLong(Util.SP_SURVEY_KEY_FLAG_ACTIVATE, Calendar.getInstance().getTimeInMillis()).commit();
+        sp.edit().putLong(SP_SURVEY_KEY_FLAG_ACTIVATE, Calendar.getInstance().getTimeInMillis()).commit();
 
     }
 
@@ -395,35 +449,30 @@ public class Util {
         
         int num = MAX_TRIGGER_RANDOM + 1;//7
         for(int i = 1; i < num; i++){
-            Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY_TRIGGER);
-            itTrigger.putExtra(Util.SV_TYPE, Util.SV_NAME_RANDOM);
-            itTrigger.putExtra(Util.SV_SEQ, i);
+            Intent itTrigger = new Intent(BD_ACTION_SURVEY_TRIGGER);
+            itTrigger.putExtra(SV_TYPE, SV_NAME_RANDOM);
+            itTrigger.putExtra(SV_SEQ, i);
 
             PendingIntent piTrigger = PendingIntent.getBroadcast(context, i, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
             
             am.cancel(piTrigger);
             
-            cancelSurveyReminders(context, Util.SV_NAME_RANDOM, i);
+            cancelSurveyReminders(context, SV_NAME_RANDOM, i);
         }
         
-        Util.Log_debug(TAG, "---reminder canceled");
+        Log_debug(TAG, "---reminder canceled");
         
-        SharedPreferences sp = getSP(context, Util.SP_SURVEY);
-        sp.edit().remove(Util.SP_SURVEY_KEY_RANDOM_SETS).commit();
+        SharedPreferences sp = getSP(context, SP_SURVEY);
+        sp.edit().remove(SP_SURVEY_KEY_RANDOM_SETS).commit();
         
-//        sp.edit().remove(Util.SP_SURVEY_KEY_FLAG_ACTIVATE).commit();//leave not delete until delete user id...
+//        sp.edit().remove(SP_SURVEY_KEY_FLAG_ACTIVATE).commit();//leave not delete until delete user id...
     }
-    
-    
-    
     
     
     public static void reScheduleRandomSurvey(Context context){
         
         scheduleRandomSurvey(context, getExistRandomSchedules(context));
     }
-    
-    
     
     
     
@@ -436,7 +485,7 @@ public class Util {
         //set suspension alarm
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        Intent suspensionIntent = new Intent(Util.BD_ACTION_SUSPENSION);
+        Intent suspensionIntent = new Intent(BD_ACTION_SUSPENSION);
         
         PendingIntent piSuspension = PendingIntent.getBroadcast(context, 0, suspensionIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         am.cancel(piSuspension);
@@ -445,7 +494,7 @@ public class Util {
         if(DEBUG){
             Calendar tempc = Calendar.getInstance();
             tempc.setTimeInMillis(expire);
-            Util.Log_debug(TAG, "---suspension scheduled @time " + sdf.format(tempc.getTime()) + " for seconds: " + SUSPENSION_INTERVAL_IN_SECOND);
+            Log_debug(TAG, "---suspension scheduled @time " + sdf.format(tempc.getTime()) + " for seconds: " + SUSPENSION_INTERVAL_IN_SECONDS);
         }
         
         setSuspensionFlag(context, expire);
@@ -460,57 +509,52 @@ public class Util {
         //set suspension alarm
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        Intent suspensionIntent = new Intent(Util.BD_ACTION_SUSPENSION);
+        Intent suspensionIntent = new Intent(BD_ACTION_SUSPENSION);
         
         PendingIntent piSuspension = PendingIntent.getBroadcast(context, 0, suspensionIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         am.cancel(piSuspension);
         
-        Util.Log_debug(TAG, "---suspension canceled");
+        Log_debug(TAG, "---suspension canceled");
         
         //write
-        SharedPreferences sp = getSP(context, Util.SP_SURVEY);
+        SharedPreferences sp = getSP(context, SP_SURVEY);
         
         Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(sp.getLong(Util.SP_SURVEY_KEY_SUSPENSION_START, 0));//protect 0
+        c.setTimeInMillis(sp.getLong(SP_SURVEY_KEY_SUSPENSION_START, 0));//protect 0
         
         Calendar c2 = Calendar.getInstance();
         if(!writeCurrentDatetime){
-            c2.setTimeInMillis(sp.getLong(Util.SP_SURVEY_KEY_SUSPENSION_EXPIRE, 0));//protect 0
+            c2.setTimeInMillis(sp.getLong(SP_SURVEY_KEY_SUSPENSION_EXPIRE, 0));//protect 0
         }
         
-        try {
-            writeEventToFile(context, Util.CODE_SUSPENSION, 
-                    "", "", "", "",
-                    Util.sdf.format(c.getTime()), Util.sdf.format(c2.getTime()));
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        writeEvent(context, CODE_SUSPENSION, 
+                "", "", "", "",
+                sdf.format(c.getTime()), sdf.format(c2.getTime()));
         
         resetSuspensionFlag(context);
     }
     
     public static void setSuspensionFlag(Context context, long datetime){
-        SharedPreferences sp = getSP(context, Util.SP_SURVEY);
-        sp.edit().putLong(Util.SP_SURVEY_KEY_SUSPENSION_EXPIRE, datetime).commit();
+        SharedPreferences sp = getSP(context, SP_SURVEY);
+        sp.edit().putLong(SP_SURVEY_KEY_SUSPENSION_EXPIRE, datetime).commit();
         
     }
     
     public static void resetSuspensionFlag(Context context){
-        SharedPreferences sp = getSP(context, Util.SP_SURVEY);
-        sp.edit().remove(Util.SP_SURVEY_KEY_SUSPENSION_EXPIRE).commit();
+        SharedPreferences sp = getSP(context, SP_SURVEY);
+        sp.edit().remove(SP_SURVEY_KEY_SUSPENSION_EXPIRE).commit();
         
-        sp.edit().remove(Util.SP_SURVEY_KEY_SUSPENSION_START).commit();
+        sp.edit().remove(SP_SURVEY_KEY_SUSPENSION_START).commit();
         
     }
     
     public static boolean isSuspensionFlag(Context context){
         
-        SharedPreferences sp = getSP(context, Util.SP_SURVEY);
+        SharedPreferences sp = getSP(context, SP_SURVEY);
         Calendar now = Calendar.getInstance();
         Calendar expire = Calendar.getInstance();
         
-        if(!sp.contains(Util.SP_SURVEY_KEY_SUSPENSION_EXPIRE)){
+        if(!sp.contains(SP_SURVEY_KEY_SUSPENSION_EXPIRE)){
             return false;
         }
         else{
@@ -532,31 +576,35 @@ public class Util {
      * if it expired, clear the suspension flag.
      */
     public static void reScheduleSuspension(Context context){
-        SharedPreferences sp = getSP(context, Util.SP_SURVEY);
+        SharedPreferences sp = getSP(context, SP_SURVEY);
 
         Calendar now = Calendar.getInstance();
         Calendar expire = Calendar.getInstance();
         
-        if(!sp.contains(Util.SP_SURVEY_KEY_SUSPENSION_EXPIRE)){
+        if(!sp.contains(SP_SURVEY_KEY_SUSPENSION_EXPIRE)){
             // do nothing
-            Util.Log_debug(TAG, "reschedule suspension ~ do nothing");
+            Log_debug(TAG, "reschedule suspension ~ do nothing");
         }
         else{
             expire.setTimeInMillis(sp.getLong(SP_SURVEY_KEY_SUSPENSION_EXPIRE, 0));
             if(now.before(expire)){
                 //schedule
-                Util.Log_debug(TAG, "reschedule suspension ~ schedule @ "+sdf.format(expire.getTime()));
-                long datetime = sp.getLong(Util.SP_SURVEY_KEY_SUSPENSION_EXPIRE, 0);
+                Log_debug(TAG, "reschedule suspension ~ schedule @ "+sdf.format(expire.getTime()));
+                long datetime = sp.getLong(SP_SURVEY_KEY_SUSPENSION_EXPIRE, 0);
                 scheduleSuspension(context, datetime);
             }
             else{
                 //cancel and write break suspension ###
-                Util.Log_debug(TAG, "reschedule suspension ~ cancel and write ###");
+                Log_debug(TAG, "reschedule suspension ~ cancel and write ###");
                 cancelSuspension(context, false);
             }
         }
     }
 
+    
+    
+    
+    
     /*************************************************************************************************************/
     /*Survey scheduler*/
     
@@ -565,7 +613,7 @@ public class Util {
         
         long time = start+500;
         
-        Intent itTrigger =  new Intent(Util.BD_ACTION_SURVEY_ISOLATE);
+        Intent itTrigger =  new Intent(BD_ACTION_SURVEY_ISOLATE);
 
         PendingIntent piTrigger = PendingIntent.getBroadcast(context, 0, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
         am.cancel(piTrigger);
@@ -574,7 +622,7 @@ public class Util {
         if(DEBUG){
             Calendar tempc = Calendar.getInstance();
             tempc.setTimeInMillis(time + SURVEY_ISOLATE_IN_SECONDS * 1000);
-            Util.Log_debug(TAG, "---isolater scheduled @time " + sdf.format(tempc.getTime()) + " for seconds: " + SURVEY_ISOLATE_IN_SECONDS);
+            Log_debug(TAG, "---isolater scheduled @time " + sdf.format(tempc.getTime()) + " for seconds: " + SURVEY_ISOLATE_IN_SECONDS);
         }
         
         setIsolateFlag(context, time);
@@ -583,35 +631,35 @@ public class Util {
     public static void cancelSurveyIsolater(Context context){
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         
-        Intent itTrigger =  new Intent(Util.BD_ACTION_SURVEY_ISOLATE);
+        Intent itTrigger =  new Intent(BD_ACTION_SURVEY_ISOLATE);
 
         PendingIntent piTrigger = PendingIntent.getBroadcast(context, 0, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
         am.cancel(piTrigger);
         
-        Util.Log_debug(TAG, "---isolater canceled");
+        Log_debug(TAG, "---isolater canceled");
         
         resetIsolateFlag(context);
     }
     
     public static void setIsolateFlag(Context context, long datetime){
-        getSP(context, Util.SP_SURVEY).edit().putLong(Util.SP_SURVEY_KEY_ISOLATE_START, datetime).commit();
+        getSP(context, SP_SURVEY).edit().putLong(SP_SURVEY_KEY_ISOLATE_START, datetime).commit();
     }
     
     public static void resetIsolateFlag(Context context){
-        getSP(context, Util.SP_SURVEY).edit().remove(Util.SP_SURVEY_KEY_ISOLATE_START).commit();
+        getSP(context, SP_SURVEY).edit().remove(SP_SURVEY_KEY_ISOLATE_START).commit();
     }
     
     public static boolean isIsolateFlag(Context context){
     
-        SharedPreferences sp = getSP(context, Util.SP_SURVEY);
+        SharedPreferences sp = getSP(context, SP_SURVEY);
         Calendar now = Calendar.getInstance();
         Calendar expire = Calendar.getInstance();
         
-        if(!sp.contains(Util.SP_SURVEY_KEY_ISOLATE_START)){
+        if(!sp.contains(SP_SURVEY_KEY_ISOLATE_START)){
             return false;
         }
         else{
-            expire.setTimeInMillis(sp.getLong(Util.SP_SURVEY_KEY_ISOLATE_START, 0) + SURVEY_ISOLATE_IN_SECONDS * 1000);
+            expire.setTimeInMillis(sp.getLong(SP_SURVEY_KEY_ISOLATE_START, 0) + SURVEY_ISOLATE_IN_SECONDS * 1000);
             Log.d(TAG, sdf.format(expire.getTime()));
             if(now.before(expire)){//not after
                 return true;
@@ -629,26 +677,26 @@ public class Util {
      * if it expired, clear the isolater flag.
      */
     public static void reScheduleSurveyIsolater(Context context){
-        SharedPreferences sp = getSP(context, Util.SP_SURVEY);
+        SharedPreferences sp = getSP(context, SP_SURVEY);
 
         Calendar now = Calendar.getInstance();
         Calendar expire = Calendar.getInstance();
         
-        if(!sp.contains(Util.SP_SURVEY_KEY_ISOLATE_START)){
+        if(!sp.contains(SP_SURVEY_KEY_ISOLATE_START)){
             // do nothing
-            Util.Log_debug(TAG, "reschedule survey isolater ~ do nothing");
+            Log_debug(TAG, "reschedule survey isolater ~ do nothing");
         }
         else{
             expire.setTimeInMillis(sp.getLong(SP_SURVEY_KEY_ISOLATE_START, 0) + SURVEY_ISOLATE_IN_SECONDS * 1000);
             if(now.before(expire)){
                 //schedule
-                Util.Log_debug(TAG, "reschedule survey isolater ~ schedule @ "+sdf.format(expire.getTime()));
-                long datetime = sp.getLong(Util.SP_SURVEY_KEY_ISOLATE_START, 0);
+                Log_debug(TAG, "reschedule survey isolater ~ schedule @ "+sdf.format(expire.getTime()));
+                long datetime = sp.getLong(SP_SURVEY_KEY_ISOLATE_START, 0);
                 scheduleSurveyIsolater(context, datetime);
             }
             else{
                 //cancel and clear survey isolater ###
-                Util.Log_debug(TAG, "reschedule survey isolater ~ cancel and write ###");
+                Log_debug(TAG, "reschedule survey isolater ~ cancel and write ###");
                 cancelSurveyIsolater(context);
             }
         }
@@ -656,7 +704,7 @@ public class Util {
 
     
     
-    
+    /*************************************************************************************************************/
     /*--*/
     
     public static void scheduleSurveyTimeout(Context context, int surveyType, int surveySeq){
@@ -675,7 +723,7 @@ public class Util {
         if(DEBUG){
             Calendar tempc = Calendar.getInstance();
             tempc.setTimeInMillis(time + SURVEY_TIMEOUT_IN_SECONDS * 1000);
-            Util.Log_debug(TAG, "---timeout scheduled @time " + sdf.format(tempc.getTime()) + " for seconds: " + SURVEY_TIMEOUT_IN_SECONDS);
+            Log_debug(TAG, "---timeout scheduled @time " + sdf.format(tempc.getTime()) + " for seconds: " + SURVEY_TIMEOUT_IN_SECONDS);
         }
             
     }
@@ -689,7 +737,7 @@ public class Util {
         PendingIntent piTrigger = PendingIntent.getBroadcast(context, seq, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
         am.cancel(piTrigger);
         
-        Util.Log_debug(TAG, "---timeout canceled");
+        Log_debug(TAG, "---timeout canceled");
             
     }
     
@@ -714,7 +762,7 @@ public class Util {
             if(DEBUG){
                 Calendar tempc = Calendar.getInstance();
                 tempc.setTimeInMillis(time + (i-1) * SURVEY_REMINDS_IN_SECONDS * 1000);
-                Util.Log_debug(TAG, "---reminder scheduled seq "+i+" @time " + sdf.format(tempc.getTime()));
+                Log_debug(TAG, "---reminder scheduled seq "+i+" @time " + sdf.format(tempc.getTime()));
             }
             
             /*it that a good way to wait a little bit time*/
@@ -742,18 +790,20 @@ public class Util {
             am.cancel(piTrigger);
         }
         
-        Util.Log_debug(TAG, "---reminder canceled");
+        Log_debug(TAG, "---reminder canceled");
     }
     
     public static Intent getReminderIntent(int surveyType, int surveySeq, int seq){
-        Intent i = new Intent(Util.BD_ACTION_SURVEY_REMINDS);
-        i.putExtra(Util.SV_TYPE, surveyType);
-        i.putExtra(Util.SV_SEQ, surveySeq);
-        i.putExtra(Util.SV_REMIND_SEQ, seq);
+        Intent i = new Intent(BD_ACTION_SURVEY_REMINDS);
+        i.putExtra(SV_TYPE, surveyType);
+        i.putExtra(SV_SEQ, surveySeq);
+        i.putExtra(SV_REMIND_SEQ, seq);
 
         return i;
     }
 
+    
+    
 
     /*************************************************************************************************************/
     /*Morning & bedtime*/
@@ -764,18 +814,18 @@ public class Util {
 
         int seq = 0;
         
-        Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY_TRIGGER);
-        itTrigger.putExtra(Util.SV_TYPE, Util.SV_NAME_MORNING);
-        itTrigger.putExtra(Util.SV_SEQ, seq);
+        Intent itTrigger = new Intent(BD_ACTION_SURVEY_TRIGGER);
+        itTrigger.putExtra(SV_TYPE, SV_NAME_MORNING);
+        itTrigger.putExtra(SV_SEQ, seq);
         
         PendingIntent piTrigger = PendingIntent.getBroadcast(context, seq, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
         
         am.cancel(piTrigger);
         am.setExact(AlarmManager.RTC_WAKEUP, expire, piTrigger);
         
-        Util.Log_debug(TAG, "---MorningSruvey scheduled at "+getTimeFromLong(expire)+" context "+context.hashCode());
+        Log_debug(TAG, "---MorningSruvey scheduled at "+getTimeFromLong(expire)+" context "+context.hashCode());
         
-        getSP(context, Util.SP_BEDTIME).edit().putLong(Util.SP_BEDTIME_KEY_LONG, expire).commit();
+        getSP(context, SP_BEDTIME).edit().putLong(SP_BEDTIME_KEY_LONG, expire).commit();
         
     }
     
@@ -785,18 +835,18 @@ public class Util {
 
         int seq = 0;
         
-        Intent itTrigger = new Intent(Util.BD_ACTION_SURVEY_TRIGGER);
-        itTrigger.putExtra(Util.SV_TYPE, Util.SV_NAME_MORNING);
-        itTrigger.putExtra(Util.SV_SEQ, seq);
+        Intent itTrigger = new Intent(BD_ACTION_SURVEY_TRIGGER);
+        itTrigger.putExtra(SV_TYPE, SV_NAME_MORNING);
+        itTrigger.putExtra(SV_SEQ, seq);
         
         PendingIntent piTrigger = PendingIntent.getBroadcast(context, seq, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
 
         am.cancel(piTrigger);
-        cancelSurveyReminders(context, Util.SV_NAME_MORNING, seq);
+        cancelSurveyReminders(context, SV_NAME_MORNING, seq);
         
-        Util.Log_debug(TAG, "---MorningSruvey canceled");
+        Log_debug(TAG, "---MorningSruvey canceled");
         
-        getSP(context, Util.SP_BEDTIME).edit().remove(Util.SP_BEDTIME_KEY_LONG).commit();
+        getSP(context, SP_BEDTIME).edit().remove(SP_BEDTIME_KEY_LONG).commit();
     }
 
     
@@ -806,7 +856,7 @@ public class Util {
      * like what it needs to restore from reboot.
      */
     public static void rescheduleMorningSurvey(Context context){//schedule all
-        SharedPreferences sp = getSP(context, Util.SP_BEDTIME);
+        SharedPreferences sp = getSP(context, SP_BEDTIME);
 
         //noon
         Calendar n = Calendar.getInstance();
@@ -823,17 +873,17 @@ public class Util {
 
         //morning
         Calendar expire = Calendar.getInstance();
-        expire.setTimeInMillis(sp.getLong(Util.SP_BEDTIME_KEY_LONG, defTime));
+        expire.setTimeInMillis(sp.getLong(SP_BEDTIME_KEY_LONG, defTime));
 
         //set morning & schedule random
-        if(c.after(n) || isTodayActivated(context)){//##??
-            Util.Log_debug(TAG, "reschedule morning ~ after noon");
+        if(c.after(n) || isTodayActivated(context)){
+            Log_debug(TAG, "reschedule morning ~ after noon");
             morningComplete(context, true, true);
         }
 
         //before previous set morning time & before noon
         else if(c.before(expire)){
-            Util.Log_debug(TAG, "reschedule morning ~ schedule @ "+sdf.format(expire.getTime()));
+            Log_debug(TAG, "reschedule morning ~ schedule @ "+sdf.format(expire.getTime()));
 
             //if not activate today
             scheduleMorningSurvey(context, expire.getTimeInMillis());
@@ -841,7 +891,7 @@ public class Util {
         //after morning time but earlier than noon
         else{
             //do nothing
-            Util.Log_debug(TAG, "reschedule morning ~ do nothing waiting user manually do morning survey");
+            Log_debug(TAG, "reschedule morning ~ do nothing waiting user manually do morning survey");
         }
     }
     
@@ -871,25 +921,46 @@ public class Util {
     
     public static Calendar getDefaultMorningCal(Context context){
 
-        SharedPreferences sp = getSP(context, Util.SP_BEDTIME);
-        int hour = Util.defHour;
-        int minute = Util.defMinute;
+        SharedPreferences sp = getSP(context, SP_BEDTIME);
+        int hour = defHour;
+        int minute = defMinute;
 
-        boolean setDefault = (sp.getInt(Util.SP_BEDTIME_KEY_HOUR, -1) == -1?false:true);
+        boolean setDefault = (sp.getInt(SP_BEDTIME_KEY_HOUR, -1) == -1?false:true);
         if(setDefault){
-            hour = sp.getInt(Util.SP_BEDTIME_KEY_HOUR, -1);
-            minute = sp.getInt(Util.SP_BEDTIME_KEY_MINUTE, -1);
+            hour = sp.getInt(SP_BEDTIME_KEY_HOUR, -1);
+            minute = sp.getInt(SP_BEDTIME_KEY_MINUTE, -1);
         }
 
-        return Util.getProperMorningScheduleTime(hour, minute);
+        return getProperMorningScheduleTime(hour, minute);
     }
+    
+    
+    public static String getTimeFromLong(long l){
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(l);
+
+        Calendar t = Calendar.getInstance();
+        t.set(Calendar.HOUR_OF_DAY, 0);
+        t.set(Calendar.MINUTE, 1);
+        t.set(Calendar.SECOND, 0);
+
+        if(c.after(t)){
+            NumberFormat nf = NumberFormat.getInstance();
+            nf.setMinimumIntegerDigits(2);
+
+            return nf.format(c.get(Calendar.HOUR_OF_DAY))+":"+nf.format(c.get(Calendar.MINUTE));
+        }
+        else{
+            return TIME_NONE;
+        }
+    }
+    
     
     
     
     /*************************************************************************************************************/
     
     
-
     public static void activate(Context context, boolean startFromNoon, boolean systemTriggered){
         
         if(hasTodayActivated(context)){
@@ -906,16 +977,14 @@ public class Util {
         }
         
         //restart gps
-        if(Util.isTodayActivated(context) || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 3){
-            context.sendBroadcast(new Intent(LocationUtilities.ACTION_START_LOCATION));
-        }
+        restartRecordingLocation(context);
+        
     }
 
     
     public static void deActivate(Context context){
         cancelRandomSurvey(context);
     }
-
     
     
     /**
@@ -925,13 +994,13 @@ public class Util {
      * @param context
      * @return
      */
-    public static boolean isTodayActivated(Context context){//##??
-        SharedPreferences sp = getSP(context, Util.SP_SURVEY);
+    public static boolean isTodayActivated(Context context){
+        SharedPreferences sp = getSP(context, SP_SURVEY);
         if(!hasTodayActivated(context)){
             return false;
         }
         else{
-            if(sp.contains(Util.SP_SURVEY_KEY_RANDOM_SETS)){
+            if(sp.contains(SP_SURVEY_KEY_RANDOM_SETS)){
                 return true;
             }
             else{
@@ -946,8 +1015,8 @@ public class Util {
      */
     public static boolean hasTodayActivated(Context context){
         
-        SharedPreferences sp = getSP(context, Util.SP_SURVEY);
-        if(!sp.contains(Util.SP_SURVEY_KEY_FLAG_ACTIVATE)){
+        SharedPreferences sp = getSP(context, SP_SURVEY);
+        if(!sp.contains(SP_SURVEY_KEY_FLAG_ACTIVATE)){
             return false;
         }
         else{
@@ -974,6 +1043,7 @@ public class Util {
         }
     }
 
+    
     /**
      * when reboot from 3pm, this is called and should be good
      * @param context
@@ -982,16 +1052,17 @@ public class Util {
          
         activate(context, startFromNoon, systemTriggered);
         
-        cancelDaemonNoon(context);//##??
+        cancelDaemonNoon(context);
         
         cancelMorningSurvey(context);
         
     }
     
+    
     private static void cancelDaemonNoon(Context context) {
         // TODO Auto-generated method stub
-        Intent i = new Intent(Util.BD_ACTION_DAEMON);
-        i.putExtra(Util.BD_ACTION_DAEMON_FUNC, -1);
+        Intent i = new Intent(BD_ACTION_DAEMON);
+        i.putExtra(DaemonReceiver.BD_ACTION_DAEMON_FUNC, -1);
         context.sendBroadcast(i);
     }
 
@@ -1009,12 +1080,11 @@ public class Util {
 
 
 
-
     /*Daemon*/
 
     public static void scheduleDaemon(Context context){
-        Intent i = new Intent(Util.BD_ACTION_DAEMON);
-        i.putExtra(Util.BD_ACTION_DAEMON_FUNC, 0);
+        Intent i = new Intent(BD_ACTION_DAEMON);
+        i.putExtra(DaemonReceiver.BD_ACTION_DAEMON_FUNC, 0);
         context.sendBroadcast(i);
     }
     
@@ -1025,18 +1095,18 @@ public class Util {
      * start recording location with condition checking first
      * check if today is activated (from activated time to 3am next day)
      */
-    public static void restartRecordingLocation(){
-        if(true){
-            startRecordingLocation();
+    public static void restartRecordingLocation(Context context){
+        if(isTodayActivated(context) || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 3){
+            startRecordingLocation(context);
         }
     }
 
-    public static void startRecordingLocation(){
-
+    public static void startRecordingLocation(Context context){
+        context.sendBroadcast(new Intent(LocationUtilities.ACTION_START_LOCATION));
     }
 
-    public static void stopRecordingLocation(){
-
+    public static void stopRecordingLocation(Context context){
+        context.sendBroadcast(new Intent(LocationUtilities.ACTION_STOP_LOCATION));
     }
 
     private static String getNameFromType(int activityType) {
@@ -1060,38 +1130,20 @@ public class Util {
 
     /*************************************************************************************************************/
     
-    public static String getTimeFromLong(long l){
-        Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(l);
-
-        Calendar t = Calendar.getInstance();
-        t.set(Calendar.HOUR_OF_DAY, 0);
-        t.set(Calendar.MINUTE, 1);
-        t.set(Calendar.SECOND, 0);
-
-        if(c.after(t)){
-            NumberFormat nf = NumberFormat.getInstance();
-            nf.setMinimumIntegerDigits(2);
-
-            return nf.format(c.get(Calendar.HOUR_OF_DAY))+":"+nf.format(c.get(Calendar.MINUTE));
-        }
-        else{
-            return Util.TIME_NONE;
-        }
-    }
 
 
+    /*for about*/
     public static String getScheduleForToady(Context context){
         //morning
-        long morning = getSP(context, Util.SP_BEDTIME).getLong(Util.SP_BEDTIME_KEY_LONG, -1);
+        long morning = getSP(context, SP_BEDTIME).getLong(SP_BEDTIME_KEY_LONG, -1);
 
         //follow-ups
 //        long followup = getSP(context, SP_RANDOM_TIME).getLong(SP_KEY_DRINKING_TIME_SET, -1);
 //        String follow = "";
 //        if(followup != -1){
-//            for(int i=1;i<=Util.MAX_TRIGGER_FOLLOWUP;i++){
-//                if(getTimeFromLong(followup+FOLLOWUP_IN_SECONDS*1000*i).equals(Util.TIME_NONE)){
-//                    follow = Util.TIME_NONE;
+//            for(int i=1;i<=MAX_TRIGGER_FOLLOWUP;i++){
+//                if(getTimeFromLong(followup+FOLLOWUP_IN_SECONDS*1000*i).equals(TIME_NONE)){
+//                    follow = TIME_NONE;
 //                    break;
 //                }
 //                follow += getTimeFromLong(followup+FOLLOWUP_IN_SECONDS*1000*i);
@@ -1099,16 +1151,16 @@ public class Util {
 //            }
 //        }
 //        else{
-//            follow = Util.TIME_NONE;
+//            follow = TIME_NONE;
 //        }
 
         //random
-        String strRandom[] = getSP(context, Util.SP_SURVEY).getString(Util.SP_SURVEY_KEY_RANDOM_SETS, "").split(",");
+        String strRandom[] = getSP(context, SP_SURVEY).getString(SP_SURVEY_KEY_RANDOM_SETS, "").split(",");
         String random = "";
         if(strRandom.length != 1){
             for(String s: strRandom){
-                if(getTimeFromLong(Long.parseLong(s)).equals(Util.TIME_NONE)){
-                    random = Util.TIME_NONE;
+                if(getTimeFromLong(Long.parseLong(s)).equals(TIME_NONE)){
+                    random = TIME_NONE;
                     break;
                 }
                 random += getTimeFromLong(Long.parseLong(s));
@@ -1116,14 +1168,14 @@ public class Util {
             }
         }
         else{
-            random = Util.TIME_NONE;
+            random = TIME_NONE;
         }
 
         String str =
                 "\nStudy Day: "+getStudyDay(context) +
                 //(!getSP(context, SP_SURVEY).getBoolean(SP_SURVEY_KEY_SUSPENSION, false)?"\n":"\nUnder suspension.\n") +
-                (Util.RELEASE? "" :
-                "\nMorning  survey at: " + (morning == -1 ? Util.TIME_NONE : getTimeFromLong(morning))+
+                (RELEASE? "" :
+                "\nMorning  survey at: " + (morning == -1 ? TIME_NONE : getTimeFromLong(morning))+
                 "\nFollowup survey at: " + //follow +
                 "\nRandom  survey at: "+random);
 
@@ -1132,7 +1184,7 @@ public class Util {
 
 
     public static int getStudyDay(Context context){
-        String startStr = getSP(context, Util.SP_LOGIN).getString(Util.SP_LOGIN_KEY_STUDY_STARTTIME, "");
+        String startStr = getSP(context, SP_LOGIN).getString(SP_LOGIN_KEY_STUDY_STARTTIME, "");
         if(!startStr.equals("")){
             long start = Long.parseLong(startStr);
             long current = Calendar.getInstance().getTimeInMillis();
@@ -1161,29 +1213,10 @@ public class Util {
     }
 
 
-    public static long getDayLong(){
-        return 24*60*60*1000;
-    }
 
-
-    public static String getMorningTimeWithFlag(Context context){
-
-        long time = getSP(context, Util.SP_BEDTIME).getLong(Util.SP_BEDTIME_KEY_LONG, -1);
-
-        Calendar m = Calendar.getInstance();
-        Calendar t = Calendar.getInstance();
-        t.setTimeInMillis(time);
-        //is for tomorrow?
-        if(t.after(m)){
-            Log.d("what am pm ", "am_ps is "+t.get(Calendar.HOUR_OF_DAY)+":"+t.get(Calendar.MINUTE)+" "+t.get(Calendar.AM_PM));
-            NumberFormat nf = NumberFormat.getInstance();
-            nf.setMinimumIntegerDigits(2);
-            return nf.format(t.get(Calendar.HOUR_OF_DAY))+":"+nf.format(t.get(Calendar.MINUTE))+" "+(t.get(Calendar.AM_PM) == 0?"a.m.":"p.m.");
-        }
-
-        return Util.TIME_NONE;
-    }
-
+    
+    
+    
     
     
     
@@ -1203,7 +1236,7 @@ public class Util {
     /*************************************************************************************************************/
     /*writer*/
     
-    public static void writeLocationToFile(Location location) throws IOException{
+    public static void writeLocationToFile(PublicKey publicKey, Location location) throws IOException{
 
         String toWrite;
         Calendar cal=Calendar.getInstance();
@@ -1216,11 +1249,11 @@ public class Util {
         SimpleDateFormat curFormater = new SimpleDateFormat("MMMMM_dd");
         String dateObj =curFormater.format(cl.getTime());
 
-        StringBuilder prefix_sb = new StringBuilder(Util.PREFIX_LEN);
+        StringBuilder prefix_sb = new StringBuilder(PREFIX_LEN);
         String prefix = "locations." + userID + "." + dateObj;
         prefix_sb.append(prefix);
 
-        for (int i = prefix.length(); i <= Util.PREFIX_LEN; i++) {
+        for (int i = prefix.length(); i <= PREFIX_LEN; i++) {
             prefix_sb.append(" ");
         }
 
@@ -1228,7 +1261,7 @@ public class Util {
         //danick
         String toWriteArr = null;
         try {
-            toWriteArr = encryption(prefix_sb.toString() + toWrite);
+            toWriteArr = encryption(publicKey, prefix_sb.toString() + toWrite);
             if(WRITE_RAW){
                 writeToFile("Location."+userID+"."+dateObj+".txt", toWrite);
             }else{
@@ -1241,13 +1274,34 @@ public class Util {
 
 
         //Ricky
-        TransmitData transmitData=new TransmitData();
+        TransmitData transmitData = new TransmitData();
         transmitData.execute(toWriteArr);
 
     }
     
     
+    /*
+     * for survey event
+     * make-ups for random seq
+     */
+    public static void writeEvent(Context context, int type, String status, int randomSeq, String scheduleTS, String r3, String startTS, String endTS){
+        String seq = "";
+        if(type == SV_NAME_RANDOM){
+            seq = "," + randomSeq;
+        }
+        
+        try {
+            writeEventToFile(context, getSurveyCode(type)+status, scheduleTS, r3, startTS, endTS + seq);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
     
+    
+    /*
+     * for control event
+     */
     public static void writeEvent(Context context, String code, String scheduleTS, String r1, String r2, String r3, String startTS, String endTS){
         try {
             writeEventToFile(context, code, scheduleTS, r1, r2, r3, startTS, endTS);
@@ -1257,15 +1311,19 @@ public class Util {
         }
     }
 
-
-    //upload
+    
     public static void writeEventToFile(Context context, String code, String scheduleTS, String r1, String r2, String r3, String startTS, String endTS) throws IOException{
+        writeEventToFile(context, code, scheduleTS, r1+","+r2+","+r3, startTS, endTS);
+    }
 
-        Log.d("###", "write evetn to file");
+    
+    //upload
+    public static void writeEventToFile(Context context, String code, String scheduleTS, String r3, String startTS, String endTS) throws IOException{
+        Log.d("###", "write event to file");
         
         Calendar endCal = Calendar.getInstance();
 
-        String userID = getSP(context, Util.SP_LOGIN).getString(Util.SP_LOGIN_KEY_USERID, "0000");
+        String userID = getSP(context, SP_LOGIN).getString(SP_LOGIN_KEY_USERID, "");
         int studyDay = getStudyDay(context);
 
 
@@ -1276,18 +1334,18 @@ public class Util {
         sb.append(endCal.getTime().toString());
         sb.append(",");
 
-        sb.append(userID+","+studyDay+","+code+","+scheduleTS+","+r1+","+r2+","+r3+","+startTS+","+endTS+",");
+        sb.append(userID+","+studyDay+","+code+","+scheduleTS+","+r3+","+startTS+","+endTS+",");
 //      sb.append("\n");
 
         Calendar cl = Calendar.getInstance();
         SimpleDateFormat curFormater = new SimpleDateFormat("MMMMM_dd");
         String dateObj = curFormater.format(cl.getTime());
 
-        StringBuilder prefix_sb = new StringBuilder(Util.PREFIX_LEN);
+        StringBuilder prefix_sb = new StringBuilder(PREFIX_LEN);
         String prefix = "Excel." + userID + "." + dateObj;
         prefix_sb.append(prefix);
 
-        for (int i = prefix.length(); i <= Util.PREFIX_LEN; i++) {
+        for (int i = prefix.length(); i <= PREFIX_LEN; i++) {
             prefix_sb.append(" ");
         }
 
@@ -1299,7 +1357,7 @@ public class Util {
          */
         String ensb = null;
         try {
-            ensb = encryption_withKey(context, prefix_sb.toString() + sb.toString());
+            ensb = encryption(context, prefix_sb.toString() + sb.toString());
             if(WRITE_RAW){
                 writeToFile("Event.txt", sb.toString());
             }else{
@@ -1316,34 +1374,9 @@ public class Util {
 
     }
 
-    
 
-
-    //Chen
-    public static String encryption_withKey(Context context, String string) throws Exception {
+    public static PublicKey getPublicKey(Context context) throws Exception {
         // TODO Auto-generated method stub
-
-        //generate symmetric key
-        KeyGenerator keygt = KeyGenerator.getInstance("AES");
-        keygt.init(128);
-        SecretKey symkey =keygt.generateKey();
-
-        //get it encoded
-        byte[] aes_ba = symkey.getEncoded();
-
-        //create cipher
-        SecretKeySpec skeySpec = new SecretKeySpec(aes_ba, "AES");
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.ENCRYPT_MODE,skeySpec);
-
-        //encryption
-        byte [] EncSymbyteArray =cipher.doFinal(string.getBytes());
-
-        //encrypt symKey with PublicKey
-//        Key pubKey = getPublicKey();
-
-//        Key pubKey = publicKey;
-
         InputStream is = context.getResources().openRawResource(R.raw.publickey);
         ObjectInputStream ois = new ObjectInputStream(is);
 
@@ -1355,27 +1388,17 @@ public class Util {
         KeyFactory fact = KeyFactory.getInstance("RSA", "BC");
         PublicKey pubKey = fact.generatePublic(keySpec);
 
-
-        //RSA cipher
-        Cipher cipherAsm = Cipher.getInstance("RSA", "BC");
-        cipherAsm.init(Cipher.ENCRYPT_MODE, pubKey);
-
-        //RSA encryption
-        byte [] asymEncsymKey = cipherAsm.doFinal(aes_ba);
-
-//          File f3 = new File(BASE_PATH,"enc.txt");
-//          File f3key = new File(BASE_PATH,"enckey.txt");
-//          File f3file = new File(BASE_PATH,"encfile.txt");
-//          writeToFile2(f3,f3key,f3file, asymEncsymKey, EncSymbyteArray);
-
-        //byte != new String
-        //return new String(byteMerger(asymEncsymKey, EncSymbyteArray));
-        return Base64.encodeToString(byteMerger(asymEncsymKey, EncSymbyteArray),Base64.DEFAULT);
-
+        return pubKey;
     }
-
+    
+    
+    public static String encryption(Context context, String string) throws Exception {
+        return encryption(getPublicKey(context), string);
+    }
+    
+    
     //Chen
-    public static String encryption(String string) throws Exception {
+    public static String encryption(PublicKey publicKey, String string) throws Exception {
         // TODO Auto-generated method stub
 
         //generate symmetric key
@@ -1385,9 +1408,6 @@ public class Util {
 
         //get it encoded
         byte[] aes_ba = symkey.getEncoded();
-//      for (byte b : aes_ba) {
-//          Log.d("---------------------", "" + b);
-//      }
 
         //create cipher
         SecretKeySpec skeySpec = new SecretKeySpec(aes_ba, "AES");
@@ -1398,8 +1418,6 @@ public class Util {
         byte [] EncSymbyteArray =cipher.doFinal(string.getBytes());
 
         //encrypt symKey with PublicKey
-//        Key pubKey = getPublicKey();
-
         Key pubKey = publicKey;
 
         //RSA cipher
@@ -1417,9 +1435,9 @@ public class Util {
         //byte != new String
         //return new String(byteMerger(asymEncsymKey, EncSymbyteArray));
         return Base64.encodeToString(byteMerger(asymEncsymKey, EncSymbyteArray),Base64.DEFAULT);
-
     }
 
+    
     public static byte[] byteMerger(byte[] byte_1, byte[] byte_2){
         byte[] byte_3 = new byte[byte_1.length+byte_2.length];
         System.arraycopy(byte_1, 0, byte_3, 0, byte_1.length);
@@ -1429,11 +1447,11 @@ public class Util {
 
 
     public static void writeToFile(String fileName, String toWrite) throws IOException{
-        File dir =new File(Util.PHONE_BASE_PATH);
+        File dir =new File(PHONE_BASE_PATH);
         if(!dir.exists()) {
             dir.mkdirs();
         }
-        File f = new File(Util.PHONE_BASE_PATH,fileName);
+        File f = new File(PHONE_BASE_PATH,fileName);
         FileWriter fw = new FileWriter(f, true);
         fw.write(toWrite+'\n');
         fw.flush();
@@ -1441,15 +1459,16 @@ public class Util {
         f = null;
     }
 
+    
     public static void writeToFileEnc(String fileName, String toWrite) throws IOException{
-        Util.Log_debug("write to file", "enc");
-        File dir =new File(Util.PHONE_BASE_PATH);
+        Log_debug("write to file", "enc");
+        File dir =new File(PHONE_BASE_PATH);
         if(!dir.exists()) {
             dir.mkdirs();
         }
-        File f = new File(Util.PHONE_BASE_PATH,fileName);
+        File f = new File(PHONE_BASE_PATH,fileName);
         FileWriter fw = new FileWriter(f, true);
-        fw.write(toWrite);
+        fw.write(toWrite+'\n');
         fw.flush();
         fw.close();
         f = null;
@@ -1466,43 +1485,39 @@ public class Util {
             //           String fileName=strings[0];
             //           String dataToSend=strings[1];
 //           if(checkDataConnectivity())
-                 if(true)
-            {
+            if(true){
 
-            Log.d("((((((((((((((((((((((((", ""+Thread.currentThread().getId());
-             HttpPost request = new HttpPost(UPLOAD_ADDRESS);
-             List<NameValuePair> params = new ArrayList<NameValuePair>();
+                Log.d("((((((((((((((((((((((((", ""+Thread.currentThread().getId());
+                HttpPost request = new HttpPost(UPLOAD_ADDRESS);
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
                 params.add(new BasicNameValuePair("data", data));
-
-                //           //file_name
-                //           params.add(new BasicNameValuePair("file_name",fileName));
-                //           //data
-                //           params.add(new BasicNameValuePair("data",dataToSend));
-             try {
-
-                 request.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
-                 HttpResponse response = new DefaultHttpClient().execute(request);
-                 if(response.getStatusLine().getStatusCode() == 200){
-                     String result = EntityUtils.toString(response.getEntity());
-                     Log.d("Sensor Data Point Info",result);
-                    // Log.d("Wrist Sensor Data Point Info","Data Point Successfully Uploaded!");
-                 }
-                 return true;
-             }
-             catch (Exception e)
-             {
-                 e.printStackTrace();
-                 return false;
-             }
-          }
-
-         else
-         {
-            Log.d("Sensor Data Point Info","No Network Connection:Data Point was not uploaded");
-            return false;
-          }
-
+    
+    //            //file_name
+    //            params.add(new BasicNameValuePair("file_name",fileName));
+    //            //data
+    //            params.add(new BasicNameValuePair("data",dataToSend));
+                try {
+    
+                    request.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+                    HttpResponse response = new DefaultHttpClient().execute(request);
+                    if(response.getStatusLine().getStatusCode() == 200){
+                        String result = EntityUtils.toString(response.getEntity());
+                        Log.d("Sensor Data Point Info",result);
+                        // Log.d("Wrist Sensor Data Point Info","Data Point Successfully Uploaded!");
+                    }
+                    return true;
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+            else{
+                Log.d("Sensor Data Point Info","No Network Connection:Data Point was not uploaded");
+                return false;
+            }
         }
-
     }
+    
+    
 }

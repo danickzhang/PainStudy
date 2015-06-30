@@ -130,7 +130,7 @@ public class AdminManageActivity extends TabActivity {
         setHints();
     }
 
-    private Dialog AdminPinSetDialog(Context context) {
+    private Dialog AdminPinSetDialog(final Context context) {
         LayoutInflater inflater = LayoutInflater.from(context);
         final View textEntryView = inflater.inflate(R.layout.pin_input, null);
         TextView pinText = (TextView) textEntryView.findViewById(R.id.pin_text);
@@ -149,7 +149,7 @@ public class AdminManageActivity extends TabActivity {
 
                 String data = null;
                 try {
-                    data = Util.encryption(Util.ADMIN_UID + "," + "1" + "," + pinStr);
+                    data = Util.encryption(context, Util.ADMIN_UID + "," + "1" + "," + pinStr);
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
@@ -311,7 +311,7 @@ public class AdminManageActivity extends TabActivity {
 
                 String data = null;
                 try {
-                    data = Util.encryption(asedID + "," + "2");
+                    data = Util.encryption(AdminManageActivity.this, asedID + "," + "2");
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
@@ -480,7 +480,7 @@ public class AdminManageActivity extends TabActivity {
         return builder.create();
     }
 
-    private Dialog assignConfirmDialog(Context context, String str, boolean startNewWeek) {
+    private Dialog assignConfirmDialog(final Context context, String str, boolean startNewWeek) {
 
         LayoutInflater inflater = LayoutInflater.from(context);
         final View textEntryView = inflater.inflate(R.layout.remove_id, null);
@@ -509,7 +509,7 @@ public class AdminManageActivity extends TabActivity {
 
                     String UID = null;
                     try {
-                        UID = Util.encryption(asID.getText().toString());
+                        UID = Util.encryption(context, asID.getText().toString());
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();

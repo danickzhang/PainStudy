@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.missouri.niaaa.pain"
-    android:versionCode="16"
+    android:versionCode="17"
     android:versionName="1.2" >
 
     <uses-sdk
@@ -55,10 +55,10 @@
             android:permission=".SurveyBroadcast"
             android:process=":remote">
             <intent-filter>
-                <action android:name="edu.missouri.niaaa.pain.SURVEY_TRIGGER" />
-                <action android:name="edu.missouri.niaaa.pain.SURVEY_REMINDS" />
-                <action android:name="edu.missouri.niaaa.pain.SURVEY_ISOLATE" />
-                <action android:name="edu.missouri.niaaa.pain.SUSPENSION" />
+                <action android:name="edu.missouri.niaaa.pain.action.SURVEY_TRIGGER" />
+                <action android:name="edu.missouri.niaaa.pain.action.SURVEY_REMINDS" />
+                <action android:name="edu.missouri.niaaa.pain.action.SURVEY_ISOLATE" />
+                <action android:name="edu.missouri.niaaa.pain.action.SUSPENSION" />
 
             </intent-filter>
         </receiver>
@@ -76,10 +76,7 @@
             android:name=".DaemonReceiver"
             android:exported="false" >
             <intent-filter >
-<!--                 <action android:name="edu.missouri.niaaa.pain.DAEMON_NOON" /> -->
-<!--                 <action android:name="edu.missouri.niaaa.pain.DAEMON_MIDN" /> -->
-<!--                 <action android:name="edu.missouri.niaaa.pain.DAEMON_THRE" /> -->
-                <action android:name="edu.missouri.niaaa.pain.DAEMON" />
+                <action android:name="edu.missouri.niaaa.pain.action.DAEMON" />
             </intent-filter>
         </receiver>
 
@@ -88,8 +85,8 @@
             android:exported="false"
             >
             <intent-filter >
-                <action android:name="edu.missouri.niaaa.pain.START_LOCATION" />
-                <action android:name="edu.missouri.niaaa.pain.STOP_LOCATION" />
+                <action android:name="edu.missouri.niaaa.pain.action.START_LOCATION" />
+                <action android:name="edu.missouri.niaaa.pain.action.STOP_LOCATION" />
             </intent-filter>
         </receiver>
 

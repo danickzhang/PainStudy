@@ -19,7 +19,14 @@ public class LocationBroadcast extends BroadcastReceiver {
 
         String action = intent.getAction();
         locationM = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        ID = Util.getSP(context, Util.SP_LOGIN).getString(Util.SP_LOGIN_KEY_USERID, "0000");
+        ID = Util.getSP(context, Util.SP_LOGIN).getString(Util.SP_LOGIN_KEY_USERID, "");
+        
+        try {
+            LocationUtilities.publicKey = Util.getPublicKey(context);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         if(action.equals(LocationUtilities.ACTION_START_LOCATION)){
             Util.Log_debug(TAG, "location recording start");

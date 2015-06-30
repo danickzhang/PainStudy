@@ -1,6 +1,7 @@
 package edu.missouri.niaaa.pain.location;
 
 import java.io.IOException;
+import java.security.PublicKey;
 
 import android.content.Context;
 import android.location.Location;
@@ -16,9 +17,9 @@ public class LocationUtilities {
     public final static int TIME_ACCURACY_IN_SECOND = 30;//30;
     public final static int DISTENCE_ACCURACY_IN_METER = 30;//30;
 
-    public final static String BD_ACTION_SCHEDULE_LOCATION = "edu.missouri.niaaa.craving.SCHEDULE_LOCATION";
-    public final static String ACTION_START_LOCATION = "edu.missouri.niaaa.craving.START_LOCATION";
-    public final static String ACTION_STOP_LOCATION = "edu.missouri.niaaa.craving.STOP_LOCATION";
+    public final static String BD_ACTION_SCHEDULE_LOCATION  = Util.BD_ACTION_BASE + "SCHEDULE_LOCATION";
+    public final static String ACTION_START_LOCATION        = Util.BD_ACTION_BASE + "START_LOCATION";
+    public final static String ACTION_STOP_LOCATION         = Util.BD_ACTION_BASE + "STOP_LOCATION";
 
 
     public static Location mCurrentLocation = null;
@@ -27,6 +28,8 @@ public class LocationUtilities {
     static ActivityRecognitionScan activityRecognition;
 
     //  LocationManager locationM = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    
+    public static PublicKey publicKey;
 
 
     public static void startGPS(Context context, LocationManager locationM){
@@ -61,14 +64,12 @@ public class LocationUtilities {
 
                 Log.d("test gps", "gps location is not null "+location.getLatitude()+","+location.getLongitude()+","+
                         location.getAccuracy()+","+location.getProvider());
-                if(location.getAccuracy() <= 35)
-                {
-                    if(isBetterLocation(location, mCurrentLocation))
-                    {
+                if(location.getAccuracy() <= 35){
+                    if(isBetterLocation(location, mCurrentLocation)){
                         mCurrentLocation = location;
                         try {
                             Log.d("test gps", "gps location");
-                            Util.writeLocationToFile(location);
+                            Util.writeLocationToFile(publicKey, location);
                         } catch (IOException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();

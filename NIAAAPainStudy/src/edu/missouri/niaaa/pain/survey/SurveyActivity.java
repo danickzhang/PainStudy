@@ -97,7 +97,7 @@ public class SurveyActivity extends Activity {
     ArrayList<Category> cats = null;
 
     /*sound*/
-    SoundPool soundpool;
+    SoundPool soundPool;
     private SparseIntArray soundMap;
     Timer soundTimer;
     TimerTask soundTask;
@@ -114,6 +114,7 @@ public class SurveyActivity extends Activity {
     SharedPreferences shp;
     boolean onGoing = false;
     Calendar surveyStartDatetime;
+    Calendar surveyAlarmDT;
 
 
 
@@ -127,15 +128,8 @@ public class SurveyActivity extends Activity {
 
         wakelock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, TAG);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        soundpool = new SoundPool(2, AudioManager.STREAM_MUSIC, 100);
         soundMap = new SparseIntArray();
-        if(Util.RELEASE){
-            soundMap.put(1, soundpool.load(this, R.raw.alarm_sound, 1));
-        }else{
-            soundMap.put(1, soundpool.load(this, R.raw.alarm_sound_nodelay, 1));
-        }
         soundTimer = new Timer();
-
 
         getSurveyList();
 
@@ -197,7 +191,6 @@ public class SurveyActivity extends Activity {
             Util.Log_debug(TAG, "### write event, timeout -> oncreate previous swipe quit, survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
             
             //write
-//            Util.writeEvent(this, Util.getSurveyCode(surveyType), "", "", "", "", "", ""); without schedule time
             
             Toast.makeText(this, "onCreate previous survey timeout unnormally", Toast.LENGTH_LONG).show();
             finish();
@@ -224,7 +217,7 @@ public class SurveyActivity extends Activity {
             pinLayout();
             
             if(surveyType == Util.SV_NAME_RANDOM){
-                writeCompliance(surveySeq, true);
+                writeCompliance(this, surveySeq, true);
             }
         }
     }
@@ -298,17 +291,14 @@ public class SurveyActivity extends Activity {
                     //write
                     Util.Log_debug(TAG, "### write event, timeout -> onNewIntent, survey: "+newSurveyType+" seq: "+newSurveySeq+" remind: "+newRemindSeq);
                     
-                    Util.writeEvent(this, Util.getSurveyCode(newSurveyType) + Util.CODE_SV_TIMEOUT, 
-                            "", 
-                            "", "", "", 
+                    Util.writeEvent(this, newSurveyType, Util.CODE_SV_TIMEOUT, newSurveySeq, 
+                            Util.getSurveyScheduleDT(this, newSurveyType, newSurveySeq), 
+                            Util.getSurveyAlarmDT(surveyAlarmDT,remindSeq), 
                             Util.sdf.format(surveyStartDatetime.getTime()), Util.sdf.format(Calendar.getInstance().getTime()));
                     
-                    //wait OK to be finish
-//                    singleOptionDialog(R.string.morning_report_title4, R.string.survey_timeout, DIALOG_TIMEOUT).show();//##?? change to start new dialog activity and finish self!!!
-                    
-                    Intent timeoutIntent = new Intent(this, DialogActivity.class);
-                    timeoutIntent.putExtra(DialogActivity.DIALOG_FLAG, DialogActivity.DIALOG_TIMEOUT);
-                    startActivity(timeoutIntent);
+                    Intent dialogIntent = new Intent(this, DialogActivity.class);
+                    dialogIntent.putExtra(DialogActivity.DIALOG_FLAG, DialogActivity.DIALOG_TIMEOUT);
+                    startActivity(dialogIntent);
                     
                     finish();
                 }
@@ -329,9 +319,9 @@ public class SurveyActivity extends Activity {
                     Util.Log_debug(TAG, "### write event, noPrompt_underDoing -> onNewIntent, survey: "+newSurveyType+" seq: "+newSurveySeq+" remind: "+newRemindSeq);
                     
                     //write
-                    Util.writeEvent(this, Util.getSurveyCode(newSurveyType) + Util.CODE_SV_NO_PROMPT + "_3", 
-                            "", 
-                            "", "", "", 
+                    Util.writeEvent(this, newSurveyType, Util.CODE_SV_NO_PROMPT + "_3", newSurveySeq,  
+                            Util.getSurveyScheduleDT(this, newSurveyType, newSurveySeq), 
+                            Util.getSurveyAlarmDT(surveyAlarmDT,newRemindSeq), 
                             "", Util.sdf.format(Calendar.getInstance().getTime()));
                     
                     Toast.makeText(this, "An auto-triggered survey is just blocked by what you are doning right now!", Toast.LENGTH_LONG).show();
@@ -350,9 +340,9 @@ public class SurveyActivity extends Activity {
                     Util.Log_debug(TAG, "### write event, ignored -> onNewIntent, old survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
                     
                     //write ignored for old reminder
-                    Util.writeEvent(this, Util.getSurveyCode(surveyType) + Util.CODE_SV_IGNORED, 
-                            "", 
-                            "", ""+remindSeq, "",//##?? 
+                    Util.writeEvent(this, surveyType, Util.CODE_SV_IGNORED, surveySeq, 
+                            Util.getSurveyScheduleDT(this, surveyType, surveySeq), 
+                            Util.getSurveyAlarmDT(surveyAlarmDT,remindSeq), 
                             "", Util.sdf.format(Calendar.getInstance().getTime()));
                     
                     //if remind0
@@ -391,9 +381,9 @@ public class SurveyActivity extends Activity {
                         Util.Log_debug(TAG, "### write event, noPrompt_underDoing -> onNewIntent, survey: "+newSurveyType+" seq: "+newSurveySeq+" remind: "+newRemindSeq);
                         
                         //write
-                        Util.writeEvent(this, Util.getSurveyCode(newSurveyType) + Util.CODE_SV_NO_PROMPT + "_3", 
-                                "", 
-                                "", "", "", 
+                        Util.writeEvent(this, newSurveyType, Util.CODE_SV_NO_PROMPT + "_3", surveySeq,  
+                                Util.getSurveyScheduleDT(this, surveyType, surveySeq), 
+                                Util.getSurveyAlarmDT(surveyAlarmDT,remindSeq), 
                                 "", Util.sdf.format(Calendar.getInstance().getTime()));
                         
                         Toast.makeText(this, "An auto-triggered survey is just blocked by what you are doning right now!", Toast.LENGTH_LONG).show();
@@ -406,7 +396,7 @@ public class SurveyActivity extends Activity {
     
     private void pinSound(){
         acquireWakeLock();
-        playSound();
+        playSoundOnPrepared();
 
         if(pinCheckDialog.isShowing()) {
             pinCheckDialog.dismiss();
@@ -572,9 +562,9 @@ public class SurveyActivity extends Activity {
         workWithAnswers();
         
 
-        Intent completeIntent = new Intent(this, DialogActivity.class);
-        completeIntent.putExtra(DialogActivity.DIALOG_FLAG, DialogActivity.DIALOG_FINISH);
-        startActivity(completeIntent);
+        Intent dialogIntent = new Intent(this, DialogActivity.class);
+        dialogIntent.putExtra(DialogActivity.DIALOG_FLAG, DialogActivity.DIALOG_FINISH);
+        startActivity(dialogIntent);
         
         finish();
     }
@@ -635,7 +625,7 @@ public class SurveyActivity extends Activity {
             
         case Util.SV_NAME_RANDOM:
             
-            writeCompliance(surveySeq, false);
+            writeCompliance(this, surveySeq, false);
             
             break;
             
@@ -913,9 +903,9 @@ public class SurveyActivity extends Activity {
                 Util.Log_debug(TAG, "### write event, refused -> survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
                 
                 //write
-                Util.writeEvent(SurveyActivity.this, Util.getSurveyCode(surveyType) + Util.CODE_SV_REFUSED, 
-                        "", 
-                        "", "", "", 
+                Util.writeEvent(SurveyActivity.this, surveyType, Util.CODE_SV_REFUSED, surveySeq,  
+                        Util.getSurveyScheduleDT(SurveyActivity.this, surveyType, surveySeq), 
+                        Util.getSurveyAlarmDT(surveyAlarmDT,remindSeq), 
                         "", Util.sdf.format(Calendar.getInstance().getTime()));
                 
                 //stop sound and quit
@@ -1019,7 +1009,18 @@ public class SurveyActivity extends Activity {
     /*sound & vibrator*/
 
     private void playSoundOnPrepared(){
-        soundpool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+        Util.Log_debug(TAG, "play sound on prepared---");
+        surveyAlarmDT = Calendar.getInstance();
+        
+        soundMap.clear();
+        soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 100);
+        if(Util.RELEASE){
+            soundMap.put(1, soundPool.load(this, R.raw.alarm_sound, 1));
+        }else{
+            soundMap.put(1, soundPool.load(this, R.raw.alarm_sound_nodelay, 1));
+        }
+        
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
 
             @Override
             public void onLoadComplete(SoundPool arg0, int arg1, int arg2) {
@@ -1045,7 +1046,7 @@ public class SurveyActivity extends Activity {
         @Override
         public void run(){
 
-            soundStreamID = soundpool.play(soundMap.get(1), 1, 1, 1, 0, 1); // craving should be different
+            soundStreamID = soundPool.play(soundMap.get(1), 1, 1, 1, 0, 1); // craving should be different
         }
     }
 
@@ -1054,14 +1055,16 @@ public class SurveyActivity extends Activity {
         if(soundTask != null)
         soundTask.cancel();
 
-        soundpool.stop(soundStreamID);
+        if(soundPool != null)
+        soundPool.stop(soundStreamID);
 
         vibrator.cancel();
     }
 
     private void releaseSound(){
         stopSound();
-        soundpool.release();
+        if(soundPool != null)
+        soundPool.release();
         soundTimer.cancel();
         soundTimer.purge();
         soundTimer = null;
@@ -1165,10 +1168,10 @@ public class SurveyActivity extends Activity {
                 Util.Log_debug(TAG, "### write event, quit -> survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
                 
                 //write
-                Util.writeEvent(SurveyActivity.this, Util.getSurveyCode(surveyType) + Util.CODE_SV_QUIT, 
-                        "", 
-                        "", "", "", 
-                        "", Util.sdf.format(Calendar.getInstance().getTime()));
+                Util.writeEvent(SurveyActivity.this, surveyType, Util.CODE_SV_QUIT, surveySeq,  
+                        Util.getSurveyScheduleDT(SurveyActivity.this, surveyType, surveySeq), 
+                        Util.getSurveyAlarmDT(surveyAlarmDT,remindSeq), 
+                        Util.sdf.format(surveyStartDatetime.getTime()), Util.sdf.format(Calendar.getInstance().getTime()));
 
                 SurveyActivity.super.onBackPressed();
             }
@@ -1190,7 +1193,8 @@ public class SurveyActivity extends Activity {
         String code = Util.getSurveyCode(surveyType)+Util.CODE_SV_FULLY_FINISHED;
 
 //      long scheduleTimeStamp = getScheduleTimeStamp();
-        String scheduleTS = "";//getScheduleTimeStamp();##??
+        String scheduleTS = Util.getSurveyScheduleDT(this, surveyType, surveySeq);
+        String remindTS = Util.getSurveyAlarmDT(surveyAlarmDT, remindSeq);
 
         String startTS = Util.sdf.format(surveyStartDatetime.getTime());
         String endTS = Util.sdf.format(endCal.getTime());
@@ -1207,7 +1211,7 @@ public class SurveyActivity extends Activity {
         sb.append(",");
 
 //        String[] rem = getReminderTimeStamp(SurveyActivity.this);
-        sb.append(userID + "," + studyDay + "," + code + "," + scheduleTS + "," + "," +  "," +  "," + startTS + "," + endTS + ",");
+        sb.append(userID + "," + studyDay + "," + code + "," + scheduleTS + "," + remindTS +  "," + startTS + "," + endTS + ",");
 
         List<String> sorted = new ArrayList<String>(surveyData.keySet());
         Collections.sort(sorted);
@@ -1238,15 +1242,15 @@ public class SurveyActivity extends Activity {
             //random sequence
             sb.append(",seq:"+ surveySeq);
         }
-//      sb.append("\n");
+//        sb.append("\n");
 
 
 
         //file name
-            Calendar c=Calendar.getInstance();
-            SimpleDateFormat curFormater = new SimpleDateFormat("MMMMM_dd");
-            String dateObj =curFormater.format(c.getTime());
-            String file_name=surveyName+"."+userID+"."+dateObj+".txt";
+        Calendar c=Calendar.getInstance();
+        SimpleDateFormat curFormater = new SimpleDateFormat("MMMMM_dd");
+        String dateObj =curFormater.format(c.getTime());
+        String file_name=surveyName+"."+userID+"."+dateObj+".txt";
 
         StringBuilder prefix_sb = new StringBuilder(Util.PREFIX_LEN);
         String prefix = surveyName + "." + userID + "." + dateObj;
@@ -1264,7 +1268,7 @@ public class SurveyActivity extends Activity {
          */
         String ensb = null;
         try {
-            ensb = Util.encryption(prefix_sb.toString() + sb.toString());
+            ensb = Util.encryption(this, prefix_sb.toString() + sb.toString());
 
             if(Util.WRITE_RAW) {
                 Util.writeToFile(file_name, sb.toString());
@@ -1301,55 +1305,43 @@ public class SurveyActivity extends Activity {
 
             //          String fileName=strings[0];
             //          String dataToSend=strings[1];
-            if(checkDataConnectivity())
-            {
+            if(checkDataConnectivity()){
 
-            Log.d("((((((((((((((((((((((((", ""+Thread.currentThread().getId());
-             HttpPost request = new HttpPost(Util.UPLOAD_ADDRESS);
-             List<NameValuePair> params = new ArrayList<NameValuePair>();
+                Log.d("((((((((((((((((((((((((", ""+Thread.currentThread().getId());
+                HttpPost request = new HttpPost(Util.UPLOAD_ADDRESS);
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
                 params.add(new BasicNameValuePair("data", data));
-
-                //           //file_name
-                //           params.add(new BasicNameValuePair("file_name",fileName));
-                //           //data
-                //           params.add(new BasicNameValuePair("data",dataToSend));
-             try {
-
-                 request.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
-                 HttpResponse response = new DefaultHttpClient().execute(request);
-                 if(response.getStatusLine().getStatusCode() == 200){
-                     String result = EntityUtils.toString(response.getEntity());
-                     Log.d("Sensor Data Point Info",result);
-                    // Log.d("Wrist Sensor Data Point Info","Data Point Successfully Uploaded!");
-                 }
-                 return true;
-             }
-             catch (Exception e)
-             {
-                 e.printStackTrace();
-                 return false;
-             }
-          }
-
-         else
-         {
-            Log.d("Sensor Data Point Info","No Network Connection:Data Point was not uploaded");
-            Toast.makeText(SurveyActivity.this, "@#$", Toast.LENGTH_LONG).show();
-            return false;
-          }
-
+        
+//                //file_name
+//                params.add(new BasicNameValuePair("file_name",fileName));
+//                //data
+//                params.add(new BasicNameValuePair("data",dataToSend));
+                try {
+        
+                    request.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+                    HttpResponse response = new DefaultHttpClient().execute(request);
+                    if(response.getStatusLine().getStatusCode() == 200){
+                        String result = EntityUtils.toString(response.getEntity());
+                        Log.d("Sensor Data Point Info",result);
+                        // Log.d("Wrist Sensor Data Point Info","Data Point Successfully Uploaded!");
+                    }
+                    return true;
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+            else{
+                Log.d("Sensor Data Point Info","No Network Connection:Data Point was not uploaded");
+                Toast.makeText(SurveyActivity.this, "@#$", Toast.LENGTH_LONG).show();
+                return false;
+            }
         }
-
     }
 
 
-    
-    
-    
-    
-    
-    
-    private void writeCompliance(int randomSeq, boolean start){
+    private void writeCompliance(Context context, int randomSeq, boolean start){
         
         String rsID = String.valueOf(randomSeq);
         Calendar rsT = Calendar.getInstance();
@@ -1359,7 +1351,7 @@ public class SurveyActivity extends Activity {
         String data = null;
         String phase = start ? "trigger" : "complete";
         try {
-            data = Util.encryption(uID + "," + rsDate + "," + rsID + "," + phase);
+            data = Util.encryption(context, uID + "," + rsDate + "," + rsID + "," + phase);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -1372,7 +1364,7 @@ public class SurveyActivity extends Activity {
     }
     
     
-    //haidong from ricky//##??
+    //haidong from ricky
     private class ComplianceSignal extends AsyncTask<String,Void, Boolean> {
 
         @Override

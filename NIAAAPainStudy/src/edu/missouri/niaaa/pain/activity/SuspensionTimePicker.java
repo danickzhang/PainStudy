@@ -4,7 +4,6 @@ import java.util.Calendar;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.View;
@@ -20,7 +19,7 @@ public class SuspensionTimePicker extends Activity {
     
 //  String[] display = {"  15 minutes  ","  30 minutes  ","  45 minutes  ","  60 minutes  ","  1 hour & 15 minutes  ","  1 & half hour  ","  1 hour & 45 minutes  ","  2 hours  "};
     int selection = 0;
-    int interval = Util.SUSPENSION_INTERVAL_IN_SECOND;
+    int interval = Util.SUSPENSION_INTERVAL_IN_SECONDS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +27,6 @@ public class SuspensionTimePicker extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_suspension_picker);
-        final SharedPreferences sp = getSharedPreferences(Util.SP_LOGIN, Context.MODE_PRIVATE);
 
         NumberPicker np = (NumberPicker) findViewById(R.id.suspension_picker);
         Button setPicker = (Button) findViewById(R.id.btnSuspension);
@@ -57,7 +55,7 @@ public class SuspensionTimePicker extends Activity {
                 Calendar c = Calendar.getInstance();
                 long time = c.getTimeInMillis();
                 
-                Util.scheduleSuspension(SuspensionTimePicker.this, time + (selection + 1) * Util.SUSPENSION_INTERVAL_IN_SECOND * 1000);
+                Util.scheduleSuspension(SuspensionTimePicker.this, time + (selection + 1) * Util.SUSPENSION_INTERVAL_IN_SECONDS * 1000);
                 
                 //close volume
                 AudioManager audiom = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);

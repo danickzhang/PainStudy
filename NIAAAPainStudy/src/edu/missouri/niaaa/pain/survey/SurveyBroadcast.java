@@ -5,6 +5,8 @@ import java.util.Calendar;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.widget.Toast;
 import edu.missouri.niaaa.pain.R;
 import edu.missouri.niaaa.pain.Util;
@@ -18,7 +20,15 @@ public class SurveyBroadcast extends BroadcastReceiver {
         Util.Log_lifeCycle(TAG, "OnReceive~~~ "+intent.getAction()+" "+intent.getIntExtra(Util.SV_TYPE, -1));
         Util.Log_lifeCycle(TAG, "~~~seq is "+intent.getIntExtra(Util.SV_SEQ, -1));
 
-//        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        //acquire wl for a while
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+//      WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "SurveyBroadcast");
+        WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "SurveyBroadcast");
+        wl.acquire(1*60*1000);
+        
+        //restart gps
+        Util.restartRecordingLocation(context);
+        
         String action = intent.getAction();
 
         int surveyType = intent.getIntExtra(Util.SV_TYPE, -1);//protect -1 later
@@ -49,9 +59,9 @@ public class SurveyBroadcast extends BroadcastReceiver {
                 Util.Log_debug(TAG, "### write event, noPrompt_under Suspension ->  survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
                 
                 //write
-                Util.writeEvent(context, Util.getSurveyCode(surveyType) + Util.CODE_SV_NO_PROMPT + "_1", 
-                        "", 
-                        "", "", "", 
+                Util.writeEvent(context, surveyType, Util.CODE_SV_NO_PROMPT + "_1", surveySeq,  
+                        Util.getSurveyScheduleDT(context, surveyType, surveySeq), 
+                        Util.getSurveyAlarmDT(Calendar.getInstance(),remindSeq), 
                         "", Util.sdf.format(Calendar.getInstance().getTime()));
                 
                 Toast.makeText(context, "An auto-triggered survey is just blocked by suspension!", Toast.LENGTH_LONG).show();
@@ -61,9 +71,9 @@ public class SurveyBroadcast extends BroadcastReceiver {
                 Util.Log_debug(TAG, "### write event, noPrompt_under survey isolater ->  survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
                 
                 //write
-                Util.writeEvent(context, Util.getSurveyCode(surveyType) + Util.CODE_SV_NO_PROMPT + "_4", 
-                        "", 
-                        "", "", "", 
+                Util.writeEvent(context, surveyType, Util.CODE_SV_NO_PROMPT + "_4", surveySeq, 
+                        Util.getSurveyScheduleDT(context, surveyType, surveySeq), 
+                        Util.getSurveyAlarmDT(Calendar.getInstance(),remindSeq), 
                         "", Util.sdf.format(Calendar.getInstance().getTime()));
                 
                 Toast.makeText(context, "An auto-triggered survey is just blocked by survey isolating!", Toast.LENGTH_LONG).show();

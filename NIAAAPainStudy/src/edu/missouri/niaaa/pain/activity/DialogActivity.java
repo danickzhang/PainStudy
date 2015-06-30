@@ -20,7 +20,7 @@ import edu.missouri.niaaa.pain.Util;
 public class DialogActivity extends Activity {
 
     /*sound*/
-    SoundPool soundpool;
+    SoundPool soundPool;
     private SparseIntArray soundMap;
     Timer soundTimer;
     TimerTask soundTask;
@@ -44,12 +44,16 @@ public class DialogActivity extends Activity {
         Log.d("test", "onCreate chargerActivity");
         super.onCreate(savedInstanceState);
         
-        init();
         int flag = getIntent().getIntExtra(DIALOG_FLAG, -1);
+        
+        init();
         
         switch(flag){
         case DIALOG_CHARGE_REMIND:
-            playSoundOnPrepared();
+            
+            if(!Util.isSuspensionFlag(this)){
+                playSoundOnPrepared();
+            }
             makeDialog(R.string.charge_reminder_alert_title, R.string.charge_reminder_alert_message, flag).show();
             break;
         case DIALOG_TIMEOUT:
@@ -75,13 +79,7 @@ public class DialogActivity extends Activity {
         // TODO Auto-generated method stub
         
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        soundpool = new SoundPool(2, AudioManager.STREAM_MUSIC, 100);
         soundMap = new SparseIntArray();
-        if(Util.RELEASE){
-            soundMap.put(1, soundpool.load(this, R.raw.alarm_sound, 1));
-        }else{
-            soundMap.put(1, soundpool.load(this, R.raw.alarm_sound_nodelay, 1));
-        }
         soundTimer = new Timer();
         
     }
@@ -128,7 +126,16 @@ public class DialogActivity extends Activity {
     /*sound & vibrator*/
 
     private void playSoundOnPrepared(){
-        soundpool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+        
+        soundMap.clear();
+        soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 100);
+        if(Util.RELEASE){
+            soundMap.put(1, soundPool.load(this, R.raw.alarm_sound, 1));
+        }else{
+            soundMap.put(1, soundPool.load(this, R.raw.alarm_sound_nodelay, 1));
+        }
+        
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
 
             @Override
             public void onLoadComplete(SoundPool arg0, int arg1, int arg2) {
@@ -154,7 +161,7 @@ public class DialogActivity extends Activity {
         @Override
         public void run(){
 
-            soundStreamID = soundpool.play(soundMap.get(1), 1, 1, 1, 5, 1);
+            soundStreamID = soundPool.play(soundMap.get(1), 1, 1, 1, 5, 1);
         }
     }
 
@@ -163,14 +170,17 @@ public class DialogActivity extends Activity {
         if(soundTask != null)
         soundTask.cancel();
 
-        soundpool.stop(soundStreamID);
+        if(soundPool != null)
+        soundPool.stop(soundStreamID);
 
         vibrator.cancel();
     }
 
     private void releaseSound(){
         stopSound();
-        soundpool.release();
+        if(soundPool != null)
+        soundPool.release();
+        
         soundTimer.cancel();
         soundTimer.purge();
         soundTimer = null;

@@ -51,7 +51,7 @@ public class SupportActivity extends Activity {
 
         setListener();
 
-        userID = Util.getSP(this, Util.SP_LOGIN).getString(Util.SP_LOGIN_KEY_USERID, "0000");
+        userID = Util.getSP(this, Util.SP_LOGIN).getString(Util.SP_LOGIN_KEY_USERID, "");
         try {
             PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_CONFIGURATIONS);
             appVersion = "ver." + pinfo.versionName + "." + pinfo.versionCode;
