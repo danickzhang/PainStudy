@@ -179,7 +179,7 @@
     <category>
         <description>OPIOID URGE/CRAVING</description>
         <question id = "47" type = "radio">
-            <text>In the PAST 15 MINUTES, How strong was your urge to take more opioid pain medication?</text>
+            <text>In the PAST 15 MINUTES, How strong was your urge to take opioid pain medication?</text>
             <answer id = "1">Very slight or none</answer>
             <answer id = "2">Slightly strong</answer>
             <answer id = "3">Somewhat strong</answer>
