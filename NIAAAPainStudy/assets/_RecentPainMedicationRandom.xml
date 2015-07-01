@@ -27,15 +27,10 @@
             <text>Which OPIOID PAIN MEDICATION did you take?</text>
             <answer id = "1">Primary (the medication you take regularly)</answer>
             <answer id = "2">Secondary (the medication you take as needed)</answer>
-            <answer id = "3" skip = "11q15">Both</answer>
+            <answer id = "3" skip = "11q16">Both</answer>
         </question>
 
 <!--         //2 -->
-        <question id = "13" type = "radio">
-            <text>How much of your OPIOID PAIN MEDICATION did you take SINCE the last survey you answered?</text>
-            <answer id = "1" skip = "11q19">My typical dose</answer>
-            <answer id = "2">Different than my typical dose</answer>
-        </question>
         <question id = "14" type = "number">
             <text>Please enter the number of pills you took of your OPIOID PAIN MEDICATION.</text>
             <answer id = "item">pill(s)</answer>
@@ -45,11 +40,6 @@
         </question>
 
 <!--         //2a -->
-        <question id = "15" type = "radio">
-            <text>How much of your PRIMARY opioid pain medication did you take SINCE the last survey you answered?</text>
-            <answer id = "1" skip = "11q17">My typical dose</answer>
-            <answer id = "2">Different than my typical dose</answer>
-        </question>
         <question id = "16" type = "number">
             <text>Please enter the number of pills you took of your PRIMARY opioid pain medication.</text>
             <answer id = "item">pill(s)</answer>
@@ -59,11 +49,6 @@
         </question>
 
 <!--         //2b -->
-        <question id = "17" type = "radio">
-            <text>How much of your SECONDARY opioid pain medication did you take SINCE the last survey you answered?</text>
-            <answer id = "1" skip = "11q19">My typical dose</answer>
-            <answer id = "2">Different than my typical dose</answer>
-        </question>
         <question id = "18" type = "number">
             <text>Please enter the number of pills you took of your SECONDARY opioid pain medication.</text>
             <answer id = "item">pill(s)</answer>
@@ -101,7 +86,7 @@
     <category><!--Skip to here if no opioid use reported-->
         <description>OTHER PAIN MEDICATION USE</description>
         <question id = "23" type = "radio">
-            <text>In addition to your OPIOID PAIN MEDICATION, have you taken any other PAIN medications since the last survey you answered?</text>
+            <text>Besides OPIOID medication, have you taken any other PAIN medications since the last survey you answered?</text>
             <answer id = "1">Yes</answer>
             <answer id = "2" skip = "2q2">No</answer>
         </question>
