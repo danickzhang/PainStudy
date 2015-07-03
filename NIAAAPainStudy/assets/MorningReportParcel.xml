@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <root>
 
     <category>
@@ -93,16 +93,14 @@
             <answer id = "3">Somewhat</answer>
             <answer id = "4">Quite a bit</answer>
             <answer id = "5">An extreme amount</answer>
-            <text id = "1q11">If I take opioid pain medication today, I expect it would decrease my physical pain.</text>
-            <text id = "1q12">If I take opioid pain medication today, I expect it would make me feel happier.</text>
-            <text id = "1q13">If I take opioid pain medication today, I expect it would make it harder to think or perform a task.</text>
-            <text id = "1q14">If I take opioid pain medication today, I expect it would relieve unpleasant feelings.</text>
-            <text id = "1q15">If I take opioid pain medication today, I expect it would give me a pleasant feeling.</text>
-            <text id = "1q16">If I take opioid pain medication today, I expect it would make me feel more relaxed or calm.</text>
-            <text id = "1q17">If I take opioid pain medication today, I expect it would make me feel worse.</text>
-            <text id = "1q18">If I take opioid pain medication today, I expect it would make my physical pain less unpleasant.</text>
-            <text id = "1q19">If I take opioid pain medication today, I expect it would make me forget my problems.</text>
-            <text id = "1q20">If I take opioid pain medication today, I expect it would make me feel less depressed.</text>
+            <text id = "1q11">If I take OPIOID PAIN MEDICATION today, I expect it would decrease my physical pain.</text>
+            <text id = "1q12">If I take OPIOID PAIN MEDICATION today, I expect it would make me feel happier.</text>
+            <text id = "1q13">If I take OPIOID PAIN MEDICATION today, I expect it would make it harder to think or perform a task.</text>
+            <text id = "1q14">If I take OPIOID PAIN MEDICATION today, I expect it would make me feel less unpleasant.</text>
+            <text id = "1q15">If I take OPIOID PAIN MEDICATION today, I expect it would make me feel worse.</text>
+            <text id = "1q16">If I take OPIOID PAIN MEDICATION today, I expect it would make it easier to tolerate my physical pain.</text>
+            <text id = "1q17">If I take OPIOID PAIN MEDICATION today, I expect it would make me worry less.</text>
+            <text id = "1q18">If I take OPIOID PAIN MEDICATION today, I expect it would make me feel less negative.</text>
         </questionblock>
     </category>
 
@@ -114,16 +112,14 @@
             <answer id = "3">Somewhat</answer>
             <answer id = "4">Quite a bit</answer>
             <answer id = "5">An extreme amount</answer>
-            <text id = "1q44">If I drink alcohol today, I expect it would decrease my physical pain.</text>
-            <text id = "1q45">If I drink alcohol today, I expect it would make me feel happier.</text>
-            <text id = "1q46">If I drink alcohol today, I expect it would make it harder to think or perform a task.</text>
-            <text id = "1q47">If I drink alcohol today, I expect it would relieve unpleasant feelings.</text>
-            <text id = "1q48">If I drink alcohol today, I expect it would give me a pleasant feeling.</text>
-            <text id = "1q49">If I drink alcohol today, I expect it would make me feel more relaxed or calm.</text>
-            <text id = "1q50">If I drink alcohol today, I expect it would make me feel worse.</text>
-            <text id = "1q51">If I drink alcohol today, I expect it would make my physical pain less unpleasant.</text>
-            <text id = "1q52">If I drink alcohol today, I expect it would make me forget my problems.</text>
-            <text id = "1q53">If I drink alcohol today, I expect it would make me feel less depressed.</text>
+            <text id = "1q44">If I drink ALCOHOL today, I expect it would decrease my physical pain.</text>
+            <text id = "1q45">If I drink ALCOHOL today, I expect it would make me feel happier.</text>
+            <text id = "1q46">If I drink ALCOHOL today, I expect it would make it harder to think or perform a task.</text>
+            <text id = "1q47">If I drink ALCOHOL today, I expect it would make me feel less unpleasant.</text>
+            <text id = "1q48">If I drink ALCOHOL today, I expect it would make me feel worse.</text>
+            <text id = "1q49">If I drink ALCOHOL today, I expect it would make it easier to tolerate my physical pain.</text>
+            <text id = "1q50">If I drink ALCOHOL today, I expect it would make me worry less.</text>
+            <text id = "1q51">If I drink ALCOHOL today, I expect it would make me feel less negative.</text>
         </questionblock>
     </category>
 

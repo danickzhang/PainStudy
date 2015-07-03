@@ -1,4 +1,5 @@
-<root>
+﻿<root>
+<!--Insert Alcohol, Pain Medication, or Alcohol/Pain Medication effect items here, if Alcohol or Opioid use reported or in a initial prompt or followup-->
     <category>
         <description>PAIN</description>
         <question id = "1" type = "radio">
@@ -160,6 +161,8 @@
         </questionblock>
     </category>
     
+<!--Insert Drug Effect Questions here, if Alcohol, Opioid, or Marijuana use reported-->
+
 <!--     - -->
 <!--     <category> -->
 <!--         <description>SLEEP</description> -->
@@ -251,13 +254,14 @@
             <text>In the PAST 15 MINUTES, WHAT are you currently doing? (Check all that apply)</text>
             <answer id = "1">Socializing</answer>
             <answer id = "2">Housework</answer>
-            <answer id = "3">Recreational activity or hobby</answer>
-            <answer id = "4">Working or Studying</answer>
-            <answer id = "5">TV/Movies/Music/Entertainment</answer>
-            <answer id = "6">Walking or exercise</answer>
-            <answer id = "7">Having sex</answer>
-            <answer id = "8">Other</answer>
-            <answer id = "9" action="uncheck">Nothing</answer>
+	    <answer id = "3">Eating</answer>
+            <answer id = "4">Recreational activity or hobby</answer>
+            <answer id = "5">Working or Studying</answer>
+            <answer id = "6">TV/Movies/Music/Entertainment</answer>
+            <answer id = "7">Walking or exercise</answer>
+            <answer id = "8">Having sex</answer>
+            <answer id = "9">Other</answer>
+            <answer id = "A" action="uncheck">Nothing</answer>
         </question>
 
         <question id = "54" type = "radio">
