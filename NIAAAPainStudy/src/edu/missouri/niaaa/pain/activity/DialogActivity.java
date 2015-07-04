@@ -8,12 +8,14 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
 import android.util.SparseIntArray;
+import edu.missouri.niaaa.pain.MainActivity;
 import edu.missouri.niaaa.pain.R;
 import edu.missouri.niaaa.pain.Util;
 
@@ -101,12 +103,28 @@ public class DialogActivity extends Activity {
                 stopSound();
                 
                 dialog.cancel();
+                
+                Intent launchIntent = new Intent(DialogActivity.this, MainActivity.class);
+                launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                launchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(launchIntent);
+                
                 finish();
             }
         }).create();
         
     }
     
+    
+    @Override
+    protected void onPause() {
+        // TODO Auto-generated method stub
+        stopSound();
+        
+        super.onPause();
+    }
+
+
     @Override
     protected void onStop() {
         // TODO Auto-generated method stub

@@ -224,6 +224,12 @@ public class Util {
         }
     }
 
+    public static void debugDT(String tag, long milliseconds){
+        Calendar printC = Calendar.getInstance();
+        printC.setTimeInMillis(milliseconds);
+        Util.Log_debug(tag, "scheduled @ "+Util.sdf.format(printC.getTime()));
+    }
+    
 
     
     /*survey getters*/
@@ -340,6 +346,11 @@ public class Util {
     }
     
     
+    public static void setAlarmExact(AlarmManager am, long time, PendingIntent pi){
+        am.setExact(AlarmManager.RTC_WAKEUP, time, pi);
+    }
+    
+    
 
     /*************************************************************************************************************/
     /* random */
@@ -428,7 +439,7 @@ public class Util {
                     PendingIntent piTrigger = PendingIntent.getBroadcast(context, i, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
                     
                     am.cancel(piTrigger);
-                    am.setExact(AlarmManager.RTC_WAKEUP, time, piTrigger);
+                    setAlarmExact(am, time, piTrigger);
                     
                     Log.d("Random Schedule ", "each time is "+i+" "+str+" "+r.get(Calendar.HOUR_OF_DAY)+":"+r.get(Calendar.MINUTE)+":"+r.get(Calendar.SECOND));
                 }
@@ -460,7 +471,7 @@ public class Util {
             cancelSurveyReminders(context, SV_NAME_RANDOM, i);
         }
         
-        Log_debug(TAG, "---reminder canceled");
+        Log_debug(TAG, "---random surveys canceled");
         
         SharedPreferences sp = getSP(context, SP_SURVEY);
         sp.edit().remove(SP_SURVEY_KEY_RANDOM_SETS).commit();
@@ -489,7 +500,7 @@ public class Util {
         
         PendingIntent piSuspension = PendingIntent.getBroadcast(context, 0, suspensionIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         am.cancel(piSuspension);
-        am.setExact(AlarmManager.RTC_WAKEUP, expire, piSuspension);
+        setAlarmExact(am, expire, piSuspension);
         
         if(DEBUG){
             Calendar tempc = Calendar.getInstance();
@@ -617,7 +628,7 @@ public class Util {
 
         PendingIntent piTrigger = PendingIntent.getBroadcast(context, 0, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
         am.cancel(piTrigger);
-        am.setExact(AlarmManager.RTC_WAKEUP, time + SURVEY_ISOLATE_IN_SECONDS * 1000, piTrigger);
+        setAlarmExact(am, time + SURVEY_ISOLATE_IN_SECONDS * 1000, piTrigger);
         
         if(DEBUG){
             Calendar tempc = Calendar.getInstance();
@@ -718,7 +729,7 @@ public class Util {
 
         PendingIntent piTrigger = PendingIntent.getBroadcast(context, seq, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
         am.cancel(piTrigger);
-        am.setExact(AlarmManager.RTC_WAKEUP, time + SURVEY_TIMEOUT_IN_SECONDS * 1000, piTrigger);
+        setAlarmExact(am, time + SURVEY_TIMEOUT_IN_SECONDS * 1000, piTrigger);
         
         if(DEBUG){
             Calendar tempc = Calendar.getInstance();
@@ -757,7 +768,7 @@ public class Util {
 
             PendingIntent piTrigger = PendingIntent.getBroadcast(context, seq, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
             am.cancel(piTrigger);
-            am.setExact(AlarmManager.RTC_WAKEUP, time + (i-1) * SURVEY_REMINDS_IN_SECONDS * 1000, piTrigger);
+            setAlarmExact(am, time + (i-1) * SURVEY_REMINDS_IN_SECONDS * 1000, piTrigger);
             
             if(DEBUG){
                 Calendar tempc = Calendar.getInstance();
@@ -821,7 +832,7 @@ public class Util {
         PendingIntent piTrigger = PendingIntent.getBroadcast(context, seq, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
         
         am.cancel(piTrigger);
-        am.setExact(AlarmManager.RTC_WAKEUP, expire, piTrigger);
+        setAlarmExact(am, expire, piTrigger);
         
         Log_debug(TAG, "---MorningSruvey scheduled at "+getTimeFromLong(expire)+" context "+context.hashCode());
         
@@ -875,6 +886,9 @@ public class Util {
         Calendar expire = Calendar.getInstance();
         expire.setTimeInMillis(sp.getLong(SP_BEDTIME_KEY_LONG, defTime));
 
+        debugDT("deftime", defTime);
+        debugDT("exprire", expire.getTimeInMillis());
+        
         //set morning & schedule random
         if(c.after(n) || isTodayActivated(context)){
             Log_debug(TAG, "reschedule morning ~ after noon");

@@ -49,6 +49,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import edu.missouri.niaaa.pain.MainActivity;
 import edu.missouri.niaaa.pain.R;
 import edu.missouri.niaaa.pain.Util;
 import edu.missouri.niaaa.pain.activity.DialogActivity;
@@ -188,19 +189,38 @@ public class SurveyActivity extends Activity {
         // TODO Auto-generated method stub
         
         if(remindSeq == REMIND_TIMEOUT){
-            Util.Log_debug(TAG, "### write event, timeout -> oncreate previous swipe quit, survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
             
             //write
+            Util.Log_debug(TAG, "### write event, timeout -> oncreate previous swipe quit, survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
+            
+            Util.writeEvent(this, surveyType, Util.CODE_SV_TIMEOUT + "_2", surveySeq, 
+                    Util.getSurveyScheduleDT(this, surveyType, surveySeq), 
+                    Util.getSurveyAlarmDT(surveyAlarmDT,remindSeq), 
+                    "", Util.sdf.format(Calendar.getInstance().getTime()));
             
             Toast.makeText(this, "onCreate previous survey timeout unnormally", Toast.LENGTH_LONG).show();
+            
+            Intent launchIntent = new Intent(this, MainActivity.class);
+            launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            launchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(launchIntent);
             finish();
         }
         else if(remindSeq == REMIND_LASTTIME){
-            Util.Log_debug(TAG, "### write event, last ignore -> oncreate previous swipe quit, survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
             
             //write
+            Util.Log_debug(TAG, "### write event, last ignore -> oncreate previous swipe quit, survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
+            
+            Util.writeEvent(this, surveyType, Util.CODE_SV_IGNORED + "_2", surveySeq, 
+                    Util.getSurveyScheduleDT(this, surveyType, surveySeq), 
+                    Util.getSurveyAlarmDT(surveyAlarmDT,remindSeq), 
+                    "", Util.sdf.format(Calendar.getInstance().getTime()));
             
             Toast.makeText(this, "onCreate previous survey ignored unnormally", Toast.LENGTH_LONG).show();
+            Intent launchIntent = new Intent(this, MainActivity.class);
+            launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            launchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(launchIntent);
             finish();
         }
         
@@ -298,6 +318,8 @@ public class SurveyActivity extends Activity {
                     
                     Intent dialogIntent = new Intent(this, DialogActivity.class);
                     dialogIntent.putExtra(DialogActivity.DIALOG_FLAG, DialogActivity.DIALOG_TIMEOUT);
+                    dialogIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    dialogIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(dialogIntent);
                     
                     finish();
@@ -347,6 +369,12 @@ public class SurveyActivity extends Activity {
                     
                     //if remind0
                     if(newRemindSeq == REMIND_LASTTIME){
+                        
+                        Intent launchIntent = new Intent(this, MainActivity.class);
+                        launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        launchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(launchIntent);
+                        
                         finish();
                     }
                     
@@ -564,6 +592,8 @@ public class SurveyActivity extends Activity {
 
         Intent dialogIntent = new Intent(this, DialogActivity.class);
         dialogIntent.putExtra(DialogActivity.DIALOG_FLAG, DialogActivity.DIALOG_FINISH);
+        dialogIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        dialogIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(dialogIntent);
         
         finish();
@@ -824,7 +854,6 @@ public class SurveyActivity extends Activity {
 
 
     private final int DIALOG_RETRY = 1;
-    private final int DIALOG_TIMEOUT = 2;
     
     private Dialog singleOptionDialog(int title, int message, final int flag){
 
@@ -843,11 +872,6 @@ public class SurveyActivity extends Activity {
                     
                     pinCheckDialog.show();
                     dialog.cancel();
-                    break;
-                case DIALOG_TIMEOUT:
-                    
-                    dialog.cancel();
-                    finish();
                     break;
                 default:
                     
@@ -910,6 +934,12 @@ public class SurveyActivity extends Activity {
                 
                 //stop sound and quit
                 stopSound();
+                
+                Intent launchIntent = new Intent(SurveyActivity.this, MainActivity.class);
+                launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                launchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(launchIntent);
+                
                 finish();
             }
         });

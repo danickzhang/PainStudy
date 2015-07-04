@@ -41,32 +41,16 @@ public class DaemonReceiver extends BroadcastReceiver {
         else if(fun == 0){//set alarm
             Util.Log_debug(TAG, "on receiver daemon 0");
             //Noon
-            Intent itTrigger1 = new Intent(Util.BD_ACTION_DAEMON);
-            itTrigger1.putExtra(BD_ACTION_DAEMON_FUNC, 1);//int
-            PendingIntent piTrigger1 = PendingIntent.getBroadcast(context, 1, itTrigger1, Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            am.setExact(AlarmManager.RTC_WAKEUP, getProperTime(12, 20), piTrigger1);
+            setAlarm(context, am, 1, getProperTime(12, 20));
 
             //Midnight
-            Intent itTrigger2 = new Intent(Util.BD_ACTION_DAEMON);
-            itTrigger2.putExtra(BD_ACTION_DAEMON_FUNC, 2);//int
-            PendingIntent piTrigger2 = PendingIntent.getBroadcast(context, 2, itTrigger2, Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            am.setExact(AlarmManager.RTC_WAKEUP, getProperTime(23, 59), piTrigger2);
+            setAlarm(context, am, 2, getProperTime(23, 59));
 
             //Three oclock
-            Intent itTrigger3 = new Intent(Util.BD_ACTION_DAEMON);
-            itTrigger3.putExtra(BD_ACTION_DAEMON_FUNC, 3);//int
-            PendingIntent piTrigger3 = PendingIntent.getBroadcast(context, 3, itTrigger3, Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            am.setExact(AlarmManager.RTC_WAKEUP, getProperTime(3, 0), piTrigger3);
+            setAlarm(context, am, 3, getProperTime(3, 0));
 
             // Ricky 9pm
-            Intent itTrigger4 = new Intent(Util.BD_ACTION_DAEMON);
-            itTrigger4.putExtra(BD_ACTION_DAEMON_FUNC, 4);// int
-            PendingIntent piTrigger4 = PendingIntent.getBroadcast(context, 4, itTrigger4, Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            am.setExact(AlarmManager.RTC_WAKEUP, getProperTime(21, 0), piTrigger4);
+            setAlarm(context, am, 4, getProperTime(21, 0));
 
         }
         else if(fun == 1){//Noon
@@ -78,20 +62,16 @@ public class DaemonReceiver extends BroadcastReceiver {
             Toast.makeText(context, "Noon daemon trigger random schedules", Toast.LENGTH_LONG).show();
 
             //Noon
-            Intent itTrigger1 = new Intent(Util.BD_ACTION_DAEMON);
-            itTrigger1.putExtra(BD_ACTION_DAEMON_FUNC, 1);//int
-            PendingIntent piTrigger1 = PendingIntent.getBroadcast(context, 1, itTrigger1, Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            am.setExact(AlarmManager.RTC_WAKEUP, getProperTime(12, 20), piTrigger1);
+            setAlarm(context, am, 1, getProperTime(12, 20));
+            
+            Util.debugDT("noon", getProperTime(12, 20));
         }
         else if(fun == -1){//cancel noon
             Util.Log_debug(TAG, "on receiver daemon -1");
 
-            Intent itTrigger1 = new Intent(Util.BD_ACTION_DAEMON);
-            itTrigger1.putExtra(BD_ACTION_DAEMON_FUNC, 1);//int
-            PendingIntent piTrigger1 = PendingIntent.getBroadcast(context, 1, itTrigger1, Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            am.setExact(AlarmManager.RTC_WAKEUP, getProperTime(12, 20) + getDayLong(), piTrigger1);
+            setAlarm(context, am, 1, getProperTime(12, 20));
+            
+            Util.debugDT("cancel noon", getProperTime(12, 20));
         }
         else if(fun == 2){//Midnight
             Util.Log_debug(TAG, "on receiver daemon 2");
@@ -110,11 +90,7 @@ public class DaemonReceiver extends BroadcastReceiver {
             Toast.makeText(context, "MIDNIGHT close sensor and cancel survey", Toast.LENGTH_LONG).show();
 
             //Midnight
-            Intent itTrigger2 = new Intent(Util.BD_ACTION_DAEMON);
-            itTrigger2.putExtra(BD_ACTION_DAEMON_FUNC, 2);//int
-            PendingIntent piTrigger2 = PendingIntent.getBroadcast(context, 2, itTrigger2, Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            am.setExact(AlarmManager.RTC_WAKEUP, getProperTime(23, 59), piTrigger2);
+            setAlarm(context, am, 2, getProperTime(23, 59));
         }
         else if(fun == 3){//three o'clock
             Util.Log_debug(TAG, "on receiver daemon 3");
@@ -135,11 +111,7 @@ public class DaemonReceiver extends BroadcastReceiver {
             Toast.makeText(context, "THREE'O close gps", Toast.LENGTH_LONG).show();
 
             //Three o'clock
-            Intent itTrigger3 = new Intent(Util.BD_ACTION_DAEMON);
-            itTrigger3.putExtra(BD_ACTION_DAEMON_FUNC, 3);//int
-            PendingIntent piTrigger3 = PendingIntent.getBroadcast(context, 3, itTrigger3, Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            am.setExact(AlarmManager.RTC_WAKEUP, getProperTime(3, 0), piTrigger3);
+            setAlarm(context, am, 3, getProperTime(3, 0));
 
             //reset all, send 0 broadcast??
             
@@ -149,7 +121,7 @@ public class DaemonReceiver extends BroadcastReceiver {
 
 //          Intent itTrigger3 = new Intent(BD_ACTION_DAEMON);
 //          itTrigger3.putExtra(BD_ACTION_DAEMON_FUNC, 3);//int
-//          PendingIntent piTrigger3 = PendingIntent.getBroadcast(context, 3, itTrigger3, Intent.FLAG_ACTIVITY_NEW_TASK);
+//          PendingIntent piTrigger3 = PendingIntent.getBroadcast(context, 3, itTrigger3, PendingIntent.FLAG_CANCEL_CURRENT);
 //
             //          am.set(AlarmManager.RTC_WAKEUP, getProperTime(3, 0)+getDayLong(), piTrigger3);
         }
@@ -164,16 +136,25 @@ public class DaemonReceiver extends BroadcastReceiver {
             Toast.makeText(context, "Reseting the 9pm reminder for tomorrow", Toast.LENGTH_LONG).show();
             
             //
-            Intent itTrigger4 = new Intent(Util.BD_ACTION_DAEMON);
-            itTrigger4.putExtra(BD_ACTION_DAEMON_FUNC, 4);// int
-            PendingIntent piTrigger4 = PendingIntent.getBroadcast(context, 4, itTrigger4, Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            am.setExact(AlarmManager.RTC_WAKEUP, getProperTime(21, 0), piTrigger4);
+            setAlarm(context, am, 4, getProperTime(21, 0));
+//            Intent itTrigger4 = new Intent(Util.BD_ACTION_DAEMON);
+//            itTrigger4.putExtra(BD_ACTION_DAEMON_FUNC, 4);// int
+//            PendingIntent piTrigger4 = PendingIntent.getBroadcast(context, 4, itTrigger4, PendingIntent.FLAG_CANCEL_CURRENT);
+//
+//            Util.setAlarmExact(am, getProperTime(21, 0), piTrigger4);
         }
         else{
-
+            Util.Log_debug(TAG, "on receiver daemon else");
         }
 
+    }
+    
+    private void setAlarm(Context context, AlarmManager am, int num, long time){
+        Intent itTrigger = new Intent(Util.BD_ACTION_DAEMON);
+        itTrigger.putExtra(BD_ACTION_DAEMON_FUNC, num);// int
+        PendingIntent piTrigger = PendingIntent.getBroadcast(context, num, itTrigger, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        Util.setAlarmExact(am, time, piTrigger);
     }
 
     private long getProperTime(int hour, int minute){
