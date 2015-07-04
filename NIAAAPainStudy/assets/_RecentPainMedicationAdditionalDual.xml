@@ -1,23 +1,5 @@
 <root>
-    <category>
-        <description>PAIN MEDICATION EFFECT ITEMS</description>
-        <questionblock type="radio">
-            <answer id = "1">Very slightly or not at all</answer>
-            <answer id = "2">A little</answer>
-            <answer id = "3">Somewhat</answer>
-            <answer id = "4">Quite a bit</answer>
-            <answer id = "5">An extreme amount</answer>
-            <text id = "1">Since I took opioid pain medication, my physical pain has decreased.</text>
-            <text id = "2">Since I took opioid pain medication, I feel happier.</text>
-            <text id = "3">Since I took opioid pain medication, it has been harder to think or perform a task.</text>
-            <text id = "4">Since I took opioid pain medication, my unpleasant feelings have been relieved.</text>
-            <text id = "5">Since I took opioid pain medication, I have had pleasant feelings.</text>
-            <text id = "6">Since I took opioid pain medication, I feel more relaxed or calm.</text>
-            <text id = "7">Since I took opioid pain medication, I feel worse.</text>
-            <text id = "8">Since I took opioid pain medication, my physical pain has felt less unpleasant.</text>
-            <text id = "9">Since I took opioid pain medication, I forgot about my problems.</text>
-            <text id = "10">Since I took opioid pain medication, I feel less depressed.</text>
-        </questionblock>
+
 
 <!--         ADDITIONAL MEDICATION USE -->
         <question id = "11" type = "radio">
@@ -31,15 +13,10 @@
             <text>Which OPIOID PAIN MEDICATION did you take?</text>
             <answer id = "1">Primary (the medication you take regularly)</answer>
             <answer id = "2">Secondary (the medication you take as needed)</answer>
-            <answer id = "3" skip = "11q15">Both</answer>
+            <answer id = "3" skip = "11q16">Both</answer>
         </question>
 
 <!--         //2 -->
-        <question id = "13" type = "radio">
-            <text>How much of your OPIOID PAIN MEDICATION did you take SINCE the last survey you answered?</text>
-            <answer id = "1" skip = "11q20">My typical dose</answer>
-            <answer id = "2">Different than my typical dose</answer>
-        </question>
         <question id = "14" type = "number">
             <text>Please enter the number of pills you took of your OPIOID PAIN MEDICATION.</text>
             <answer id = "item">pill(s)</answer>
@@ -49,11 +26,6 @@
         </question>
 
 <!--         //2a -->
-        <question id = "15" type = "radio">
-            <text>How much of your PRIMARY opioid pain medication did you take SINCE the last survey you answered?</text>
-            <answer id = "1" skip = "11q17">My typical dose</answer>
-            <answer id = "2">Different than my typical dose</answer>
-        </question>
         <question id = "16" type = "number">
             <text>Please enter the number of pills you took of your PRIMARY opioid pain medication.</text>
             <answer id = "item">pill(s)</answer>
@@ -63,11 +35,6 @@
         </question>
 
 <!--         //2b -->
-        <question id = "17" type = "radio">
-            <text>How much of your SECONDARY opioid pain medication did you take SINCE the last survey you answered?</text>
-            <answer id = "1" skip = "11q20">My typical dose</answer>
-            <answer id = "2">Different than my typical dose</answer>
-        </question>
         <question id = "18" type = "number">
             <text>Please enter the number of pills you took of your SECONDARY opioid pain medication.</text>
             <answer id = "item">pill(s)</answer>
@@ -80,24 +47,12 @@
 <!-- 19 -->
     </category>
 
-    <category>
-        <description>Opioid Intoxication Effects</description>
-        <questionblock type="radio">
-            <answer id = "1">1 - Very Slightly or Not At All</answer>
-            <answer id = "2">2 - A little</answer>
-            <answer id = "3">3 - Somewhat</answer>
-            <answer id = "4">4 - Quite a bit</answer>
-            <answer id = "5">5 - Extremely</answer>
-            <text id="20">In the past 15 minutes, did you feel |Dreamy?</text>
-            <text id="21">In the past 15 minutes, did you feel |High?</text>
-            <text id="22">In the past 15 minutes, did you feel |Lightheaded?</text>
-        </questionblock>
-    </category>
+
 
     <category><!--Skip to here if no opioid use reported-->
         <description>OTHER PAIN MEDICATION USE</description>
         <question id = "23" type = "radio">
-            <text>In addition to your OPIOID PAIN MEDICATION, have you taken any other PAIN medications since the last survey you answered?</text>
+            <text>Besides OPIOID medication, have you taken any other PAIN medications SINCE the last survey you answered?</text>
             <answer id = "1">Yes</answer>
             <answer id = "2" skip = "12q1">No</answer>
         </question>

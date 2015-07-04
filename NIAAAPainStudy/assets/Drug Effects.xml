@@ -1,0 +1,33 @@
+<root>
+    <category>
+<!--  Chen, I am removing the Alcohol Intoxication Effects and Opioid Intoxication Effects items from the survey. 
+	These items replace those, but in a different way (this is one of the things I'd like to go over in person with you). 
+	These items should be asked anytime:
+		1. Opioid pain medication is reported during a random prompt (1q8, 2q1)
+		2. Alcohol use is reported during a random prompt (1q1, 2q2)
+		3. Marijuana use is reported (12)
+		4. During any initial prompt or followup report
+		5. Any combination of the above
+
+ -->
+
+        <description>Drug Effects Scale</description>
+        <questionblock type="radio">
+            <answer id = "1">0 - Not at all</answer>
+            <answer id = "2">1</answer>
+            <answer id = "3">2</answer>
+            <answer id = "4">3</answer>
+            <answer id = "5">4</answer>
+            <answer id = "6">5</answer>
+            <answer id = "7">6</answer>
+            <answer id = "8">7</answer>
+            <answer id = "9">8</answer>
+            <answer id = "A">9</answer>
+            <answer id = "B">10 - Extremely</answer>
+            <text id="1">You recently reported using alcohol, opioid pain medication, and/or marijuana. Thinking over the PAST 15 MINUTES, ||did you FEEL a drug effect?</text>
+            <text id="2">Thinking over the PAST 15 MINUTES, ||are you HIGH?</text>
+            <text id="3">Thinking over the PAST 15 MINUTES, ||did you DISLIKE any of the effects you are feeling?</text>
+            <text id="4">Thinking over the PAST 15 MINUTES, ||did you LIKE any of the effects you are feeling?</text>
+        </questionblock>
+    </category>
+</root>

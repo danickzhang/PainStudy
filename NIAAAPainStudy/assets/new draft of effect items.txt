@@ -1,0 +1,57 @@
+    <category>    
+	<description>PAIN MEDICATION EFFECT ITEMS</description>
+        <questionblock type="radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Somewhat</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">An extreme amount</answer>
+            <text id = "1">Since I took OPIOID PAIN MEDICATION, my physical pain has decreased.</text>
+            <text id = "2">Since I took OPIOID PAIN MEDICATION, I feel happier.</text>
+            <text id = "3">Since I took OPIOID PAIN MEDICATION, it has been harder to think or perform a task.</text>
+            <text id = "4">Since I took OPIOID PAIN MEDICATION, I feel less unpleasant.</text>
+            <text id = "5">Since I took OPIOID PAIN MEDICATION, I feel worse.</text>
+            <text id = "6">Since I took OPIOID PAIN MEDICATION, it has been easier to tolerate my physical pain.</text>
+            <text id = "7">Since I took OPIOID PAIN MEDICATION, I am less worried.</text>
+            <text id = "8">Since I took OPIOID PAIN MEDICATION, I feel less negative.</text>
+        </questionblock>
+    </category>
+
+    <category>
+        <description>ALCOHOL EFFECT ITEMS</description>
+        <questionblock type="radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Somewhat</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">An extreme amount</answer>
+            <text id = "1">Since I drank ALCOHOL, my physical pain has decreased.</text>
+            <text id = "2">Since I drank ALCOHOL, I feel happier.</text>
+            <text id = "3">Since I drank ALCOHOL, it has been harder to think or perform a task.</text>
+            <text id = "4">Since I drank ALCOHOL, I feel less unpleasant.</text>
+            <text id = "5">Since I drank ALCOHOL, I feel worse.</text>
+            <text id = "6">Since I drank ALCOHOL, it has been easier to tolerate my physical pain.</text>
+            <text id = "7">Since I drank ALCOHOL, I am less worried.</text>
+            <text id = "8">Since I drank ALCOHOL, I feel less negative.</text>
+        </questionblock>
+    </category>
+
+
+    <category>
+        <description>ALCOHOL/PAIN MEDICATION EFFECT ITEMS</description>
+        <questionblock type="radio">
+            <answer id = "1">Very slightly or not at all</answer>
+            <answer id = "2">A little</answer>
+            <answer id = "3">Somewhat</answer>
+            <answer id = "4">Quite a bit</answer>
+            <answer id = "5">An extreme amount</answer>
+            <text id = "1">Since I drank ALCOHOL or took PAIN MEDICATION, my physical pain has decreased.</text>
+            <text id = "2">Since I drank ALCOHOL or took PAIN MEDICATION, I feel happier.</text>
+            <text id = "3">Since I drank ALCOHOL or took PAIN MEDICATION, it has been harder to think or perform a task.</text>
+            <text id = "4">Since I drank ALCOHOL or took PAIN MEDICATION, I feel less unpleasant.</text>
+            <text id = "5">Since I drank ALCOHOL or took PAIN MEDICATION, I feel worse.</text>
+            <text id = "6">Since I drank ALCOHOL or took PAIN MEDICATION, it has been easier to tolerate my physical pain.</text>
+            <text id = "7">Since I drank ALCOHOL or took PAIN MEDICATION, I am less worried.</text>
+            <text id = "8">Since I drank ALCOHOL or took PAIN MEDICATION, I feel less negative.</text>
+        </questionblock>
+    </category>
