@@ -20,7 +20,7 @@ public class DaemonReceiver extends BroadcastReceiver {
 
     final static String TAG = "DaemonReceiver.java";
     boolean logEnable = true;
-    
+
     public static final String BD_ACTION_DAEMON_FUNC    = "Intent_Daemon";
 
     @Override
@@ -36,7 +36,7 @@ public class DaemonReceiver extends BroadcastReceiver {
 
         if(ID.equals("") || PWD.equals("")){
             //bypass daemon if no id and pwd assigned
-            
+
         }
         else if(fun == 0){//set alarm
             Util.Log_debug(TAG, "on receiver daemon 0");
@@ -63,21 +63,21 @@ public class DaemonReceiver extends BroadcastReceiver {
 
             //Noon
             setAlarm(context, am, 1, getProperTime(12, 20));
-            
+
             Util.debugDT("noon", getProperTime(12, 20));
         }
         else if(fun == -1){//cancel noon
             Util.Log_debug(TAG, "on receiver daemon -1");
 
             setAlarm(context, am, 1, getProperTime(12, 20));
-            
+
             Util.debugDT("cancel noon", getProperTime(12, 20));
         }
         else if(fun == 2){//Midnight
             Util.Log_debug(TAG, "on receiver daemon 2");
 
             //close sensor
-			
+
             //##??
             //cancel all survey (follow-ups are allowed base on new requirement)
 //            Util.cancelSchedule(context);
@@ -114,7 +114,7 @@ public class DaemonReceiver extends BroadcastReceiver {
             setAlarm(context, am, 3, getProperTime(3, 0));
 
             //reset all, send 0 broadcast??
-            
+
         }
         else if(fun == -3){//cancel three o'clock //useless for now
             Util.Log_debug(TAG, "on receiver daemon -3");
@@ -128,13 +128,13 @@ public class DaemonReceiver extends BroadcastReceiver {
         else if (fun == 4) {// 9pm alarm dialog
             Intent dialogIntent = new Intent(context, DialogActivity.class);
             dialogIntent.putExtra(DialogActivity.DIALOG_FLAG, DialogActivity.DIALOG_CHARGE_REMIND);
-            
+
             dialogIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             context.startActivity(dialogIntent);
 
             Toast.makeText(context, "Reseting the 9pm reminder for tomorrow", Toast.LENGTH_LONG).show();
-            
+
             //
             setAlarm(context, am, 4, getProperTime(21, 0));
 //            Intent itTrigger4 = new Intent(Util.BD_ACTION_DAEMON);
@@ -148,7 +148,7 @@ public class DaemonReceiver extends BroadcastReceiver {
         }
 
     }
-    
+
     private void setAlarm(Context context, AlarmManager am, int num, long time){
         Intent itTrigger = new Intent(Util.BD_ACTION_DAEMON);
         itTrigger.putExtra(BD_ACTION_DAEMON_FUNC, num);// int

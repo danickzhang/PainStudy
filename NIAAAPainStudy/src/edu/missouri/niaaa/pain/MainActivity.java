@@ -85,7 +85,8 @@ public class MainActivity extends Activity {
 
     private SharedPreferences shp = null;
     private InputMethodManager imm = null;
-    
+
+    //backup upload
     static ProgressDialog progressBar;
     static Context mContext;
 
@@ -200,15 +201,15 @@ public class MainActivity extends Activity {
      */
     private void restoreStatus() {
         // TODO Auto-generated method stub
-        
+
         //daemon
-        
+
 
         //restart gps
         if(Util.isTodayActivated(this) || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 3){
             sendBroadcast(new Intent(LocationUtilities.ACTION_START_LOCATION));
         }
-        
+
         //recording
 
     }
@@ -477,10 +478,10 @@ public class MainActivity extends Activity {
 
                                 //write break suspension ###
                                 Util.Log_debug(TAG, "### write break suspension");
-                                
+
                                 Util.cancelSuspension(MainActivity.this, true);
-                                
-                                
+
+
                                 //volume
                                 AudioManager audiom = (AudioManager) MainActivity.this.getSystemService(Context.AUDIO_SERVICE);
                                 audiom.setStreamVolume(AudioManager.STREAM_MUSIC, Util.VOLUME, AudioManager.FLAG_PLAY_SOUND);
@@ -520,7 +521,7 @@ public class MainActivity extends Activity {
                 Util.rescheduleMorningSurvey(MainActivity.this);
             }
         });
-        
+
         section_9.setOnClickListener(new OnClickListener(){
 
             @Override
@@ -536,9 +537,9 @@ public class MainActivity extends Activity {
                 Util.Log_debug(TAG, ""+Util.hasTodayActivated(MainActivity.this));
                 Util.Log_debug(TAG, ""+Util.isSuspensionFlag(MainActivity.this));
                 Util.Log_debug(TAG, ""+Util.isIsolateFlag(MainActivity.this));
-                
+
 //                Util.scheduleRandomSurvey(MainActivity.this, Util.setRandomSchedule(MainActivity.this, true, true));
-                
+
             }
         });
 
@@ -702,7 +703,7 @@ public class MainActivity extends Activity {
             .create();
             alertDialog.show();
         }
-        
+
         //upload backup
         else if(item.getItemId() == R.id.upload){
             Dialog DialadminPin = AdminPinCheckDialog(this);
@@ -721,8 +722,8 @@ public class MainActivity extends Activity {
 
 
 //================================================================================================================================
-    
-    /*it's really bad to copy&paste large chunk of code*/    
+
+    /*it's really bad to copy&paste large chunk of code*/
     private Dialog AdminPinCheckDialog(final Context context) {
         LayoutInflater inflater = LayoutInflater.from(context);
         final View textEntryView = inflater.inflate(R.layout.pin_input, null);
@@ -830,7 +831,7 @@ public class MainActivity extends Activity {
 
     private void uploadSurveyData() {
         String upload_file_name = "";
-        
+
         String ID = shp.getString(Util.SP_LOGIN_KEY_USERID, "");
         Log.d(TAG, "ID: "+ID);
 
@@ -886,7 +887,7 @@ public class MainActivity extends Activity {
 
                     mContext = this;
                     UploadTransmitData t = new UploadTransmitData();
-                    
+
                     progressBar = new ProgressDialog(this);
                     progressBar.setMessage("Uploading Survey Data...");
                     progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -950,15 +951,15 @@ public class MainActivity extends Activity {
             case INTENT_REQUEST_SUSPENSION:
                 if(resultCode == Activity.RESULT_OK){
                     section_6.setText(R.string.section_62);
-                    
+
                     //write suspension ###
                     Util.Log_debug(TAG, "### write suspension");
-                    
+
                     Calendar c = Calendar.getInstance();
-                    
+
                     Util.getSP(MainActivity.this, Util.SP_SURVEY).edit().putLong(Util.SP_SURVEY_KEY_SUSPENSION_START, c.getTimeInMillis()).commit();
-                    
-                    Util.writeEvent(MainActivity.this, Util.CODE_SUSPENSION, 
+
+                    Util.writeEvent(MainActivity.this, Util.CODE_SUSPENSION,
                             "", "", "", "",
                             Util.sdf.format(c.getTime()), "");
                 }
@@ -1034,17 +1035,17 @@ public class MainActivity extends Activity {
             Util.Log_debug(TAG, "on receiver break suspension");
 
             section_6.setText(R.string.section_6);
-            
+
         }
     };
 
-    
-    
+
+
     //=============================================================================================================
     //upload backup
-    
+
     public static class UploadTransmitData extends AsyncTask<String,Void, Boolean>{
-        
+
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
@@ -1099,7 +1100,7 @@ public class MainActivity extends Activity {
                     finalResult = false;
                 }
             }
-            
+
             return finalResult;
         }
 

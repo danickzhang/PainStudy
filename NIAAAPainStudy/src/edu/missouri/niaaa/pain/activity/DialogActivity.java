@@ -31,28 +31,28 @@ public class DialogActivity extends Activity {
     Vibrator vibrator;
 
     Dialog dialog;
-    
+
     public static final String DIALOG_FLAG = "DIALOG_FLAG";
-    
+
     public static final int DIALOG_CHARGE_REMIND = 1;
-    public static final int DIALOG_TIMEOUT = 2;    
+    public static final int DIALOG_TIMEOUT = 2;
     public static final int DIALOG_MORNING = 3;
     public static final int DIALOG_FINISH = 4;
-    
-    
-    
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("test", "onCreate chargerActivity");
         super.onCreate(savedInstanceState);
-        
+
         int flag = getIntent().getIntExtra(DIALOG_FLAG, -1);
-        
+
         init();
-        
+
         switch(flag){
         case DIALOG_CHARGE_REMIND:
-            
+
             if(!Util.isSuspensionFlag(this)){
                 playSoundOnPrepared();
             }
@@ -70,20 +70,20 @@ public class DialogActivity extends Activity {
         default:
             break;
         }
-        
-        
+
+
 //        setContentView(R.layout.activity_charge_reminder);
 
     }
-    
-    
+
+
     private void init() {
         // TODO Auto-generated method stub
-        
+
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         soundMap = new SparseIntArray();
         soundTimer = new Timer();
-        
+
     }
 
     private AlertDialog makeDialog(int title, final int flag){
@@ -91,7 +91,7 @@ public class DialogActivity extends Activity {
     }
 
     private AlertDialog makeDialog(int title, int message, final int flag){
-        
+
         return new AlertDialog.Builder(this)
         .setTitle(title)
         .setMessage(message)
@@ -101,26 +101,26 @@ public class DialogActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 stopSound();
-                
+
                 dialog.cancel();
-                
+
                 Intent launchIntent = new Intent(DialogActivity.this, MainActivity.class);
                 launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 launchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(launchIntent);
-                
+
                 finish();
             }
         }).create();
-        
+
     }
-    
-    
+
+
     @Override
     protected void onPause() {
         // TODO Auto-generated method stub
         stopSound();
-        
+
         super.onPause();
     }
 
@@ -130,21 +130,21 @@ public class DialogActivity extends Activity {
         // TODO Auto-generated method stub
         super.onStop();
     }
-    
+
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
-        
+
         releaseSound();
-        
+
         super.onDestroy();
     }
-    
-    
+
+
     /*sound & vibrator*/
 
     private void playSoundOnPrepared(){
-        
+
         soundMap.clear();
         soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 100);
         if(Util.RELEASE){
@@ -152,7 +152,7 @@ public class DialogActivity extends Activity {
         }else{
             soundMap.put(1, soundPool.load(this, R.raw.alarm_sound_nodelay, 1));
         }
-        
+
         soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
 
             @Override
@@ -198,7 +198,7 @@ public class DialogActivity extends Activity {
         stopSound();
         if(soundPool != null)
         soundPool.release();
-        
+
         soundTimer.cancel();
         soundTimer.purge();
         soundTimer = null;

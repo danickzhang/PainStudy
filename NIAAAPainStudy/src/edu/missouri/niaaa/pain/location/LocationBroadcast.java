@@ -20,7 +20,7 @@ public class LocationBroadcast extends BroadcastReceiver {
         String action = intent.getAction();
         locationM = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         ID = Util.getSP(context, Util.SP_LOGIN).getString(Util.SP_LOGIN_KEY_USERID, "");
-        
+
         try {
             LocationUtilities.publicKey = Util.getPublicKey(context);
         } catch (Exception e) {

@@ -28,7 +28,7 @@ public class LocationUtilities {
     static ActivityRecognitionScan activityRecognition;
 
     //  LocationManager locationM = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-    
+
     public static PublicKey publicKey;
 
 

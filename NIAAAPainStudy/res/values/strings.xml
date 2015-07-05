@@ -165,7 +165,7 @@
     <string name="charge_reminder_alert_title">Charge Reminder</string>
     <string name="charge_reminder_alert_message">Please remember to charge your phone before you sleep.</string>
     <string name="charge_reminder_alert_button">OK</string>
-    
+
     <string name="notification_text_alarm">Please notice that SEM sensor has been disconnected. \nPlease reconnect it by using the \"Sensor Connections\" menu.</string>
     <string name="notification_btn">Don\'t remind later</string>
 </resources>
