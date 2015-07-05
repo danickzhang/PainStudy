@@ -97,29 +97,29 @@
     <string name="survey_timeout">Timeout has been reached for completing the current survey.</string>
     <string name="survey_completed">Survey Complete.</string>
     <string name="survey_cancel_title">Are you sure you want to exit?</string>
-    <string name="survey_cancel_msg">This action will erase the current survey.\r\nIf you just want to go back to the previous question, use \'Previous Question\' button.\r\n\nAre you sure you wish to exit without completing the survey?</string>
+    <string name="survey_cancel_msg">This action will erase the current survey.\r\nIf you wish to go back to the previous question, please use the \'Previous Question\' button.\r\n\nAre you sure you wish to exit without completing the survey?</string>
 
     <!-- Morning Report -->
     <string name="morning_report_name">Morning Report</string>
     <string name="morning_report_title">Finished</string>
     <string name="morning_report_msg">You have already finished the Morning Report for today.</string>
     <string name="morning_report_title2">Too Late</string>
-    <string name="morning_report_msg2">The Morning Report should be done before noon.</string>
+    <string name="morning_report_msg2">The Morning Report must be completed before noon. Please remember to complete the Morning Report as soon as you wake up for the day.</string>
     <string name="morning_report_title3">Too Early</string>
-    <string name="morning_report_msg3">The Morning Report should be done after 3:00 a.m.</string>
+    <string name="morning_report_msg3">You cannot make a Morning Report until after 3:00 a.m.</string>
     <string name="morning_report_set_text1">Wake up time (for tomorrow):</string>
     <string name="morning_report_set_text2">Wake up time (for today):</string>
     <string name="morning_report_set">Set wake up time</string>
-    <string name="morning_report_unfinished">You may need to complete morning survey for today first</string>
+    <string name="morning_report_unfinished">You may need to complete the Morning Report for today first</string>
     <string name="morning_report_title4">Alert</string>
     <string name="morning_report_msg4">Please remember to connect your sensor.</string>
     <string name="morning_report_title5">Alert</string>
-    <string name="morning_report_msg5">It is already in a Drinking Followup cycle. You don\'t need to do an Initial Drinking again.</string>
+    <string name="morning_report_msg5">You have already reported an initial drink, so you don\'t need to do an Initial Drink report again. Please wait until to receive a follow-up to report any additional drinks.</string>
 
     <!-- Initial Drinking -->
     <string name="initial_drink_name">Initial Drinking</string>
     <string name="first_drink_title">Confirmation</string>
-    <string name="first_drink_msg">Are you going to report your</string>
+    <string name="first_drink_msg">Please confirm that you would like to report one or more alcoholic drinks.</string>
 
 <!-- Service  -->
     <string name="service_start">Service started!</string>
