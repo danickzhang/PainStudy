@@ -112,10 +112,10 @@ public class MonitorUtilities {
 
         if(manager != null){
             NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-            if(networkInfo.isConnected()){
+            if(networkInfo != null && networkInfo.isConnected()){
                 activeNetwork = true;
+                Log.d(TAG, "checkNetwork() result: "+networkInfo.isConnected());
             }
-            Log.d(TAG, "checkNetwork() result: "+networkInfo.isConnected());
         }
 
         return activeNetwork;
@@ -130,10 +130,10 @@ public class MonitorUtilities {
 
         if(manager != null){
             NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-            if(networkInfo.isConnected()){
+            if(networkInfo!= null && networkInfo.isConnected()){
                 activeNetwork = true;
+                Log.d(TAG, "active network 2 result: "+networkInfo.isConnected());
             }
-            Log.d(TAG, "active network 2 result: "+networkInfo.isConnected());
         }
 
         return result + String.valueOf(activeNetwork);
@@ -155,7 +155,7 @@ public class MonitorUtilities {
             NetworkInfo networkInfo = manager.getActiveNetworkInfo();
 
             CheckActiveNetwork activeNetwork = new CheckActiveNetwork();
-            if (networkInfo.isConnected()) {
+            if (networkInfo!= null && networkInfo.isConnected()) {
                 try {
                     boolean treadResult = activeNetwork.execute().get();
                     Log.d(TAG, "active internet tread result: "+treadResult);
