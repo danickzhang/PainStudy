@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.missouri.niaaa.pain"
-    android:versionCode="19"
+    android:versionCode="20"
     android:versionName="1.2" >
 
     <uses-sdk
@@ -137,6 +137,42 @@
             android:theme="@android:style/Theme.Dialog" >
         </activity>
 
+
+        <!-- Start Recording -->
+        <service android:name="edu.missouri.niaaa.pain.monitor.RecordingService"></service>
+        <receiver
+            android:name="edu.missouri.niaaa.pain.monitor.StartupReceiver">
+            <intent-filter>
+            <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="edu.missouri.niaaa.pain.monitor.ShutdownReceiver">
+            <intent-filter>
+            <action android:name="android.intent.action.ACTION_SHUTDOWN" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="edu.missouri.niaaa.pain.monitor.RecordingReceiver"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="edu.missouri.niaaa.pain.action.ACTION_RECORD" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="edu.missouri.niaaa.pain.monitor.MonitorBluetoothReceiver">
+            <intent-filter>
+                <action android:name="android.bluetooth.device.action.ACL_CONNECTED" />
+                <action android:name="android.bluetooth.device.action.ACL_DISCONNECTED" />
+                <action android:name="android.bluetooth.device.action.ACL_DISCONNECT_REQUESTED" />
+                <action android:name="android.bluetooth.device.action.BOND_STATE_CHANGED" />
+                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+
+        <!-- End Recording -->
     </application>
 
 </manifest>

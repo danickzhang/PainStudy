@@ -56,11 +56,13 @@ import edu.missouri.niaaa.pain.activity.MorningScheduler;
 import edu.missouri.niaaa.pain.activity.SupportActivity;
 import edu.missouri.niaaa.pain.activity.SuspensionTimePicker;
 import edu.missouri.niaaa.pain.location.LocationUtilities;
+import edu.missouri.niaaa.pain.monitor.MonitorUtilities;
+import edu.missouri.niaaa.pain.monitor.RecordingService;
 import edu.missouri.niaaa.pain.survey.SurveyMenu;
 
 
 public class MainActivity extends Activity {
-    String TAG = "MainActivity.java";
+    static String TAG = "MainActivity.java";
     boolean logEnable = true;
 
     /*onActivityResult Result Code*/
@@ -90,6 +92,9 @@ public class MainActivity extends Activity {
     static ProgressDialog progressBar;
     static Context mContext;
 
+    //this is for recording hardwareInfo
+    boolean start = false;
+    static boolean resultOnResume;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +146,9 @@ public class MainActivity extends Activity {
          * then, check if PWD is assigned
          * */
         checkUserStatus();
+
+        //recording
+//        recordingOnResume();
 
     }
 
@@ -211,6 +219,11 @@ public class MainActivity extends Activity {
         }
 
         //recording
+        Intent i = new Intent(MainActivity.this, RecordingService.class);
+        startService(i);
+
+        MonitorUtilities.scheduleRecording(MainActivity.this);
+        Log.d(TAG, "onCreate is scheduling Monitor Recording");
 
     }
 
@@ -222,10 +235,10 @@ public class MainActivity extends Activity {
 
         /*check suspension status*/
         Util.reScheduleSuspension(MainActivity.this);
-        
+
         /*check survey isolater status*/
         Util.reScheduleSurveyIsolater(MainActivity.this);
-        
+
         //schedule
         Util.rescheduleMorningSurvey(MainActivity.this);
 
@@ -1012,6 +1025,8 @@ public class MainActivity extends Activity {
         // implementation here
         unregisterReceiver(suspensionReceiver);
 
+//        recordingOnDestroy();
+
         super.onDestroy();
     }
 
@@ -1145,6 +1160,175 @@ public class MainActivity extends Activity {
             super.onProgressUpdate(values);
         }
     }
-    
-    
+
+
+
+
+    //=============================================================================================================
+    //recording
+
+    private void recordingOnResume() {
+        // TODO Auto-generated method stub
+        /* Nick added this on april 6nd 2015 for slu app
+         * this will determine if the user PAUSES the app
+         * and will write it to the file and send it to the server
+         */
+
+        mContext = this;
+        /*String nick = null;
+        String whichOne = null;
+        if(!start){
+            nick = "STARTED";
+            whichOne = "onStart";
+        }
+        else{
+            nick = "RESUMED";
+            whichOne = "onResume";
+        }*/
+
+        String ID = shp.getString(Util.SP_LOGIN_KEY_USERID, "");
+
+        if(  (!(start))  && (!(ID.equals("")))  ){
+            String message = "User has just STARTED the app!";
+            String whichOne = "onStart";
+            //boolean send = writeAndSend(message, whichOne);
+            //Log.d(TAG, "onStart send to server: "+send);
+
+            resultOnResume = false;
+
+            String fileName = MonitorUtilities.RECORDING_CATEGORY + "." + ID + "." + MonitorUtilities.getFileDate();
+            String toWrite = MonitorUtilities.getCurrentTimeStamp() + MonitorUtilities.LINEBREAK + message
+                    + MonitorUtilities.LINEBREAK + MonitorUtilities.SPLIT;
+
+            try {
+                Util.writeToFile(fileName + ".txt", toWrite);
+                Util.Log_debug(TAG, whichOne + " writing info to file");
+            } catch (IOException e) {
+                Util.Log_debug(TAG, whichOne + " not write to file!");
+                e.printStackTrace();
+            }
+
+            String fileHead = getFileHead(fileName);
+            // Log.d("RecordingReceiver", fileHead);
+
+            String toSend = fileHead + toWrite;
+            String enformattedData = null;
+
+            try {
+                enformattedData = Util.encryption(MainActivity.this, toSend);
+            } catch (Exception e) {
+                Log.d(TAG, whichOne +" utilities monitorEncryption failed!!");
+                e.printStackTrace();
+            }
+
+            RecordingTransmitData transmitData = new RecordingTransmitData();
+            transmitData.execute(enformattedData, whichOne);
+
+            Log.d(TAG, "onStart send to server: "+resultOnResume);
+
+            start = true;
+        }
+    }
+
+
+    private void recordingOnDestroy() {
+        // TODO Auto-generated method stub
+        /* Nick added this on april 2nd 2015 for slu app
+         * this will determine if the user closes the app
+         * and will write it to the file and send it to the server
+         */
+
+        String ID = shp.getString(Util.SP_LOGIN_KEY_USERID, "");
+
+        if( !(ID.equals("")) ){
+            String message = "User has just CLOSED the app!";
+            String whichOne = "onDestroy";
+            //boolean send = writeAndSend(message, whichOne);
+            //Log.d(TAG, "onDestroy send to server: "+send);
+            boolean resultOnResume = false;
+
+            String fileName = MonitorUtilities.RECORDING_CATEGORY + "." + ID + "." + MonitorUtilities.getFileDate();
+            String toWrite = MonitorUtilities.getCurrentTimeStamp() + MonitorUtilities.LINEBREAK + message
+                    + MonitorUtilities.LINEBREAK + MonitorUtilities.SPLIT;
+
+            try {
+                Util.writeToFile(fileName + ".txt", toWrite);
+                Util.Log_debug(TAG, whichOne + " writing info to file");
+            } catch (IOException e) {
+                Util.Log_debug(TAG, whichOne + " not write to file!");
+                e.printStackTrace();
+            }
+
+            String fileHead = getFileHead(fileName);
+            // Log.d("RecordingReceiver", fileHead);
+
+            String toSend = fileHead + toWrite;
+            String enformattedData = null;
+
+            try {
+                enformattedData = Util.encryption(MainActivity.this, toSend);
+            } catch (Exception e) {
+                Log.d(TAG, whichOne + " utilities monitorEncryption failed!!");
+                e.printStackTrace();
+            }
+
+            RecordingTransmitData transmitData = new RecordingTransmitData();
+            transmitData.execute(enformattedData, whichOne);
+
+
+            Log.d(TAG, "onDestroy send to server: "+resultOnResume);
+        }
+
+    }
+
+
+    static class RecordingTransmitData extends AsyncTask<String,Void, Boolean>{
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            // TODO Auto-generated method stub
+
+            String data = strings[0];
+            String whichOne = strings[1];
+            //           String fileName=strings[0];
+            //           String dataToSend=strings[1];
+
+            if (MonitorUtilities.checkNetwork(mContext)) {
+                HttpPost request = new HttpPost(Util.UPLOAD_ADDRESS);
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                params.add(new BasicNameValuePair("data", data));
+                // // file_name
+                // params.add(new BasicNameValuePair("file_name", fileName));
+                // // data
+                // params.add(new BasicNameValuePair("data", dataToSend));
+                try {
+                    request.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+                    HttpResponse response = new DefaultHttpClient().execute(request);
+                    Log.d("Sensor Data Point Info", String.valueOf(response.getStatusLine().getStatusCode()));
+                    if(response.getStatusLine().getStatusCode() == 200){
+                        resultOnResume = true;
+                        Util.Log_debug(TAG, whichOne + " send info to server");
+                    }
+                } catch (Exception e){
+                    Util.Log_debug(TAG, whichOne + " did not send info to server!!");
+                    e.printStackTrace();
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+
+    private String getFileHead(String fileName) {
+        StringBuilder prefix_sb = new StringBuilder(Util.PREFIX_LEN);
+        prefix_sb.append(fileName);
+
+        for (int i = fileName.length(); i <= Util.PREFIX_LEN; i++) {
+            prefix_sb.append(" ");
+        }
+        return prefix_sb.toString();
+    }
 }
