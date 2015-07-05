@@ -1,6 +1,12 @@
 package edu.missouri.niaaa.pain;
 
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,6 +24,7 @@ import org.apache.http.util.EntityUtils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -29,6 +36,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.media.AudioManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.os.Vibrator;
@@ -77,6 +85,9 @@ public class MainActivity extends Activity {
 
     private SharedPreferences shp = null;
     private InputMethodManager imm = null;
+    
+    static ProgressDialog progressBar;
+    static Context mContext;
 
 
     @Override
@@ -691,6 +702,12 @@ public class MainActivity extends Activity {
             .create();
             alertDialog.show();
         }
+        
+        //upload backup
+        else if(item.getItemId() == R.id.upload){
+            Dialog DialadminPin = AdminPinCheckDialog(this);
+            DialadminPin.show();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -703,6 +720,189 @@ public class MainActivity extends Activity {
     }
 
 
+//================================================================================================================================
+    
+    /*it's really bad to copy&paste large chunk of code*/    
+    private Dialog AdminPinCheckDialog(final Context context) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        final View textEntryView = inflater.inflate(R.layout.pin_input, null);
+        TextView pinText = (TextView) textEntryView.findViewById(R.id.pin_text);
+        pinText.setText(R.string.admin_set_msg);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        builder.setTitle(R.string.admin_set_title);
+        builder.setView(textEntryView);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+
+
+                EditText pinEdite = (EditText) textEntryView.findViewById(R.id.pin_edit);
+                String pinStr = pinEdite.getText().toString();
+                Util.Log_debug("Pin Dialog", "pin String is "+pinStr);
+
+                String data = null;
+                try {
+                    data = Util.encryption(context, Util.ADMIN_UID + "," + "1" + "," + pinStr);
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+
+/*              check network*/
+
+/*              prepare params for server*/
+                HttpPost request = new HttpPost(Util.VALIDATE_ADDRESS);
+
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+                params.add(new BasicNameValuePair("data", data));
+
+//              //file_name
+//              params.add(new BasicNameValuePair("userID","0000"));
+//              //function
+//              params.add(new BasicNameValuePair("pre","1"));
+//              //data
+//              params.add(new BasicNameValuePair("password",pinStr));
+
+/*              check identity*/
+
+                try {
+                    request.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+
+                    HttpResponse response = new DefaultHttpClient().execute(request);
+                    if(response.getStatusLine().getStatusCode() == 200){
+                        String result = EntityUtils.toString(response.getEntity());
+                        Log.d("~~~~~~~~~~http post result",result);
+
+                        if(result.equals("AdminIsChecked")){
+                            uploadSurveyData();
+
+                        }else if(result.equals("AdminPinIsInvalid")){
+
+                            imm.toggleSoftInput(0, InputMethodManager.RESULT_SHOWN);
+                            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+                            Toast.makeText(getApplicationContext(), R.string.input_apin_failed, Toast.LENGTH_SHORT).show();
+                            finish();
+                        }else{
+
+                            imm.toggleSoftInput(0, InputMethodManager.RESULT_SHOWN);
+                            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+                            Toast.makeText(getApplicationContext(), R.string.input_apin_error, Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(), R.string.input_apin_return, Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+
+                    imm.toggleSoftInput(0, InputMethodManager.RESULT_SHOWN);
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+                    Toast.makeText(getApplicationContext(), R.string.input_apin_net_error, Toast.LENGTH_SHORT).show();;
+                    finish();
+                }
+
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                imm.toggleSoftInput(0, InputMethodManager.RESULT_SHOWN);
+                imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+                finish();
+            }
+        });
+
+        return builder.create();
+    }
+
+    private void uploadSurveyData() {
+        String upload_file_name = "";
+        
+        String ID = shp.getString(Util.SP_LOGIN_KEY_USERID, "");
+        Log.d(TAG, "ID: "+ID);
+
+        if(!(ID.equals(""))){
+            upload_file_name = "SurveyData."+ID+".txt";
+        }
+        //This probably won't happen
+        else{
+            Toast.makeText(getApplicationContext(), "The userID is not set!", Toast.LENGTH_LONG).show();
+            finish();
+        }
+
+
+        /*File file = new File(Utilities.PHONE_BASE_PATH + upload_file_name);
+
+        if(!file.exists()){
+            Toast.makeText(getApplicationContext(), "There is no such file!!", Toast.LENGTH_LONG).show();
+        }
+        else{
+            for(int i = 0; i < file.length(); i++){
+                String data =
+            }
+        }*/
+
+//      boolean finalResult = false;
+        String data = "";
+
+        try {
+            // open the file for reading
+            InputStream instream = new FileInputStream(Util.PHONE_BASE_PATH + upload_file_name);
+
+            // if file the available for reading
+            if (instream != null) {
+                // prepare the file for reading
+                InputStreamReader inputreader = new InputStreamReader(instream);
+                BufferedReader buffreader = new BufferedReader(inputreader);
+
+                String line = "";
+
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while((line = buffreader.readLine()) != null){
+                    stringBuilder.append(line);
+                    Log.d(TAG, "Line: "+line);
+                }
+
+                inputreader.close();
+                data = stringBuilder.toString();
+
+                Log.d(TAG, "Data: "+data);
+
+                if(Util.checkDataConnectivity(this)){
+
+                    mContext = this;
+                    UploadTransmitData t = new UploadTransmitData();
+                    
+                    progressBar = new ProgressDialog(this);
+                    progressBar.setMessage("Uploading Survey Data...");
+                    progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progressBar.setIndeterminate(true);
+                    progressBar.setCancelable(false);
+
+
+                    t.execute(data);
+                }
+            }
+        }catch (FileNotFoundException e) {
+            Log.e(TAG, "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e(TAG, "Can not read file: " + e.toString());
+        }
+    }
 
 //================================================================================================================================
 //================================================================================================================================
@@ -838,4 +1038,112 @@ public class MainActivity extends Activity {
         }
     };
 
+    
+    
+    //=============================================================================================================
+    //upload backup
+    
+    public static class UploadTransmitData extends AsyncTask<String,Void, Boolean>{
+        
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+            progressBar.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            // TODO Auto-generated method stub
+
+            boolean finalResult = true;
+
+            String data = strings[0];
+
+            String[] seperated = data.split(";;;;;;;;;;");
+
+            for(int i = 0; i < seperated.length; i++){
+
+                //           String fileName=strings[0];
+                //           String dataToSend=strings[1];
+                if(true){
+
+                    Log.d("((((((((((((((((((((((((+", ""+Thread.currentThread().getId());
+                    HttpPost request = new HttpPost(Util.UPLOAD_ADDRESS);
+                    List<NameValuePair> params = new ArrayList<NameValuePair>();
+                    params.add(new BasicNameValuePair("data", seperated[i]));
+
+//                    //file_name
+//                    params.add(new BasicNameValuePair("file_name",fileName));
+//                    //data
+//                    params.add(new BasicNameValuePair("data",dataToSend));
+                    try {
+                        Log.d("MainActivity", "upload survey data result try");
+                        request.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+                        HttpResponse response = new DefaultHttpClient().execute(request);
+                        if(response.getStatusLine().getStatusCode() == 200){
+                            String result = EntityUtils.toString(response.getEntity());
+                            Log.d("upload survey data result: ",result);
+
+                             //MainActivity.uploadFinalResult = true;
+                            // Log.d("Wrist Sensor Data Point Info","Data Point Successfully Uploaded!");
+                        }
+                    }catch (Exception e){
+                        Log.d("MainActivity", "upload survey data result catch");
+                        e.printStackTrace();
+                        finalResult = false;
+                    }
+                }
+                else{
+                    Log.d("upload survey data result","No Network Connection:Data Point was not uploaded");
+                    finalResult = false;
+                }
+            }
+            
+            return finalResult;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+
+            Log.d("Upload result: ", String.valueOf(result));
+
+            if (progressBar.isShowing()){
+                progressBar.dismiss();
+            }
+
+            if(result){
+                new AlertDialog.Builder(mContext)
+                .setTitle("Success")
+                .setMessage("The Survey Data was sent to the Server Successfully!!")
+                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                    int id) {
+                                // User cancelled the dialog
+                            }
+                        }).create().show();
+            }
+            else{
+                new AlertDialog.Builder(mContext)
+                .setTitle("Warning")
+                .setMessage("Failed to get Survey Data to server :( ")
+                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                    int id) {
+                                // User cancelled the dialog
+                            }
+                        }).create().show();
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            // TODO Auto-generated method stub
+            super.onProgressUpdate(values);
+        }
+    }
+    
+    
 }

@@ -38,6 +38,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
@@ -1487,6 +1489,22 @@ public class Util {
         fw.close();
         f = null;
     }
+    
+    public static void writeToBackupFileEnc(String fileName, String toWrite) throws IOException{
+        Log_debug("write to file", "enc for backup");
+        File dir =new File(PHONE_BASE_PATH);
+        if(!dir.exists()) {
+            dir.mkdirs();
+        }
+        File f = new File(PHONE_BASE_PATH,fileName);
+        FileWriter fw = new FileWriter(f, true);
+        fw.write(toWrite);
+        fw.flush();
+        fw.write(";;;;;;;;;;");
+        fw.flush();
+        fw.close();
+        f = null;
+    }
 
     
     static class TransmitData extends AsyncTask<String,Void, Boolean>{
@@ -1533,5 +1551,20 @@ public class Util {
         }
     }
     
+    
+    public static boolean checkDataConnectivity(Context context) {
+        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+            if (info != null) {
+                for (int i = 0; i < info.length; i++) {
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
     
 }

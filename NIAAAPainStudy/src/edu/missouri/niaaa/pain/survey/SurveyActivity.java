@@ -1275,11 +1275,11 @@ public class SurveyActivity extends Activity {
 //        sb.append("\n");
 
 
-
-        //file name
         Calendar c=Calendar.getInstance();
         SimpleDateFormat curFormater = new SimpleDateFormat("MMMMM_dd");
         String dateObj =curFormater.format(c.getTime());
+        
+        //file name
         String file_name=surveyName+"."+userID+"."+dateObj+".txt";
 
         StringBuilder prefix_sb = new StringBuilder(Util.PREFIX_LEN);
@@ -1290,6 +1290,18 @@ public class SurveyActivity extends Activity {
             prefix_sb.append(" ");
         }
 
+        // file name for backup upload
+        //Added by nick and Haidong on May 26 2015 for NIMH project
+        String backup_file_name = "SurveyData."+userID+".txt";
+        
+        StringBuilder upload_prefix_sb = new StringBuilder(Util.PREFIX_LEN);
+        String upload_prefix = "SurveyData" + "." + userID;
+        upload_prefix_sb.append(upload_prefix);
+
+        for (int i = upload_prefix.length(); i <= Util.PREFIX_LEN; i++) {
+            upload_prefix_sb.append(" ");
+        }
+        
         /************************************************************************
          * Chen
          *
@@ -1302,8 +1314,12 @@ public class SurveyActivity extends Activity {
 
             if(Util.WRITE_RAW) {
                 Util.writeToFile(file_name, sb.toString());
+                
+                Util.writeToFile(backup_file_name, sb.toString());
             } else{
                 Util.writeToFileEnc(file_name, ensb);
+                
+                Util.writeToBackupFileEnc(backup_file_name, ensb);
             }
 
         } catch (Exception e) {
@@ -1335,7 +1351,8 @@ public class SurveyActivity extends Activity {
 
             //          String fileName=strings[0];
             //          String dataToSend=strings[1];
-            if(checkDataConnectivity()){
+            
+            if(Util.checkDataConnectivity(SurveyActivity.this)){
 
                 Log.d("((((((((((((((((((((((((", ""+Thread.currentThread().getId());
                 HttpPost request = new HttpPost(Util.UPLOAD_ADDRESS);
@@ -1405,7 +1422,8 @@ public class SurveyActivity extends Activity {
             //           String Date = strings[1];
             //           String RSID = strings[2];
             //           String CMD = strings[3];
-            if(checkDataConnectivity()){
+            
+            if(Util.checkDataConnectivity(SurveyActivity.this)){
                 HttpPost request = new HttpPost(Util.COMPLIANCE_ADDRESS);
                 List<NameValuePair> params = new ArrayList<NameValuePair>();
                 params.add(new BasicNameValuePair("data", data));
@@ -1434,21 +1452,5 @@ public class SurveyActivity extends Activity {
         }
     }
 
-    public boolean checkDataConnectivity() {
-        ConnectivityManager connectivity = (ConnectivityManager) SurveyActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivity != null) {
-            NetworkInfo[] info = connectivity.getAllNetworkInfo();
-            if (info != null) {
-                for (int i = 0; i < info.length; i++) {
-                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-    
-    
     
 }
