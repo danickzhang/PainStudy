@@ -16,7 +16,7 @@ import edu.missouri.niaaa.pain.Util;
 
 public class SuspensionTimePicker extends Activity {
     String TAG = "SuspensionTimePicker.java";
-    
+
 //  String[] display = {"  15 minutes  ","  30 minutes  ","  45 minutes  ","  60 minutes  ","  1 hour & 15 minutes  ","  1 & half hour  ","  1 hour & 45 minutes  ","  2 hours  "};
     int selection = 0;
     int interval = Util.SUSPENSION_INTERVAL_IN_SECONDS;
@@ -54,9 +54,9 @@ public class SuspensionTimePicker extends Activity {
 
                 Calendar c = Calendar.getInstance();
                 long time = c.getTimeInMillis();
-                
+
                 Util.scheduleSuspension(SuspensionTimePicker.this, time + (selection + 1) * Util.SUSPENSION_INTERVAL_IN_SECONDS * 1000);
-                
+
                 //close volume
                 AudioManager audiom = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
                 audiom.setStreamVolume(AudioManager.STREAM_MUSIC, 3, AudioManager.FLAG_PLAY_SOUND);

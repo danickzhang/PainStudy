@@ -25,10 +25,10 @@ public class SurveyBroadcast extends BroadcastReceiver {
 //      WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "SurveyBroadcast");
         WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "SurveyBroadcast");
         wl.acquire(1*60*1000);
-        
+
         //restart gps
         Util.restartRecordingLocation(context);
-        
+
         String action = intent.getAction();
 
         int surveyType = intent.getIntExtra(Util.SV_TYPE, -1);//protect -1 later
@@ -36,11 +36,11 @@ public class SurveyBroadcast extends BroadcastReceiver {
 
         if(action.equals(Util.BD_ACTION_SURVEY_TRIGGER)){
             Util.Log_debug(TAG, "action~~~ "+action);
-            
+
             //if morning, check if activate today, or bypass
-            
+
             Util.scheduleSurveyReminders(context, surveyType, surveySeq);
-            
+
         }
         else if(action.equals(Util.BD_ACTION_SURVEY_REMINDS)){
             int remindSeq = intent.getIntExtra(Util.SV_REMIND_SEQ, -1);//protect -1 later
@@ -53,29 +53,29 @@ public class SurveyBroadcast extends BroadcastReceiver {
 
             launchSurvey.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             launchSurvey.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            
+
             if(Util.isSuspensionFlag(context)){
                 //under suspension
                 Util.Log_debug(TAG, "### write event, noPrompt_under Suspension ->  survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
-                
+
                 //write
-                Util.writeEvent(context, surveyType, Util.CODE_SV_NO_PROMPT + "_1", surveySeq,  
-                        Util.getSurveyScheduleDT(context, surveyType, surveySeq), 
-                        Util.getSurveyAlarmDT(Calendar.getInstance(),remindSeq), 
+                Util.writeEvent(context, surveyType, Util.CODE_SV_NO_PROMPT + "_1", surveySeq,
+                        Util.getSurveyScheduleDT(context, surveyType, surveySeq),
+                        Util.getSurveyAlarmDT(Calendar.getInstance(),remindSeq),
                         "", Util.sdf.format(Calendar.getInstance().getTime()));
-                
+
                 Toast.makeText(context, "An auto-triggered survey is just blocked by suspension!", Toast.LENGTH_LONG).show();
             }
             else if(Util.isIsolateFlag(context)){
               //under survey isolater
                 Util.Log_debug(TAG, "### write event, noPrompt_under survey isolater ->  survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
-                
+
                 //write
-                Util.writeEvent(context, surveyType, Util.CODE_SV_NO_PROMPT + "_4", surveySeq, 
-                        Util.getSurveyScheduleDT(context, surveyType, surveySeq), 
-                        Util.getSurveyAlarmDT(Calendar.getInstance(),remindSeq), 
+                Util.writeEvent(context, surveyType, Util.CODE_SV_NO_PROMPT + "_4", surveySeq,
+                        Util.getSurveyScheduleDT(context, surveyType, surveySeq),
+                        Util.getSurveyAlarmDT(Calendar.getInstance(),remindSeq),
                         "", Util.sdf.format(Calendar.getInstance().getTime()));
-                
+
                 Toast.makeText(context, "An auto-triggered survey is just blocked by survey isolating!", Toast.LENGTH_LONG).show();
             }
             else{
@@ -84,19 +84,19 @@ public class SurveyBroadcast extends BroadcastReceiver {
         }
         else if(action.equals(Util.BD_ACTION_SURVEY_ISOLATE)){
             Util.Log_debug(TAG, "action~~~ "+action);
-            
+
             Util.cancelSurveyIsolater(context);
-            
+
         }
         else if(action.equals(Util.BD_ACTION_SUSPENSION)){
             Util.Log_debug(TAG, "action~~~ "+action);
-            
-            
+
+
             //write break suspension ###
             Util.Log_debug(TAG, "### write break suspension");
-            
+
             Util.cancelSuspension(context, false);
-            
+
             Toast.makeText(context, R.string.suspension_end, Toast.LENGTH_LONG).show();
         }
 

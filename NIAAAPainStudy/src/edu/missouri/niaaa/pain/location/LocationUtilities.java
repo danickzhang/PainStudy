@@ -10,6 +10,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import edu.missouri.niaaa.pain.Util;
+import edu.missouri.niaaa.pain.monitor.MonitorUtilities;
 
 public class LocationUtilities {
 
@@ -28,7 +29,7 @@ public class LocationUtilities {
     static ActivityRecognitionScan activityRecognition;
 
     //  LocationManager locationM = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-    
+
     public static PublicKey publicKey;
 
 
@@ -62,10 +63,17 @@ public class LocationUtilities {
 
             if (location != null) {
 
+                MonitorUtilities.activeGPS = "true";
+                MonitorUtilities.longLatGPS = String.valueOf(location.getLatitude()) + ", " + String.valueOf(location.getLongitude());
+                MonitorUtilities.gpsProvider = location.getProvider();
+                MonitorUtilities.gpsAccuracy = String.valueOf(location.getAccuracy());
+
                 Log.d("test gps", "gps location is not null "+location.getLatitude()+","+location.getLongitude()+","+
                         location.getAccuracy()+","+location.getProvider());
                 if(location.getAccuracy() <= 35){
+                    MonitorUtilities.gpsAccuracyGood = "true";
                     if(isBetterLocation(location, mCurrentLocation)){
+                        MonitorUtilities.willGPSBeRecorded = "true";
                         mCurrentLocation = location;
                         try {
                             Log.d("test gps", "gps location");
@@ -75,7 +83,20 @@ public class LocationUtilities {
                             e.printStackTrace();
                         }
                     }
+                    else {
+                        MonitorUtilities.willGPSBeRecorded = "false";
+                    }
                 }
+                else {
+                    MonitorUtilities.gpsAccuracyGood = "false";
+                }
+            }
+            else {
+                MonitorUtilities.activeGPS = "false";
+                MonitorUtilities.gpsProvider = "unknown";
+                MonitorUtilities.gpsAccuracy = "unknown";
+                MonitorUtilities.longLatGPS = "unknown";
+                MonitorUtilities.willGPSBeRecorded = "unknown";
             }
         }
 

@@ -114,7 +114,7 @@ public class MorningScheduler extends Activity {
 
                     Calendar c = Util.getProperMorningScheduleTime(hour, minute);
                     long time = c.getTimeInMillis();
-                    
+
                     Util.bedtimeComplete(MorningScheduler.this, time);
 
                     Intent i = new Intent();
@@ -147,7 +147,7 @@ public class MorningScheduler extends Activity {
         }
     }
 
-    
+
     public static String getMorningTimeWithFlag(Context context){
 
         long time = Util.getSP(context, Util.SP_BEDTIME).getLong(Util.SP_BEDTIME_KEY_LONG, -1);
@@ -165,7 +165,7 @@ public class MorningScheduler extends Activity {
 
         return Util.TIME_NONE;
     }
-    
+
 
     @Override
     protected void onDestroy() {

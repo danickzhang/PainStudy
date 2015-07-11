@@ -1,6 +1,12 @@
 package edu.missouri.niaaa.pain;
 
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,6 +24,7 @@ import org.apache.http.util.EntityUtils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -29,6 +36,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.media.AudioManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.os.Vibrator;
@@ -48,11 +56,13 @@ import edu.missouri.niaaa.pain.activity.MorningScheduler;
 import edu.missouri.niaaa.pain.activity.SupportActivity;
 import edu.missouri.niaaa.pain.activity.SuspensionTimePicker;
 import edu.missouri.niaaa.pain.location.LocationUtilities;
+import edu.missouri.niaaa.pain.monitor.MonitorUtilities;
+import edu.missouri.niaaa.pain.monitor.RecordingService;
 import edu.missouri.niaaa.pain.survey.SurveyMenu;
 
 
 public class MainActivity extends Activity {
-    String TAG = "MainActivity.java";
+    static String TAG = "MainActivity.java";
     boolean logEnable = true;
 
     /*onActivityResult Result Code*/
@@ -78,6 +88,13 @@ public class MainActivity extends Activity {
     private SharedPreferences shp = null;
     private InputMethodManager imm = null;
 
+    //backup upload
+    static ProgressDialog progressBar;
+    static Context mContext;
+
+    //this is for recording hardwareInfo
+    boolean start = false;
+    static boolean resultOnResume;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +146,9 @@ public class MainActivity extends Activity {
          * then, check if PWD is assigned
          * */
         checkUserStatus();
+
+        //recording
+//        recordingOnResume();
 
     }
 
@@ -189,16 +209,21 @@ public class MainActivity extends Activity {
      */
     private void restoreStatus() {
         // TODO Auto-generated method stub
-        
+
         //daemon
-        
+
 
         //restart gps
         if(Util.isTodayActivated(this) || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 3){
             sendBroadcast(new Intent(LocationUtilities.ACTION_START_LOCATION));
         }
-        
+
         //recording
+        Intent i = new Intent(MainActivity.this, RecordingService.class);
+        startService(i);
+
+        MonitorUtilities.scheduleRecording(MainActivity.this);
+        Log.d(TAG, "onCreate is scheduling Monitor Recording");
 
     }
 
@@ -210,10 +235,10 @@ public class MainActivity extends Activity {
 
         /*check suspension status*/
         Util.reScheduleSuspension(MainActivity.this);
-        
+
         /*check survey isolater status*/
         Util.reScheduleSurveyIsolater(MainActivity.this);
-        
+
         //schedule
         Util.rescheduleMorningSurvey(MainActivity.this);
 
@@ -466,10 +491,10 @@ public class MainActivity extends Activity {
 
                                 //write break suspension ###
                                 Util.Log_debug(TAG, "### write break suspension");
-                                
+
                                 Util.cancelSuspension(MainActivity.this, true);
-                                
-                                
+
+
                                 //volume
                                 AudioManager audiom = (AudioManager) MainActivity.this.getSystemService(Context.AUDIO_SERVICE);
                                 audiom.setStreamVolume(AudioManager.STREAM_MUSIC, Util.VOLUME, AudioManager.FLAG_PLAY_SOUND);
@@ -509,7 +534,7 @@ public class MainActivity extends Activity {
                 Util.rescheduleMorningSurvey(MainActivity.this);
             }
         });
-        
+
         section_9.setOnClickListener(new OnClickListener(){
 
             @Override
@@ -525,9 +550,9 @@ public class MainActivity extends Activity {
                 Util.Log_debug(TAG, ""+Util.hasTodayActivated(MainActivity.this));
                 Util.Log_debug(TAG, ""+Util.isSuspensionFlag(MainActivity.this));
                 Util.Log_debug(TAG, ""+Util.isIsolateFlag(MainActivity.this));
-                
+
 //                Util.scheduleRandomSurvey(MainActivity.this, Util.setRandomSchedule(MainActivity.this, true, true));
-                
+
             }
         });
 
@@ -692,6 +717,12 @@ public class MainActivity extends Activity {
             alertDialog.show();
         }
 
+        //upload backup
+        else if(item.getItemId() == R.id.upload){
+            Dialog DialadminPin = AdminPinCheckDialog(this);
+            DialadminPin.show();
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -703,6 +734,189 @@ public class MainActivity extends Activity {
     }
 
 
+//================================================================================================================================
+
+    /*it's really bad to copy&paste large chunk of code*/
+    private Dialog AdminPinCheckDialog(final Context context) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        final View textEntryView = inflater.inflate(R.layout.pin_input, null);
+        TextView pinText = (TextView) textEntryView.findViewById(R.id.pin_text);
+        pinText.setText(R.string.admin_set_msg);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        builder.setTitle(R.string.admin_set_title);
+        builder.setView(textEntryView);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+
+
+                EditText pinEdite = (EditText) textEntryView.findViewById(R.id.pin_edit);
+                String pinStr = pinEdite.getText().toString();
+                Util.Log_debug("Pin Dialog", "pin String is "+pinStr);
+
+                String data = null;
+                try {
+                    data = Util.encryption(context, Util.ADMIN_UID + "," + "1" + "," + pinStr);
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+
+/*              check network*/
+
+/*              prepare params for server*/
+                HttpPost request = new HttpPost(Util.VALIDATE_ADDRESS);
+
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+                params.add(new BasicNameValuePair("data", data));
+
+//              //file_name
+//              params.add(new BasicNameValuePair("userID","0000"));
+//              //function
+//              params.add(new BasicNameValuePair("pre","1"));
+//              //data
+//              params.add(new BasicNameValuePair("password",pinStr));
+
+/*              check identity*/
+
+                try {
+                    request.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+
+                    HttpResponse response = new DefaultHttpClient().execute(request);
+                    if(response.getStatusLine().getStatusCode() == 200){
+                        String result = EntityUtils.toString(response.getEntity());
+                        Log.d("~~~~~~~~~~http post result",result);
+
+                        if(result.equals("AdminIsChecked")){
+                            uploadSurveyData();
+
+                        }else if(result.equals("AdminPinIsInvalid")){
+
+                            imm.toggleSoftInput(0, InputMethodManager.RESULT_SHOWN);
+                            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+                            Toast.makeText(getApplicationContext(), R.string.input_apin_failed, Toast.LENGTH_SHORT).show();
+                            finish();
+                        }else{
+
+                            imm.toggleSoftInput(0, InputMethodManager.RESULT_SHOWN);
+                            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+                            Toast.makeText(getApplicationContext(), R.string.input_apin_error, Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(), R.string.input_apin_return, Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+
+                    imm.toggleSoftInput(0, InputMethodManager.RESULT_SHOWN);
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+                    Toast.makeText(getApplicationContext(), R.string.input_apin_net_error, Toast.LENGTH_SHORT).show();;
+                    finish();
+                }
+
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                imm.toggleSoftInput(0, InputMethodManager.RESULT_SHOWN);
+                imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+                finish();
+            }
+        });
+
+        return builder.create();
+    }
+
+    private void uploadSurveyData() {
+        String upload_file_name = "";
+
+        String ID = shp.getString(Util.SP_LOGIN_KEY_USERID, "");
+        Log.d(TAG, "ID: "+ID);
+
+        if(!(ID.equals(""))){
+            upload_file_name = "SurveyData."+ID+".txt";
+        }
+        //This probably won't happen
+        else{
+            Toast.makeText(getApplicationContext(), "The userID is not set!", Toast.LENGTH_LONG).show();
+            finish();
+        }
+
+
+        /*File file = new File(Utilities.PHONE_BASE_PATH + upload_file_name);
+
+        if(!file.exists()){
+            Toast.makeText(getApplicationContext(), "There is no such file!!", Toast.LENGTH_LONG).show();
+        }
+        else{
+            for(int i = 0; i < file.length(); i++){
+                String data =
+            }
+        }*/
+
+//      boolean finalResult = false;
+        String data = "";
+
+        try {
+            // open the file for reading
+            InputStream instream = new FileInputStream(Util.PHONE_BASE_PATH + upload_file_name);
+
+            // if file the available for reading
+            if (instream != null) {
+                // prepare the file for reading
+                InputStreamReader inputreader = new InputStreamReader(instream);
+                BufferedReader buffreader = new BufferedReader(inputreader);
+
+                String line = "";
+
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while((line = buffreader.readLine()) != null){
+                    stringBuilder.append(line);
+                    Log.d(TAG, "Line: "+line);
+                }
+
+                inputreader.close();
+                data = stringBuilder.toString();
+
+                Log.d(TAG, "Data: "+data);
+
+                if(Util.checkDataConnectivity(this)){
+
+                    mContext = this;
+                    UploadTransmitData t = new UploadTransmitData();
+
+                    progressBar = new ProgressDialog(this);
+                    progressBar.setMessage("Uploading Survey Data...");
+                    progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progressBar.setIndeterminate(true);
+                    progressBar.setCancelable(false);
+
+
+                    t.execute(data);
+                }
+            }
+        }catch (FileNotFoundException e) {
+            Log.e(TAG, "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e(TAG, "Can not read file: " + e.toString());
+        }
+    }
 
 //================================================================================================================================
 //================================================================================================================================
@@ -750,15 +964,15 @@ public class MainActivity extends Activity {
             case INTENT_REQUEST_SUSPENSION:
                 if(resultCode == Activity.RESULT_OK){
                     section_6.setText(R.string.section_62);
-                    
+
                     //write suspension ###
                     Util.Log_debug(TAG, "### write suspension");
-                    
+
                     Calendar c = Calendar.getInstance();
-                    
+
                     Util.getSP(MainActivity.this, Util.SP_SURVEY).edit().putLong(Util.SP_SURVEY_KEY_SUSPENSION_START, c.getTimeInMillis()).commit();
-                    
-                    Util.writeEvent(MainActivity.this, Util.CODE_SUSPENSION, 
+
+                    Util.writeEvent(MainActivity.this, Util.CODE_SUSPENSION,
                             "", "", "", "",
                             Util.sdf.format(c.getTime()), "");
                 }
@@ -811,6 +1025,8 @@ public class MainActivity extends Activity {
         // implementation here
         unregisterReceiver(suspensionReceiver);
 
+//        recordingOnDestroy();
+
         super.onDestroy();
     }
 
@@ -834,8 +1050,285 @@ public class MainActivity extends Activity {
             Util.Log_debug(TAG, "on receiver break suspension");
 
             section_6.setText(R.string.section_6);
-            
+
         }
     };
 
+
+
+    //=============================================================================================================
+    //upload backup
+
+    public static class UploadTransmitData extends AsyncTask<String,Void, Boolean>{
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+            progressBar.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            // TODO Auto-generated method stub
+
+            boolean finalResult = true;
+
+            String data = strings[0];
+
+            String[] seperated = data.split(";;;;;;;;;;");
+
+            for(int i = 0; i < seperated.length; i++){
+
+                //           String fileName=strings[0];
+                //           String dataToSend=strings[1];
+                if(true){
+
+                    Log.d("((((((((((((((((((((((((+", ""+Thread.currentThread().getId());
+                    HttpPost request = new HttpPost(Util.UPLOAD_ADDRESS);
+                    List<NameValuePair> params = new ArrayList<NameValuePair>();
+                    params.add(new BasicNameValuePair("data", seperated[i]));
+
+//                    //file_name
+//                    params.add(new BasicNameValuePair("file_name",fileName));
+//                    //data
+//                    params.add(new BasicNameValuePair("data",dataToSend));
+                    try {
+                        Log.d("MainActivity", "upload survey data result try");
+                        request.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+                        HttpResponse response = new DefaultHttpClient().execute(request);
+                        if(response.getStatusLine().getStatusCode() == 200){
+                            String result = EntityUtils.toString(response.getEntity());
+                            Log.d("upload survey data result: ",result);
+
+                             //MainActivity.uploadFinalResult = true;
+                            // Log.d("Wrist Sensor Data Point Info","Data Point Successfully Uploaded!");
+                        }
+                    }catch (Exception e){
+                        Log.d("MainActivity", "upload survey data result catch");
+                        e.printStackTrace();
+                        finalResult = false;
+                    }
+                }
+                else{
+                    Log.d("upload survey data result","No Network Connection:Data Point was not uploaded");
+                    finalResult = false;
+                }
+            }
+
+            return finalResult;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+
+            Log.d("Upload result: ", String.valueOf(result));
+
+            if (progressBar.isShowing()){
+                progressBar.dismiss();
+            }
+
+            if(result){
+                new AlertDialog.Builder(mContext)
+                .setTitle("Success")
+                .setMessage("The Survey Data was sent to the Server Successfully!!")
+                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                    int id) {
+                                // User cancelled the dialog
+                            }
+                        }).create().show();
+            }
+            else{
+                new AlertDialog.Builder(mContext)
+                .setTitle("Warning")
+                .setMessage("Failed to get Survey Data to server :( ")
+                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                    int id) {
+                                // User cancelled the dialog
+                            }
+                        }).create().show();
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            // TODO Auto-generated method stub
+            super.onProgressUpdate(values);
+        }
+    }
+
+
+
+
+    //=============================================================================================================
+    //recording
+
+    private void recordingOnResume() {
+        // TODO Auto-generated method stub
+        /* Nick added this on april 6nd 2015 for slu app
+         * this will determine if the user PAUSES the app
+         * and will write it to the file and send it to the server
+         */
+
+        mContext = this;
+        /*String nick = null;
+        String whichOne = null;
+        if(!start){
+            nick = "STARTED";
+            whichOne = "onStart";
+        }
+        else{
+            nick = "RESUMED";
+            whichOne = "onResume";
+        }*/
+
+        String ID = shp.getString(Util.SP_LOGIN_KEY_USERID, "");
+
+        if(  (!(start))  && (!(ID.equals("")))  ){
+            String message = "User has just STARTED the app!";
+            String whichOne = "onStart";
+            //boolean send = writeAndSend(message, whichOne);
+            //Log.d(TAG, "onStart send to server: "+send);
+
+            resultOnResume = false;
+
+            String fileName = MonitorUtilities.RECORDING_CATEGORY + "." + ID + "." + MonitorUtilities.getFileDate();
+            String toWrite = MonitorUtilities.getCurrentTimeStamp() + MonitorUtilities.LINEBREAK + message
+                    + MonitorUtilities.LINEBREAK + MonitorUtilities.SPLIT;
+
+            try {
+                Util.writeToFile(fileName + ".txt", toWrite);
+                Util.Log_debug(TAG, whichOne + " writing info to file");
+            } catch (IOException e) {
+                Util.Log_debug(TAG, whichOne + " not write to file!");
+                e.printStackTrace();
+            }
+
+            String fileHead = getFileHead(fileName);
+            // Log.d("RecordingReceiver", fileHead);
+
+            String toSend = fileHead + toWrite;
+            String enformattedData = null;
+
+            try {
+                enformattedData = Util.encryption(MainActivity.this, toSend);
+            } catch (Exception e) {
+                Log.d(TAG, whichOne +" utilities monitorEncryption failed!!");
+                e.printStackTrace();
+            }
+
+            RecordingTransmitData transmitData = new RecordingTransmitData();
+            transmitData.execute(enformattedData, whichOne);
+
+            Log.d(TAG, "onStart send to server: "+resultOnResume);
+
+            start = true;
+        }
+    }
+
+
+    private void recordingOnDestroy() {
+        // TODO Auto-generated method stub
+        /* Nick added this on april 2nd 2015 for slu app
+         * this will determine if the user closes the app
+         * and will write it to the file and send it to the server
+         */
+
+        String ID = shp.getString(Util.SP_LOGIN_KEY_USERID, "");
+
+        if( !(ID.equals("")) ){
+            String message = "User has just CLOSED the app!";
+            String whichOne = "onDestroy";
+            //boolean send = writeAndSend(message, whichOne);
+            //Log.d(TAG, "onDestroy send to server: "+send);
+            boolean resultOnResume = false;
+
+            String fileName = MonitorUtilities.RECORDING_CATEGORY + "." + ID + "." + MonitorUtilities.getFileDate();
+            String toWrite = MonitorUtilities.getCurrentTimeStamp() + MonitorUtilities.LINEBREAK + message
+                    + MonitorUtilities.LINEBREAK + MonitorUtilities.SPLIT;
+
+            try {
+                Util.writeToFile(fileName + ".txt", toWrite);
+                Util.Log_debug(TAG, whichOne + " writing info to file");
+            } catch (IOException e) {
+                Util.Log_debug(TAG, whichOne + " not write to file!");
+                e.printStackTrace();
+            }
+
+            String fileHead = getFileHead(fileName);
+            // Log.d("RecordingReceiver", fileHead);
+
+            String toSend = fileHead + toWrite;
+            String enformattedData = null;
+
+            try {
+                enformattedData = Util.encryption(MainActivity.this, toSend);
+            } catch (Exception e) {
+                Log.d(TAG, whichOne + " utilities monitorEncryption failed!!");
+                e.printStackTrace();
+            }
+
+            RecordingTransmitData transmitData = new RecordingTransmitData();
+            transmitData.execute(enformattedData, whichOne);
+
+
+            Log.d(TAG, "onDestroy send to server: "+resultOnResume);
+        }
+
+    }
+
+
+    static class RecordingTransmitData extends AsyncTask<String,Void, Boolean>{
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            // TODO Auto-generated method stub
+
+            String data = strings[0];
+            String whichOne = strings[1];
+            //           String fileName=strings[0];
+            //           String dataToSend=strings[1];
+
+            if (MonitorUtilities.checkNetwork(mContext)) {
+                HttpPost request = new HttpPost(Util.UPLOAD_ADDRESS);
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                params.add(new BasicNameValuePair("data", data));
+                // // file_name
+                // params.add(new BasicNameValuePair("file_name", fileName));
+                // // data
+                // params.add(new BasicNameValuePair("data", dataToSend));
+                try {
+                    request.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+                    HttpResponse response = new DefaultHttpClient().execute(request);
+                    Log.d("Sensor Data Point Info", String.valueOf(response.getStatusLine().getStatusCode()));
+                    if(response.getStatusLine().getStatusCode() == 200){
+                        resultOnResume = true;
+                        Util.Log_debug(TAG, whichOne + " send info to server");
+                    }
+                } catch (Exception e){
+                    Util.Log_debug(TAG, whichOne + " did not send info to server!!");
+                    e.printStackTrace();
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+
+    private String getFileHead(String fileName) {
+        StringBuilder prefix_sb = new StringBuilder(Util.PREFIX_LEN);
+        prefix_sb.append(fileName);
+
+        for (int i = fileName.length(); i <= Util.PREFIX_LEN; i++) {
+            prefix_sb.append(" ");
+        }
+        return prefix_sb.toString();
+    }
 }
