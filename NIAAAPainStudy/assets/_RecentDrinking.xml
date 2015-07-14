@@ -1,14 +1,13 @@
 <root>
     <category>
-
-
-        <question id = "11" type = "number">
+        <description>ALCOHOL EFFECT ITEMS</description>
+        <question id = "1" type = "number">
             <text>HOW MANY DRINKS did you consume SINCE the last survey you answered? Please remember to answer in STANDARD drinks.</text>
             <answer id = "item">drink(s)</answer>
             <answer id = "min">1</answer>
             <answer id = "max">24</answer>
         </question>
-        <question id = "12" type = "radio">
+        <question id = "2" type = "radio">
             <text>When did you finish your FIRST drink?</text>
             <answer id = "1">Just now</answer>
             <answer id = "2">15 minutes ago</answer>
@@ -16,8 +15,7 @@
             <answer id = "4">45 minutes ago</answer>
             <answer id = "5">1 hour ago</answer>
             <answer id = "6">More than 1 hour ago</answer>
+	    <!-- ##?? -->
         </question>
     </category>
-
-
 </root>
