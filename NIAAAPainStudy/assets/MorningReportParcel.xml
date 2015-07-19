@@ -1,27 +1,6 @@
 ﻿<?xml version="1.0"?>
 <root>
 
-    <category>
-        <description>LAST NIGHT’S DRINKING</description>
-        <question id = "1q1" type = "radio">
-            <text>If you drank alcohol last night, do you have a HANGOVER?</text>
-            <answer id = "1">Yes</answer>
-            <answer id = "2" skip = "1q4">No</answer>
-        </question>
-    </category>
-
-    <category>
-        <description>HANGOVER/HANGOVER SYMPTOMS</description>
-        <questionblock type="radio">
-            <answer id = "1">1 - Very Slightly or Not At All</answer>
-            <answer id = "2">2 - A little</answer>
-            <answer id = "3">3 - Somewhat</answer>
-            <answer id = "4">4 - Quite a bit</answer>
-            <answer id = "5">5 - Extremely</answer>
-            <text id = "1q2">In the past 15 minutes, did you feel HEADACHE?</text>
-            <text id = "1q3">In the past 15 minutes, did you feel NAUSEOUS?</text>
-        </questionblock>
-    </category>
 
     <category>
         <description>SLEEP</description>
