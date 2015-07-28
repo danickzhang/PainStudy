@@ -1,3 +1,4 @@
+<root>
     <category>    
 	<description>PAIN MEDICATION EFFECT ITEMS</description>
         <questionblock type="radio">
@@ -36,7 +37,6 @@
         </questionblock>
     </category>
 
-
     <category>
         <description>ALCOHOL/PAIN MEDICATION EFFECT ITEMS</description>
         <questionblock type="radio">
@@ -55,3 +55,4 @@
             <text id = "8">Since I drank ALCOHOL or took PAIN MEDICATION, I feel less negative.</text>
         </questionblock>
     </category>
+</root>

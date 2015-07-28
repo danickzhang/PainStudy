@@ -1,5 +1,5 @@
 <root>
-    <category>
+
 <!--  Chen, I am removing the Alcohol Intoxication Effects and Opioid Intoxication Effects items from the survey. 
 	These items replace those, but in a different way (this is one of the things I'd like to go over in person with you). 
 	These items should be asked anytime:
@@ -10,7 +10,7 @@
 		5. Any combination of the above
 
  -->
-
+    <category>
         <description>Drug Effects Scale</description>
         <questionblock type="radio">
             <answer id = "1">0 - Not at all</answer>

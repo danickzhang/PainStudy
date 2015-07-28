@@ -8,7 +8,7 @@
         <question id = "6q1" type = "radio">
             <text>Have you taken any OPIOID PAIN MEDICATION since the last survey you answered?</text>
             <answer id = "1"  triggerFile="DualFollowupParcel.xml">Yes</answer>
-            <answer id = "2" skip = "11q23">No</answer>
+            <answer id = "2" skip = "11q7">No</answer>
         </question>
     </category>
 
