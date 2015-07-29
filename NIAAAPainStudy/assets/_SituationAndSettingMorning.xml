@@ -65,7 +65,7 @@
             <answer id = "5">Extremely</answer>
             <text id = "11">How well does this describe you over the PAST 15 MINUTES?  ||my physical pain felt unpleasant.</text>
             <text id = "12">How well does this describe you over the PAST 15 MINUTES?  ||my physical pain was annoying me.</text>
-            <text id = "13">How well does this describe you over the PAST 15 MINUTES?  ||my physical pain was stopping me from enjoying life.</text>
+            <text id = "13">How well does this describe you over the PAST 15 MINUTES?  |my physical pain was stopping me from enjoying life.</text>
         </questionblock>
     </category>
 
@@ -78,7 +78,7 @@
             <answer id = "4">Quite a bit</answer>
             <answer id = "5">Extremely</answer>
             <text id = "14">How well does this describe you over the PAST 15 MINUTES?  ||I felt in control of my physical pain.</text>
-            <text id = "15">How well does this describe you over the PAST 15 MINUTES?  ||I thought that I couldn't stand my physical pain any more.</text>
+            <text id = "15">How well does this describe you over the PAST 15 MINUTES?  |I thought that I couldn't stand my physical pain any more.</text>
             <text id = "16">How well does this describe you over the PAST 15 MINUTES?  ||I was thinking about my physical pain.</text>
         </questionblock>
     </category>
@@ -173,7 +173,7 @@
             <text id = "47">How much have you felt the following in the PAST 15 MINUTES?  ||unable to concentrate</text>
 
             <text id = "48">How well does this describe you over the PAST 15 MINUTES?  ||I felt and acted on a strong impulse.</text>
-            <text id = "49">How well does this describe you over the PAST 15 MINUTES?  ||I did something without really thinking it through.</text>
+            <text id = "49">How well does this describe you over the PAST 15 MINUTES?  |I did something without really thinking it through.</text>
             <text id = "50">How well does this describe you over the PAST 15 MINUTES?  ||I gave up easily.</text>
             <text id = "51">How well does this describe you over the PAST 15 MINUTES?  ||I did something for the thrill of it.</text>
 	    <!-- ##?? -->

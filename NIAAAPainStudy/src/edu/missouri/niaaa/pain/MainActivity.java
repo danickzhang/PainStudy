@@ -11,6 +11,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -57,7 +58,6 @@ import edu.missouri.niaaa.pain.activity.SupportActivity;
 import edu.missouri.niaaa.pain.activity.SuspensionTimePicker;
 import edu.missouri.niaaa.pain.location.LocationUtilities;
 import edu.missouri.niaaa.pain.monitor.MonitorUtilities;
-import edu.missouri.niaaa.pain.monitor.RecordingService;
 import edu.missouri.niaaa.pain.survey.SurveyMenu;
 
 
@@ -93,8 +93,8 @@ public class MainActivity extends Activity {
     static Context mContext;
 
     //this is for recording hardwareInfo
-    boolean start = false;
-    static boolean resultOnResume;
+    //boolean start = false;
+    //static boolean resultOnResume;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +105,8 @@ public class MainActivity extends Activity {
          * help to check if there is misuse of threads, such as read large files or network communication, that
          * should not be in the main UI thread.
          * Should be bypass when product released */
-        if(!Util.RELEASE){
+//        if(!Util.RELEASE){
+        if(true){
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
             //.detectAll()
 //            .detectNetwork()
@@ -128,7 +129,30 @@ public class MainActivity extends Activity {
         setListeners();
 
         registerReceiver(suspensionReceiver, new IntentFilter(Util.BD_ACTION_SUSPENSION));
+        
+        prepareRecording();
 
+    }
+
+
+    private void prepareRecording() {
+        // TODO Auto-generated method stub
+        
+        /* this is for the hardware info recording
+         * in order to determine if the app has already sent the phone has started to the server 
+         * instead of having a global activity variable 
+         */
+        boolean actualOnCreate = shp.getBoolean(MonitorUtilities.ACTION_ONDESTROY, false);
+        if(actualOnCreate){
+            MonitorUtilities.makeSharedPreferencesMonitorOnStartToFalse(shp);
+        }
+        
+        
+        /* this is for the hardware info TimeChangedReceiver class
+         * in order to determine the current difference from the current time
+         * in order to calculate the previous time after the user changes the system clock 
+         */
+        MonitorUtilities.timeDifferenceOnStartup = MonitorUtilities.getCurrentTimeDifference();
     }
 
 
@@ -150,6 +174,9 @@ public class MainActivity extends Activity {
         //recording
 //        recordingOnResume();
 
+        //
+        setSuspensionText();
+//        setServiceText();
     }
 
 
@@ -210,6 +237,18 @@ public class MainActivity extends Activity {
     private void restoreStatus() {
         // TODO Auto-generated method stub
 
+//        /*check suspension status*/
+//        Util.reScheduleSuspension(MainActivity.this);
+//
+//        /*check survey isolater status*/
+//        Util.reScheduleSurveyIsolater(MainActivity.this);
+//
+//        /*schedule*/
+////        Util.rescheduleMorningSurvey(MainActivity.this);
+//        
+//        if(after 12:20)
+//        Util.activate(MainActivity.this, true, true);
+        
         //daemon
 
 
@@ -219,8 +258,8 @@ public class MainActivity extends Activity {
         }
 
         //recording
-        Intent i = new Intent(MainActivity.this, RecordingService.class);
-        startService(i);
+//        Intent i = new Intent(MainActivity.this, RecordingService.class);
+//        startService(i);
 
         MonitorUtilities.scheduleRecording(MainActivity.this);
         Log.d(TAG, "onCreate is scheduling Monitor Recording");
@@ -239,11 +278,18 @@ public class MainActivity extends Activity {
         /*check survey isolater status*/
         Util.reScheduleSurveyIsolater(MainActivity.this);
 
-        //schedule
+        /*schedule*/
         Util.rescheduleMorningSurvey(MainActivity.this);
 
-        //##??
-        Util.scheduleDaemon(MainActivity.this);//maybe put in restore...
+        //followup
+        Util.cancelFollowups(MainActivity.this, 4);
+        Util.cancelFollowups(MainActivity.this, 6);
+        Util.cancelFollowups(MainActivity.this, 7);
+        
+        //daemon
+        Util.scheduleDaemon(MainActivity.this);
+        
+        //
 //      startSService();
 
         restoreStatus();
@@ -383,6 +429,22 @@ public class MainActivity extends Activity {
                 // TODO Auto-generated method stub
                 Util.Log_debug(TAG, logEnable, "section 1 on click listener");
 
+                String act = ((Button) view).getText().toString();
+                //start service
+                if(act.equals(getString(R.string.section_1))){
+//                  ((Button)view).setText(R.string.section_2);
+
+//                    StartSensorLocationService();
+
+                }
+
+                //stop service
+                else{
+//                  ((Button)view).setText(R.string.section_1);
+
+//                    confirmStopService();
+                }
+
             }
         });
 
@@ -419,6 +481,7 @@ public class MainActivity extends Activity {
                 // TODO Auto-generated method stub
                 Util.Log_debug(TAG, "section 4 on click listener");
 
+//                startActivity(new Intent(getApplicationContext(), SensorConnections.class));
             }
         });
 
@@ -530,8 +593,15 @@ public class MainActivity extends Activity {
                 // TODO Auto-generated method stub
                 Util.Log_debug(TAG, "section 8 on click listener");
 
-                Util.scheduleDaemon(MainActivity.this);
-                Util.rescheduleMorningSurvey(MainActivity.this);
+//                Util.scheduleDaemon(MainActivity.this);
+//                Util.rescheduleMorningSurvey(MainActivity.this);
+                Util.cancelFollowups(MainActivity.this, 4);
+                Util.cancelFollowups(MainActivity.this, 6);
+                Util.cancelFollowups(MainActivity.this, 7);
+//                Util.getUpdatedFollowupSchedules(MainActivity.this, Util.getExistingFollowupSchedules(MainActivity.this).split(",").length, false);
+//                Util.Log_debug(TAG, "in cycle? "+Util.getSP(MainActivity.this, Util.SP_SURVEY).getBoolean(Util.SP_SURVEY_KEY_FLAG_CYCLE, false));
+//                Util.scheduleFollowups(MainActivity.this, Util.getUpdatedFollowupSchedules(MainActivity.this, 1, false));
+//                Util.cancelRandomSurvey(MainActivity.this);
             }
         });
 
@@ -546,18 +616,68 @@ public class MainActivity extends Activity {
 //                Util.Log_debug(TAG, ""+Util.isSuspensionFlag(MainActivity.this));
 //                Util.bedtimeComplete(MainActivity.this, 12, 23);
 //                Util.rescheduleMorningSurvey(MainActivity.this);
+                
                 Util.Log_debug(TAG, ""+Util.isTodayActivated(MainActivity.this));
                 Util.Log_debug(TAG, ""+Util.hasTodayActivated(MainActivity.this));
                 Util.Log_debug(TAG, ""+Util.isSuspensionFlag(MainActivity.this));
                 Util.Log_debug(TAG, ""+Util.isIsolateFlag(MainActivity.this));
+                Util.Log_debug(TAG, ""+Util.isInCycle(MainActivity.this));
 
-//                Util.scheduleRandomSurvey(MainActivity.this, Util.setRandomSchedule(MainActivity.this, true, true));
+//                Util.scheduleRandomSurvey(MainActivity.this, Util.getNewRandomSchedules(MainActivity.this, false, true));
+//                Util.scheduleFollowups(MainActivity.this, Util.getNewFollowupSchedules(MainActivity.this));
 
             }
         });
 
     }
 
+    
+//    private void setServiceText(){
+//        section_1.setText(SensorLocationService.mIsRunning? getString(R.string.section_2): getString(R.string.section_1));
+//    }
+//    
+//    private void StartSensorLocationService(){
+//        Intent i = new Intent(MainActivity.this,SensorLocationService.class);
+//        startService(i);
+//
+//        section_1.setText(getString(R.string.section_2));
+//        Toast.makeText(getApplicationContext(), R.string.service_start, Toast.LENGTH_LONG).show();
+//    }
+//
+//    private void StopSensorLocationService(){
+//        Intent i = new Intent(MainActivity.this,SensorLocationService.class);
+//        stopService(i);
+//
+//        section_1.setText(getString(R.string.section_1));
+//        Toast.makeText(getApplicationContext(), R.string.service_stop, Toast.LENGTH_LONG).show();
+//    }
+//
+//    private void confirmStopService(){
+//        Dialog alertDialog = new AlertDialog.Builder(MainActivity.this)
+//        .setCancelable(false)
+//        .setTitle(R.string.service_stop_title)
+//        .setMessage(R.string.service_stop_msg)
+//        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+//
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                // TODO Auto-generated method stub
+//                StopSensorLocationService();
+//            }
+//        })
+//        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+//
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                // TODO Auto-generated method stub
+//
+//            }
+//        })
+//        .create();
+//        alertDialog.show();
+//    }
+
+    
 
     private void setSuspensionText(){
         section_6.setText(!Util.isSuspensionFlag(MainActivity.this) ? R.string.section_6:R.string.section_62);
@@ -651,7 +771,7 @@ public class MainActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(Config.getMenu(), menu);
         return true;
     }
 
@@ -951,10 +1071,10 @@ public class MainActivity extends Activity {
 
                     //keep delivered
                     Util.writeEvent(MainActivity.this, Util.CODE_BEDTIME,
-                            Util.sdf.format(morning.getTime()),
+                            Util.dtF.format(morning.getTime()),
                             "", "", "",
-                            Util.sdf.format(((Calendar)data.getSerializableExtra(MorningScheduler.INTENT_TS)).getTime()),
-                            Util.sdf.format(Calendar.getInstance().getTime()));
+                            Util.dtF.format(((Calendar)data.getSerializableExtra(MorningScheduler.INTENT_TS)).getTime()),
+                            Util.dtF.format(Calendar.getInstance().getTime()));
                 }
                 else{ //if(resultCode == Activity.RESULT_CANCELED){
 
@@ -974,7 +1094,7 @@ public class MainActivity extends Activity {
 
                     Util.writeEvent(MainActivity.this, Util.CODE_SUSPENSION,
                             "", "", "", "",
-                            Util.sdf.format(c.getTime()), "");
+                            Util.dtF.format(c.getTime()), "");
                 }
 
                 break;
@@ -1085,7 +1205,7 @@ public class MainActivity extends Activity {
                 if(true){
 
                     Log.d("((((((((((((((((((((((((+", ""+Thread.currentThread().getId());
-                    HttpPost request = new HttpPost(Util.UPLOAD_ADDRESS);
+                    HttpPost request = new HttpPost(Util.RECOVERY_ADDRESS);
                     List<NameValuePair> params = new ArrayList<NameValuePair>();
                     params.add(new BasicNameValuePair("data", seperated[i]));
 
@@ -1187,6 +1307,7 @@ public class MainActivity extends Activity {
         }*/
 
         String ID = shp.getString(Util.SP_LOGIN_KEY_USERID, "");
+        Boolean start = shp.getBoolean(MonitorUtilities.ACTION_ONSTART, true);
 
         if(  (!(start))  && (!(ID.equals("")))  ){
             String message = "User has just STARTED the app!";
@@ -1194,7 +1315,7 @@ public class MainActivity extends Activity {
             //boolean send = writeAndSend(message, whichOne);
             //Log.d(TAG, "onStart send to server: "+send);
 
-            resultOnResume = false;
+            boolean result = false;
 
             String fileName = MonitorUtilities.RECORDING_CATEGORY + "." + ID + "." + MonitorUtilities.getFileDate();
             String toWrite = MonitorUtilities.getCurrentTimeStamp() + MonitorUtilities.LINEBREAK + message
@@ -1222,11 +1343,19 @@ public class MainActivity extends Activity {
             }
 
             RecordingTransmitData transmitData = new RecordingTransmitData();
-            transmitData.execute(enformattedData, whichOne);
+            try {
+				result = transmitData.execute(enformattedData, whichOne).get();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
-            Log.d(TAG, "onStart send to server: "+resultOnResume);
+            Log.d(TAG, "onStart send to server: "+result);
 
-            start = true;
+            MonitorUtilities.makeSharedPreferencesMonitorOnStartToTrue(shp);
         }
     }
 
@@ -1286,7 +1415,7 @@ public class MainActivity extends Activity {
 
         @Override
         protected Boolean doInBackground(String... strings) {
-            // TODO Auto-generated method stub
+            boolean result = false; 
 
             String data = strings[0];
             String whichOne = strings[1];
@@ -1306,18 +1435,16 @@ public class MainActivity extends Activity {
                     HttpResponse response = new DefaultHttpClient().execute(request);
                     Log.d("Sensor Data Point Info", String.valueOf(response.getStatusLine().getStatusCode()));
                     if(response.getStatusLine().getStatusCode() == 200){
-                        resultOnResume = true;
+                        result = true;
                         Util.Log_debug(TAG, whichOne + " send info to server");
                     }
                 } catch (Exception e){
                     Util.Log_debug(TAG, whichOne + " did not send info to server!!");
                     e.printStackTrace();
                 }
-
-                return true;
             }
 
-            return false;
+            return result;
         }
     }
 

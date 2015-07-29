@@ -397,6 +397,17 @@ public class AdminManageActivity extends TabActivity {
         Util.getSP(context, Util.SP_BEDTIME).edit().clear().commit();
         Util.getSP(context, Util.SP_SURVEY).edit().clear().commit();
         Util.getSP(context, Util.SP_LOGIN).edit().clear().commit();
+        Util.getSP(context, Util.SP_SENSOR).edit().clear().commit();
+    }
+    
+    private void cancelAlarms(Context ctx) {
+        // TODO Auto-generated method stub
+        Util.cancelMorningSurvey(ctx);
+        Util.cancelRandomSurvey(ctx);
+        Util.cancelFollowups(ctx, 4);
+        Util.cancelFollowups(ctx, 6);
+        Util.cancelFollowups(ctx, 7);
+        Util.cancelSurveyIsolater(ctx);
     }
 
     private Dialog removeDialog(Context context){
@@ -416,12 +427,9 @@ public class AdminManageActivity extends TabActivity {
             public void onClick(DialogInterface dialog, int which) {
                 // TODO Auto-generated method stub
 
-                cleanUp(ctx);//replace following
+                cleanUp(ctx);
 
-//                  editor.putString(Uti.SP_KEY_LOGIN_USERID, "");
-//                  editor.putString(Uti.SP_KEY_LOGIN_USERPWD, "");
-//                  editor.putString(Uti.SP_KEY_LOGIN_STUDY_STARTTIME, "");
-//                  editor.commit();
+                cancelAlarms(ctx);
 
                 // remove local file, if checked
                 Log.d(TAG, "is checked "+rm_check.isChecked());

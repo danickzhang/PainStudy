@@ -36,10 +36,12 @@ public class DaemonReceiver extends BroadcastReceiver {
 
         if(ID.equals("") || PWD.equals("")){
             //bypass daemon if no id and pwd assigned
+            Util.Log_debug(TAG, "No ID or PWD, daemon bypassed");
 
         }
-        else if(fun == 0){//set alarm
+        else if(fun == 0){//set all daemon alarms
             Util.Log_debug(TAG, "on receiver daemon 0");
+
             //Noon
             setAlarm(context, am, 1, getProperTime(12, 20));
 
@@ -49,7 +51,7 @@ public class DaemonReceiver extends BroadcastReceiver {
             //Three oclock
             setAlarm(context, am, 3, getProperTime(3, 0));
 
-            // Ricky 9pm
+            //9pm charging reminder
             setAlarm(context, am, 4, getProperTime(21, 0));
 
         }
@@ -61,35 +63,33 @@ public class DaemonReceiver extends BroadcastReceiver {
 
             Toast.makeText(context, "Noon daemon trigger random schedules", Toast.LENGTH_LONG).show();
 
-            //Noon
+            //Reset Noon
             setAlarm(context, am, 1, getProperTime(12, 20));
-
             Util.debugDT("noon", getProperTime(12, 20));
         }
         else if(fun == -1){//cancel noon
             Util.Log_debug(TAG, "on receiver daemon -1");
 
+            //Reset Noon
             setAlarm(context, am, 1, getProperTime(12, 20));
-
             Util.debugDT("cancel noon", getProperTime(12, 20));
         }
         else if(fun == 2){//Midnight
             Util.Log_debug(TAG, "on receiver daemon 2");
 
             //close sensor
+//            SensorUtilities.closeSensor(context);
+//            Intent i = new Intent(SensorUtilities.ACTION_DISCONNECT_SENSOR);
+//            context.sendBroadcast(i);
 
-            //##??
-            //cancel all survey (follow-ups are allowed base on new requirement)
-//            Util.cancelSchedule(context);
-
-            //reset sp
-//          getSP(context, SP_RANDOM_TIME).edit().clear().commit();
-//          getSP(context, SP_SURVEY).edit().clear().commit();
-
+            //cancel all survey except followups (which means only need to cancel randoms, but randoms are not able to reach after midnight, so just remove the random_sets)
+            //modify: do not remove random_sets, because this will allow isActivate() = true, so that still allow initial drinking
+//            Util.deActivate(context);
+//            Util.cancelRandomSurvey(context);
 
             Toast.makeText(context, "MIDNIGHT close sensor and cancel survey", Toast.LENGTH_LONG).show();
 
-            //Midnight
+            //Reset Midnight
             setAlarm(context, am, 2, getProperTime(23, 59));
         }
         else if(fun == 3){//three o'clock
@@ -98,32 +98,25 @@ public class DaemonReceiver extends BroadcastReceiver {
             //close location
             Util.stopRecordingLocation(context);
 
-            //next day at 3
+            //for morning
             Util.rescheduleMorningSurvey(context);
 
             //cancel followup
-//            Utilities.cancelTrigger(context);
+            Util.cancelFollowups(context, 4);
+            Util.cancelFollowups(context, 6);
+            Util.cancelFollowups(context, 7);
 
-            //reset sp
-//          getSP(context, SP_RANDOM_TIME).edit().clear().commit();
-//          getSP(context, SP_SURVEY).edit().clear().commit();
+            Toast.makeText(context, "THREE'O close gps & cancel followups", Toast.LENGTH_LONG).show();
 
-            Toast.makeText(context, "THREE'O close gps", Toast.LENGTH_LONG).show();
-
-            //Three o'clock
+            //Reset Three o'clock
             setAlarm(context, am, 3, getProperTime(3, 0));
 
-            //reset all, send 0 broadcast??
+            //reset all daemon, send 0 broadcast?? but currently works fine
 
         }
         else if(fun == -3){//cancel three o'clock //useless for now
             Util.Log_debug(TAG, "on receiver daemon -3");
 
-//          Intent itTrigger3 = new Intent(BD_ACTION_DAEMON);
-//          itTrigger3.putExtra(BD_ACTION_DAEMON_FUNC, 3);//int
-//          PendingIntent piTrigger3 = PendingIntent.getBroadcast(context, 3, itTrigger3, PendingIntent.FLAG_CANCEL_CURRENT);
-//
-            //          am.set(AlarmManager.RTC_WAKEUP, getProperTime(3, 0)+getDayLong(), piTrigger3);
         }
         else if (fun == 4) {// 9pm alarm dialog
             Intent dialogIntent = new Intent(context, DialogActivity.class);
@@ -135,7 +128,6 @@ public class DaemonReceiver extends BroadcastReceiver {
 
             Toast.makeText(context, "Reseting the 9pm reminder for tomorrow", Toast.LENGTH_LONG).show();
 
-            //
             setAlarm(context, am, 4, getProperTime(21, 0));
 //            Intent itTrigger4 = new Intent(Util.BD_ACTION_DAEMON);
 //            itTrigger4.putExtra(BD_ACTION_DAEMON_FUNC, 4);// int

@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <root>
 
-    <externalsource baseid="12q" filename="_RecentDrinking.xml"></externalsource>
+    <externalsource baseid="12q" filename="_RecentDrinkingInitialDrinking.xml"></externalsource>
 
     <category>
         <description>RECENT PAIN MEDICATION USE</description>
         <question id = "5q1" type = "radio">
             <text>Have you taken any OPIOID PAIN MEDICATION since the last survey you answered?</text>
-            <answer id = "1" triggerFile="PainFollowupParcel.xml">Yes</answer>
+            <answer id = "1" triggerFile="4">Yes</answer>
             <answer id = "2" skip = "11q7">No</answer>
         </question>
     </category>

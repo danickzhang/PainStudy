@@ -1,7 +1,6 @@
 package edu.missouri.niaaa.pain.survey;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -68,6 +67,7 @@ public class SurveyActivity extends Activity {
     int surveySeq = -1;
     int remindSeq = -1;
     boolean manualTrigger = false;
+    boolean endCycle = false;
     String surveyDisplayName;
     String surveyName;
     String surveyFileName;
@@ -107,13 +107,16 @@ public class SurveyActivity extends Activity {
     WakeLock wakelock;
 
     //
-    public static final int REMIND_LASTTIME = 0;
+    public static final int REMIND_LASTONE = 0;
     public static final int REMIND_TIMEOUT = -2;
 
     SharedPreferences shp;
     boolean onGoing = false;
     Calendar surveyStartDatetime;
     Calendar surveyAlarmDT;
+    
+    Intent dialogIntent;
+    ArrayList<String> triggerList = new ArrayList<String>(); 
 
 
 
@@ -162,6 +165,7 @@ public class SurveyActivity extends Activity {
         surveySeq = getIntent().getIntExtra(Util.SV_SEQ, -1);// protect for -1
         remindSeq = getIntent().getIntExtra(Util.SV_REMIND_SEQ, -1);// protect for -1
         manualTrigger = getIntent().getBooleanExtra(Util.SV_MANUAL, false);
+        endCycle = getIntent().getBooleanExtra(Util.SV_END_CYCLE, false);
 
         SurveyInfo si = surveylist.get(surveyType-1);
         surveyDisplayName = (Util.RELEASE ? si.getDisplayName() : num2seq(surveySeq) + si.getDisplayName());
@@ -194,9 +198,15 @@ public class SurveyActivity extends Activity {
             Util.writeEvent(this, surveyType, Util.CODE_SV_TIMEOUT + "_2", surveySeq,
                     Util.getSurveyScheduleDT(this, surveyType, surveySeq),
                     Util.getSurveyAlarmDT(surveyAlarmDT,remindSeq),
-                    "", Util.sdf.format(Calendar.getInstance().getTime()));
+                    "", Util.dtF.format(Calendar.getInstance().getTime()));
 
             Toast.makeText(this, "onCreate previous survey timeout unnormally", Toast.LENGTH_LONG).show();
+            
+            if(endCycle){
+                Util.cancelFollowups(this, 4);
+                Util.cancelFollowups(this, 6);
+                Util.cancelFollowups(this, 7);
+            }
 
             Intent launchIntent = new Intent(this, MainActivity.class);
             launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -204,17 +214,26 @@ public class SurveyActivity extends Activity {
             startActivity(launchIntent);
             finish();
         }
-        else if(remindSeq == REMIND_LASTTIME){
+        else if(remindSeq == REMIND_LASTONE){
 
             //write
             Util.Log_debug(TAG, "### write event, last ignore -> oncreate previous swipe quit, survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
 
-            Util.writeEvent(this, surveyType, Util.CODE_SV_IGNORED + "_2", surveySeq,
-                    Util.getSurveyScheduleDT(this, surveyType, surveySeq),
-                    Util.getSurveyAlarmDT(surveyAlarmDT,remindSeq),
-                    "", Util.sdf.format(Calendar.getInstance().getTime()));
+            //this works for the 3rd remind is refused or swipe to closed
+//            Util.writeEvent(this, surveyType, Util.CODE_SV_IGNORED + "_2", surveySeq,
+//                    Util.getSurveyScheduleDT(this, surveyType, surveySeq),
+//                    Util.getSurveyAlarmDT(surveyAlarmDT,remindSeq),
+//                    "", Util.dtF.format(Calendar.getInstance().getTime()));
 
             Toast.makeText(this, "onCreate previous survey ignored unnormally", Toast.LENGTH_LONG).show();
+            
+            //end cycle
+            if(endCycle){
+                Util.cancelFollowups(this, 4);
+                Util.cancelFollowups(this, 6);
+                Util.cancelFollowups(this, 7);
+            }
+            
             Intent launchIntent = new Intent(this, MainActivity.class);
             launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             launchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -234,7 +253,7 @@ public class SurveyActivity extends Activity {
 
             pinLayout();
 
-            if(surveyType == Util.SV_NAME_RANDOM){
+            if(surveyType == Util.SV_TYPE_RANDOM){
                 writeCompliance(this, surveySeq, true);
             }
         }
@@ -312,9 +331,15 @@ public class SurveyActivity extends Activity {
                     Util.writeEvent(this, newSurveyType, Util.CODE_SV_TIMEOUT, newSurveySeq,
                             Util.getSurveyScheduleDT(this, newSurveyType, newSurveySeq),
                             Util.getSurveyAlarmDT(surveyAlarmDT,remindSeq),
-                            Util.sdf.format(surveyStartDatetime.getTime()), Util.sdf.format(Calendar.getInstance().getTime()));
+                            Util.dtF.format(surveyStartDatetime.getTime()), Util.dtF.format(Calendar.getInstance().getTime()));
 
-                    Intent dialogIntent = new Intent(this, DialogActivity.class);
+                    if(endCycle){
+                        Util.cancelFollowups(this, 4);
+                        Util.cancelFollowups(this, 6);
+                        Util.cancelFollowups(this, 7);
+                    }
+                    
+                    dialogIntent = new Intent(this, DialogActivity.class);
                     dialogIntent.putExtra(DialogActivity.DIALOG_FLAG, DialogActivity.DIALOG_TIMEOUT);
                     dialogIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     dialogIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -330,7 +355,7 @@ public class SurveyActivity extends Activity {
                 if(newRemindSeq == REMIND_TIMEOUT){
                     Util.Log_debug(TAG, "############# something happen place 2");
                 }
-                else if(newRemindSeq == REMIND_LASTTIME){
+                else if(newRemindSeq == REMIND_LASTONE){
                     // write if need
                 }
                 else{//remind123
@@ -339,10 +364,10 @@ public class SurveyActivity extends Activity {
                     Util.Log_debug(TAG, "### write event, noPrompt_underDoing -> onNewIntent, survey: "+newSurveyType+" seq: "+newSurveySeq+" remind: "+newRemindSeq);
 
                     //write
-                    Util.writeEvent(this, newSurveyType, Util.CODE_SV_NO_PROMPT + "_3", newSurveySeq,
+                    Util.writeEvent(this, newSurveyType, Util.CODE_SV_NO_PROMPT + "_4", newSurveySeq,
                             Util.getSurveyScheduleDT(this, newSurveyType, newSurveySeq),
                             Util.getSurveyAlarmDT(surveyAlarmDT,newRemindSeq),
-                            "", Util.sdf.format(Calendar.getInstance().getTime()));
+                            "", Util.dtF.format(Calendar.getInstance().getTime()));
 
                     Toast.makeText(this, "An auto-triggered survey is just blocked by what you are doning right now!", Toast.LENGTH_LONG).show();
                 }
@@ -363,10 +388,16 @@ public class SurveyActivity extends Activity {
                     Util.writeEvent(this, surveyType, Util.CODE_SV_IGNORED, surveySeq,
                             Util.getSurveyScheduleDT(this, surveyType, surveySeq),
                             Util.getSurveyAlarmDT(surveyAlarmDT,remindSeq),
-                            "", Util.sdf.format(Calendar.getInstance().getTime()));
+                            "", Util.dtF.format(Calendar.getInstance().getTime()));
 
                     //if remind0
-                    if(newRemindSeq == REMIND_LASTTIME){
+                    if(newRemindSeq == REMIND_LASTONE){
+                        
+                        if(endCycle){
+                            Util.cancelFollowups(this, 4);
+                            Util.cancelFollowups(this, 6);
+                            Util.cancelFollowups(this, 7);
+                        }
 
                         Intent launchIntent = new Intent(this, MainActivity.class);
                         launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -407,10 +438,10 @@ public class SurveyActivity extends Activity {
                         Util.Log_debug(TAG, "### write event, noPrompt_underDoing -> onNewIntent, survey: "+newSurveyType+" seq: "+newSurveySeq+" remind: "+newRemindSeq);
 
                         //write
-                        Util.writeEvent(this, newSurveyType, Util.CODE_SV_NO_PROMPT + "_3", surveySeq,
+                        Util.writeEvent(this, newSurveyType, Util.CODE_SV_NO_PROMPT + "_4", surveySeq,
                                 Util.getSurveyScheduleDT(this, surveyType, surveySeq),
                                 Util.getSurveyAlarmDT(surveyAlarmDT,remindSeq),
-                                "", Util.sdf.format(Calendar.getInstance().getTime()));
+                                "", Util.dtF.format(Calendar.getInstance().getTime()));
 
                         Toast.makeText(this, "An auto-triggered survey is just blocked by what you are doning right now!", Toast.LENGTH_LONG).show();
                     }
@@ -559,14 +590,23 @@ public class SurveyActivity extends Activity {
     private void splitSurveyOnStart() {
         // TODO Auto-generated method stub
         switch(surveyType){
-        case Util.SV_NAME_MORNING:
+        case Util.SV_TYPE_MORNING:
 
             break;
 
-        case Util.SV_NAME_RANDOM:
+        case Util.SV_TYPE_RANDOM:
 
-
-
+            break;
+            
+        case Util.SV_TYPE_DRINKING_FOLLOWUP:
+        case Util.SV_TYPE_PAIN_FOLLOWUP:
+        case Util.SV_TYPE_DUAL_FOLLOWUP:
+            //end cycle 2/2
+            if(endCycle){
+                Util.Log_debug(TAG, "cancel cycle~~~1/2 "+surveySeq+" "+remindSeq);
+                Util.removeCycleFlag(this);
+            }
+            
             break;
 
         default:
@@ -583,25 +623,26 @@ public class SurveyActivity extends Activity {
         Util.cancelSurveyTimeout(this, surveyType, surveySeq);
         Util.scheduleSurveyIsolater(this, Calendar.getInstance().getTimeInMillis());
 
-        splitSurveyOnComplete(this, surveyType, surveySeq);
+        boolean hasTrigger = workWithAnswers();
 
-        workWithAnswers();
-
-
-        Intent dialogIntent = new Intent(this, DialogActivity.class);
+        dialogIntent = new Intent(this, DialogActivity.class);
         dialogIntent.putExtra(DialogActivity.DIALOG_FLAG, DialogActivity.DIALOG_FINISH);
         dialogIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         dialogIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(dialogIntent);
+        
+        splitSurveyOnComplete(this, surveyType, surveySeq, hasTrigger);
 
+        
+        startActivity(dialogIntent);
         finish();
     }
 
 
 
-    private void workWithAnswers() {
+    private boolean workWithAnswers() {
         // TODO Auto-generated method stub
         boolean hasTrigger = false;
+        triggerList.clear();
         //Fill answer map for when it is passed to service
         for(Category cat: cats){
 //          Util.Log_debug(TAG, "category is "+cat.getQuestionDesc());
@@ -614,8 +655,12 @@ public class SurveyActivity extends Activity {
 //                  Log.d("_________________________________","answer "+answer.getAnswerText()+" "+answer.getId()+" "+answer.hasSurveyTrigger());
 //                  Util.Log_debug(TAG, "contains trigger "+answer.hasSurveyTrigger()+" is selected "+answer.isSelected());
                     if(answer.isSelected() && answer.hasSurveyTrigger()){
-                        hasTrigger = true;
-//                      Log.d("_________________________________","has trigger");
+                        if(!answer.getTriggerFile().equals("7")){
+                            hasTrigger = true;
+                        }
+                        
+                        triggerList.add(answer.getTriggerFile());
+                      Log.d("_________________________________","has trigger "+answer.getTriggerFile());
                     }
                 }
 
@@ -637,26 +682,159 @@ public class SurveyActivity extends Activity {
         }
 
         Toast.makeText(this, R.string.survey_completed, Toast.LENGTH_LONG).show();
+        return hasTrigger;
     }
 
 
-    private void splitSurveyOnComplete(Context context, int surveyType, int surveySeq) {
+    private void splitSurveyOnComplete(Context context, int surveyType, int surveySeq, boolean hasTrigger) {
         // TODO Auto-generated method stub
+        
+        int triggerSize = triggerList.size();
+        Log.d("~~~", "trigger size "+triggerSize+" "+surveyType);
+        
         switch(surveyType){
-        case Util.SV_NAME_MORNING:
+        case Util.SV_TYPE_MORNING:
 
             Util.morningComplete(context, false, false);
 
             //craving only, start up an alert.
+//            dialogIntent.removeExtra(DialogActivity.DIALOG_FLAG);
+//            dialogIntent.putExtra(DialogActivity.DIALOG_FLAG, DialogActivity.DIALOG_MORNING);
+            
+            if(triggerSize==0){
+                //do nothing
+            }
+            else if(triggerSize==1){
+                //trigger what's in list
+                Util.scheduleFollowups(this, Util.getNewFollowupSchedules(this), Integer.valueOf(triggerList.get(0)));//4/6
+            }
+            else{
+                //trigger DualFollowups
+                Util.scheduleFollowups(this, Util.getNewFollowupSchedules(this), 7);
+            }
 
             break;
-
-        case Util.SV_NAME_RANDOM:
+        case Util.SV_TYPE_RANDOM:
 
             writeCompliance(this, surveySeq, false);
-
+            
+            //hasTrigger
+//            if(hasTrigger){
+//                Util.scheduleFollowups(this, Util.getNewFollowupSchedules(this));
+//            }
+            if(triggerSize==0){
+                //do nothing
+            }
+            else if(triggerSize==1){
+                //trigger what's in list
+                Util.scheduleFollowups(this, Util.getNewFollowupSchedules(this), Integer.valueOf(triggerList.get(0)));//4/6
+            }
+            else{
+                //trigger DualFollowups
+                Util.scheduleFollowups(this, Util.getNewFollowupSchedules(this), 7);
+            }
+            
             break;
+        case Util.SV_TYPE_PAIN:
+            
+            if(triggerSize==0){
+                //do nothing
+            }
+            else if(triggerSize==1){
+                //trigger what's in list
+                Util.scheduleFollowups(this, Util.getNewFollowupSchedules(this), Integer.valueOf(triggerList.get(0)));//4/6
+            }
+            else{
+                //trigger DualFollowups
+                Util.scheduleFollowups(this, Util.getNewFollowupSchedules(this), 7);
+            }
+            
+            break;
+        case Util.SV_TYPE_PAIN_FOLLOWUP:
+            
+            if(triggerSize==0){
+                //do nothing
+            }
+            else if(triggerSize==1){
+                if(triggerList.get(0).equals("7")){
+                    //trigger DualFollowups
+                    Util.cancelFollowups(this, 4);
+                    
+                    Util.scheduleFollowups(this, Util.getNewFollowupSchedules(this), 7);
+                }else{
+                    
+                    Util.scheduleFollowups(this, Util.getUpdatedFollowupSchedules(this, surveySeq, hasTrigger), 4);
+                }
+            }
+            else{
+                //trigger DualFollowups
+                Util.cancelFollowups(this, 4);
+                
+                Util.scheduleFollowups(this, Util.getNewFollowupSchedules(this), 7);
+            }
+            
+            if(endCycle && !hasTrigger){
+                Util.cancelFollowups(this, 4);
+            }
+            
+            break;
+        case Util.SV_TYPE_DRINKING:
+            
+            if(triggerSize==0){
+                //do nothing
+            }
+            else if(triggerSize==1){
+                //trigger what's in list
+                Util.scheduleFollowups(this, Util.getNewFollowupSchedules(this), Integer.valueOf(triggerList.get(0)));//4/6
+            }
+            else{
+                //trigger DualFollowups
+                Util.scheduleFollowups(this, Util.getNewFollowupSchedules(this), 7);
+            }
+            
+            break;
+        case Util.SV_TYPE_DRINKING_FOLLOWUP:
 
+            //if has trigger in any of the first 3 followups
+//            Util.scheduleFollowups(this, Util.getUpdatedFollowupSchedules(this, surveySeq, hasTrigger));
+            
+            if(triggerSize==0){
+                //do nothing
+            }
+            else if(triggerSize==1){
+                if(triggerList.get(0).equals("7")){
+                    //trigger DualFollowups
+                    Util.cancelFollowups(this, 6);
+                    
+                    Util.scheduleFollowups(this, Util.getNewFollowupSchedules(this), 7);
+                }else{
+                    
+                    Util.scheduleFollowups(this, Util.getUpdatedFollowupSchedules(this, surveySeq, hasTrigger), 6);
+                }
+            }
+            else{
+                //trigger DualFollowups
+                Util.cancelFollowups(this, 6);
+                
+                Util.scheduleFollowups(this, Util.getNewFollowupSchedules(this), 7);
+            }
+            
+            if(endCycle && !hasTrigger){
+                Util.cancelFollowups(this, 6);
+            }
+            
+            break;
+        case Util.SV_TYPE_DUAL_FOLLOWUP:
+            
+            boolean trigger = (triggerSize!=0 ? true : false);
+            Util.scheduleFollowups(this, Util.getUpdatedFollowupSchedules(this, surveySeq, trigger), 7);
+            
+            
+            if(endCycle && !trigger){
+                Util.cancelFollowups(this, 7);
+            }
+            
+            break;
         default:
 
             break;
@@ -928,7 +1106,7 @@ public class SurveyActivity extends Activity {
                 Util.writeEvent(SurveyActivity.this, surveyType, Util.CODE_SV_REFUSED, surveySeq,
                         Util.getSurveyScheduleDT(SurveyActivity.this, surveyType, surveySeq),
                         Util.getSurveyAlarmDT(surveyAlarmDT,remindSeq),
-                        "", Util.sdf.format(Calendar.getInstance().getTime()));
+                        "", Util.dtF.format(Calendar.getInstance().getTime()));
 
                 //stop sound and quit
                 stopSound();
@@ -1023,7 +1201,7 @@ public class SurveyActivity extends Activity {
 
     private void acquireWakeLock() {
         // TODO Auto-generated method stub
-        wakelock.acquire();
+        wakelock.acquire(1*60*1000);
     }
 
     private void releaseWakeLock() {
@@ -1199,7 +1377,14 @@ public class SurveyActivity extends Activity {
                 Util.writeEvent(SurveyActivity.this, surveyType, Util.CODE_SV_QUIT, surveySeq,
                         Util.getSurveyScheduleDT(SurveyActivity.this, surveyType, surveySeq),
                         Util.getSurveyAlarmDT(surveyAlarmDT,remindSeq),
-                        Util.sdf.format(surveyStartDatetime.getTime()), Util.sdf.format(Calendar.getInstance().getTime()));
+                        Util.dtF.format(surveyStartDatetime.getTime()), Util.dtF.format(Calendar.getInstance().getTime()));
+                
+                //end Cycle
+                if(endCycle){
+                    Util.cancelFollowups(SurveyActivity.this, 4);
+                    Util.cancelFollowups(SurveyActivity.this, 6);
+                    Util.cancelFollowups(SurveyActivity.this, 7);
+                }
 
                 SurveyActivity.super.onBackPressed();
             }
@@ -1224,8 +1409,8 @@ public class SurveyActivity extends Activity {
         String scheduleTS = Util.getSurveyScheduleDT(this, surveyType, surveySeq);
         String remindTS = Util.getSurveyAlarmDT(surveyAlarmDT, remindSeq);
 
-        String startTS = Util.sdf.format(surveyStartDatetime.getTime());
-        String endTS = Util.sdf.format(endCal.getTime());
+        String startTS = Util.dtF.format(surveyStartDatetime.getTime());
+        String endTS = Util.dtF.format(endCal.getTime());
 
 
 
@@ -1266,7 +1451,7 @@ public class SurveyActivity extends Activity {
 
         //Ricky 2014/4/1
         //dealing with the random sequence
-        if (surveyType == Util.SV_NAME_RANDOM) {
+        if (surveyType == Util.SV_TYPE_RANDOM) {
             //random sequence
             sb.append(",seq:"+ surveySeq);
         }
@@ -1274,8 +1459,7 @@ public class SurveyActivity extends Activity {
 
 
         Calendar c=Calendar.getInstance();
-        SimpleDateFormat curFormater = new SimpleDateFormat("MMMMM_dd");
-        String dateObj =curFormater.format(c.getTime());
+        String dateObj =Util.mdF.format(c.getTime());
 
         //file name
         String file_name=surveyName+"."+userID+"."+dateObj+".txt";
@@ -1311,9 +1495,9 @@ public class SurveyActivity extends Activity {
             ensb = Util.encryption(this, prefix_sb.toString() + sb.toString());
 
             if(Util.WRITE_RAW) {
-                Util.writeToFile(file_name, sb.toString());
+                Util.writeToFile(file_name, prefix_sb.toString() + sb.toString());
 
-                Util.writeToFile(backup_file_name, sb.toString());
+                Util.writeToFile(backup_file_name, prefix_sb.toString() + sb.toString());
             } else{
                 Util.writeToFileEnc(file_name, ensb);
 
@@ -1333,7 +1517,7 @@ public class SurveyActivity extends Activity {
 
         //for debug
         Util.writeToFile("Event.txt",sb.substring(0, sb.indexOf("q"))+
-                (surveyType == Util.SV_NAME_RANDOM ?  "seq:"+surveySeq : ""));
+                (surveyType == Util.SV_TYPE_RANDOM ?  "seq:"+surveySeq : ""));
 
     }
 
@@ -1379,7 +1563,7 @@ public class SurveyActivity extends Activity {
             }
             else{
                 Log.d("Sensor Data Point Info","No Network Connection:Data Point was not uploaded");
-                Toast.makeText(SurveyActivity.this, "@#$", Toast.LENGTH_LONG).show();
+//                Toast.makeText(SurveyActivity.this, "@#$", Toast.LENGTH_LONG).show();
                 return false;
             }
         }

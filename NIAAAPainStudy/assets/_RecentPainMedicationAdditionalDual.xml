@@ -4,8 +4,8 @@
 <!--         ADDITIONAL MEDICATION USE -->
         <question id = "1" type = "radio">
             <text>Have you taken any additional OPIOID PAIN MEDICATION SINCE the last survey you answered?</text>
-            <answer id = "1">Yes</answer>
-            <answer id = "2" skip = "11q20">No</answer>
+            <answer id = "1" triggerFile="7">Yes</answer>
+            <answer id = "2" skip = "11q7">No</answer>
         </question>
 
 <!--         //1 -->

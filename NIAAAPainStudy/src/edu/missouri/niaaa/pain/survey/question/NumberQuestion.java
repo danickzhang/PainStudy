@@ -22,6 +22,7 @@ public class NumberQuestion extends SurveyQuestion {
     int min = 0;
     int max = 1;
     String skipTo = null;
+    String cmpValue = null;
 
     public NumberQuestion(String id){
         this.questionId = id;
@@ -37,6 +38,10 @@ public class NumberQuestion extends SurveyQuestion {
         if(this.answers.size()>3){
             this.skipTo = this.answers.get(3).getAnswerText();
         }
+        if(this.answers.size()>4){
+            this.cmpValue = this.answers.get(4).getAnswerText();
+        }
+        
         if(result == -1) {
             result = this.min;
         }
@@ -73,6 +78,16 @@ public class NumberQuestion extends SurveyQuestion {
         np.setMaxValue(max);
         np.setMinValue(min);
         np.setValue(result);
+        
+        //compare result and cmpValue, if true, set isSelect to true
+        if(cmpValue != null){
+            int cmp = Integer.valueOf(cmpValue);
+            if(result > cmp){
+                this.answers.get(4).setSelected(true);
+            }else{
+                this.answers.get(4).setSelected(false);
+            }
+        }
 
         answered = true;
         np.setOnValueChangedListener(new OnValueChangeListener(){
@@ -85,6 +100,16 @@ public class NumberQuestion extends SurveyQuestion {
                 result = newVal;
                 np.setValue(result);
                 counterText.setText(result + " " + item);
+                
+                //compare result and cmpValue, if true, set isSelect to true
+                if(cmpValue != null){
+                    int cmp = Integer.valueOf(cmpValue);
+                    if(result > cmp){
+                        answers.get(4).setSelected(true);
+                    }else{
+                        answers.get(4).setSelected(false);
+                    }
+                }
             }
 
 

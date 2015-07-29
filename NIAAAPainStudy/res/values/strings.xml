@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Pain Medication Study</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="return_to_main">Return to Main Menu</string>
@@ -119,7 +118,7 @@
     <!-- Initial Drinking -->
     <string name="initial_drink_name">Initial Drinking</string>
     <string name="first_drink_title">Confirmation</string>
-    <string name="first_drink_msg">Please confirm that you would like to report one or more alcoholic drinks.</string>
+    <string name="first_drink_msg">Please confirm that you would like to report</string>
 
 <!-- Service  -->
     <string name="service_start">Service started!</string>

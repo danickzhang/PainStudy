@@ -16,6 +16,16 @@ import edu.missouri.niaaa.pain.Util;
 
 public class SuspensionTimePicker extends Activity {
     String TAG = "SuspensionTimePicker.java";
+    
+    public final static String[] SUSPENSION_DISPLAY     = { "  15 minutes  ",
+        "  30 minutes  ",
+        "  45 minutes  ",
+        "  60 minutes  ",
+        "  1 hour & 15 minutes  ",
+        "  1 & half hour  ",
+        "  1 hour & 45 minutes  ",
+        "  2 hours  "
+      };
 
 //  String[] display = {"  15 minutes  ","  30 minutes  ","  45 minutes  ","  60 minutes  ","  1 hour & 15 minutes  ","  1 & half hour  ","  1 hour & 45 minutes  ","  2 hours  "};
     int selection = 0;
@@ -33,15 +43,15 @@ public class SuspensionTimePicker extends Activity {
         Button backButton = (Button) findViewById(R.id.btnReturn);
 
         np.setMinValue(0);
-        np.setMaxValue(Util.SUSPENSION_DISPLAY.length-1);
-        np.setDisplayedValues(Util.SUSPENSION_DISPLAY);
+        np.setMaxValue(SUSPENSION_DISPLAY.length-1);
+        np.setDisplayedValues(SUSPENSION_DISPLAY);
 
         np.setOnValueChangedListener(new OnValueChangeListener(){
 
             @Override
             public void onValueChange(NumberPicker picker, int oldValue, int newValue) {
                 // TODO Auto-generated method stub
-                Util.Log_debug(TAG, "selection is "+selection+" and item is "+Util.SUSPENSION_DISPLAY[selection]);
+                Util.Log_debug(TAG, "selection is "+selection+" and item is "+SUSPENSION_DISPLAY[selection]);
 
                 selection = newValue;
             }});

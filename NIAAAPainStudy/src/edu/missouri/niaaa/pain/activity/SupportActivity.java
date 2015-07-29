@@ -60,7 +60,7 @@ public class SupportActivity extends Activity {
             e.printStackTrace();
         }
 
-        dateTime = Util.sdf.format(Calendar.getInstance().getTime());
+        dateTime = Util.dtF.format(Calendar.getInstance().getTime());
         emailBody = "Technical Support Needed" + "\n"
                 + "User: " + userID + " running version on " + appVersion + " has reported on problem as follows:" + "\n\n"
 

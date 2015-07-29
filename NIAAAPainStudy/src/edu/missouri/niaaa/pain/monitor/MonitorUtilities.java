@@ -3,21 +3,35 @@ package edu.missouri.niaaa.pain.monitor;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.BatteryManager;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.provider.Settings.Secure;
 import android.provider.Settings.SettingNotFoundException;
@@ -34,11 +48,15 @@ public class MonitorUtilities {
     public final static String LINEBREAK = System.getProperty("line.separator");
     public final static String SPLIT = "---------------------------------------";
     public static final String RECORDING_CATEGORY = "Recording";
+    public static final String USER_TEXT = "User: ";
+    public static final String SPACE = " "; 
+    public static final String COMMA = ",";
     public static String curBatt = "nan";
 
     /*added by nick on april 2nd 2015 for slu app */
     public static String isCharging = "unknown";
     public static String howCharging = "unknown";
+    public static String batteryPercent = "unknown";
     /*public static String usbCharge = "unknown";
     public static String acCharge = "unknown";*/
     public static String activeGPS = "unknown";
@@ -49,14 +67,97 @@ public class MonitorUtilities {
     public static String gpsProvider = "unknown";
 
     public static String ID;
-
+    public static long timeDifferenceOnStartup = -1;
 
 
 
     private final static String TAG = "Monitor Utilities";
+    
+    public final static String ACTION_ONSTART = "MONITOR_START";
+    public final static String ACTION_ONDESTROY = "MONITOR_STOP"; 
 
 
     /* Recording */
+    
+    /**
+     * this is method is for the flag variable used for the onCreate function to send hardware info 
+     * that the user has started the app but only on the first time and not every time the activity's onCreate is called 
+     * NOTE: if the flag is set to FALSE the hardware info WILL send to the server 
+     * @param shp
+     * @return
+     */
+    public static boolean makeSharedPreferencesMonitorOnStartToFalse(SharedPreferences shp){
+    	Log.d(TAG, "makeSharedPreferencesMonitorOnStartToFalse() called");
+    	Editor editor = shp.edit();
+        editor.putBoolean(MonitorUtilities.ACTION_ONSTART, false);
+        return editor.commit();   
+    }
+    
+    /**
+     * this is method is just the opposite as the one before
+     * it is for the flag variable used for the onCreate function to send hardware info 
+     * that the user has started the app but only on the first time and not every time the activity's onCreate is called
+     * NOTE: if the flag is set to TRUE the hardware info WILL NOT send to the server  
+     * @param shp
+     * @return
+     */
+    public static boolean makeSharedPreferencesMonitorOnStartToTrue(SharedPreferences shp){
+    	Log.d(TAG, "makeSharedPreferencesMonitorOnStartToTrue()");
+    	Editor editor = shp.edit();
+        editor.putBoolean(MonitorUtilities.ACTION_ONSTART, true);
+        return editor.commit();   
+    }
+    
+    
+    public static boolean makeSharedPreferencesMonitorOnDestroyToTrue(SharedPreferences shp){
+    	Log.d(TAG, "makeSharedPreferencesMonitorOnDestroyToTrue()");
+    	Editor editor = shp.edit();
+        editor.putBoolean(MonitorUtilities.ACTION_ONDESTROY, true);
+        return editor.commit();   
+    }
+    
+    public static boolean makeSharedPreferencesMonitorOnDestroyToFalse(SharedPreferences shp){
+    	Log.d(TAG, "makeSharedPreferencesMonitorOnDestroyToFalse()");
+    	Editor editor = shp.edit();
+        editor.putBoolean(MonitorUtilities.ACTION_ONDESTROY, false);
+        return editor.commit();   
+    }
+
+    
+    
+    public static void checkStatusOfBattery(Context context){
+    	int defaultValue = -1; 
+		IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+		Intent batteryStatus = context.registerReceiver(null, ifilter);
+		
+		int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, defaultValue);
+		boolean charge = status == BatteryManager.BATTERY_STATUS_CHARGING ||
+                status == BatteryManager.BATTERY_STATUS_FULL;
+		
+		isCharging = String.valueOf(charge);
+		
+		int chargePlug = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, defaultValue);
+		
+		if(chargePlug == BatteryManager.BATTERY_PLUGGED_USB){
+			howCharging = "USB";
+		}
+		else if(chargePlug == BatteryManager.BATTERY_PLUGGED_AC){
+			howCharging = "AC Outlet";
+		}
+		else if(chargePlug == BatteryManager.BATTERY_PLUGGED_WIRELESS){
+			howCharging = "Wireless Power Source";
+		}
+		else {
+			howCharging = "unknown";
+		}
+		
+		int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, defaultValue);
+		int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, defaultValue);
+		
+		batteryPercent = String.valueOf(level / (float)scale); 
+    }
+    
+    
 
     /* this method was added by nick on april 2nd 2015 for slu app
      * it is used to check the settings for the gps (gps mode)
@@ -415,10 +516,76 @@ public class MonitorUtilities {
     public static String getFileDate()
     {
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat curFormater = new SimpleDateFormat("MMMMM_dd");
-        String dateObj = curFormater.format(c.getTime());
+        String dateObj = Util.mdF.format(c.getTime());
         return dateObj;
     }
+    public static long getCurrentTimeDifference() {
+		long elapsedTime = SystemClock.elapsedRealtime();
+		long currentTime = System.currentTimeMillis();
+		
+		return currentTime - elapsedTime;
+	}
+    
+    /** this was created to set the interval for the hardware info
+     * right now it is set for every 5 mintues 
+     * @author Nick Wergeles created on July 20th 2015 for craving study 
+     * @return
+     */
+    public static long getNextLongTime() {
+        Calendar s = Calendar.getInstance();
+        s.add(Calendar.MINUTE, 5);
+        // s.add(Calendar.SECOND, 30);
+        return s.getTimeInMillis();
+    }
+    
+    
+    
+    
+    
+    
+    
+  //keep this separate 
+  	public static String monitorGetFileHead(String fileName) {
+  		StringBuilder prefix_sb = new StringBuilder(Util.PREFIX_LEN);
+  		prefix_sb.append(fileName);
+  	
+  		for (int i = fileName.length(); i <= Util.PREFIX_LEN; i++) {
+  			prefix_sb.append(" ");
+  		}
+  		return prefix_sb.toString();
+  	}
+  	
+  	public static class MonitorTransmitData extends AsyncTask<String, Void, Boolean> {
+  		@Override
+  		protected Boolean doInBackground(String... strings) {
+  			boolean result = false;
+  			String data = strings[0];
+  			// String fileName = strings[0];
+  			// String dataToSend = strings[1];
+  	
+  			HttpPost request = new HttpPost(Util.UPLOAD_ADDRESS);
+  			List<NameValuePair> params = new ArrayList<NameValuePair>();
+  			params.add(new BasicNameValuePair("data", data));
+  			// // file_name
+  			// params.add(new BasicNameValuePair("file_name", fileName));
+  			// // data
+  			// params.add(new BasicNameValuePair("data", dataToSend));
+  			try {
+  				request.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+  				HttpResponse response = new DefaultHttpClient().execute(request);
+  				Log.d("Sensor Data Point Info", String.valueOf(response.getStatusLine().getStatusCode()));
+  				if(response.getStatusLine().getStatusCode() == 200){
+  					result = true; 
+  					Log.d(TAG, "send to server: true");	
+  				}	
+  			} catch (Exception e){
+  				Log.d(TAG, "not send to server!!");
+  				e.printStackTrace();
+  			}
+  			
+  			return result; 
+  		}
+  	}
 
 
 }

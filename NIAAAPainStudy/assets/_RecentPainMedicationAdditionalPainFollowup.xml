@@ -2,7 +2,11 @@
     <category>
         <description>PAIN MEDICATION EFFECT ITEMS</description>
 <!--         ADDITIONAL MEDICATION USE -->
-<!-- 1 -->
+        <question id = "1" type = "radio">
+            <text>Have you taken any additional OPIOID PAIN MEDICATION SINCE the last survey you answered?</text>
+            <answer id = "1" triggerFile="4">Yes</answer>
+            <answer id = "2" skip = "11q7">No</answer>
+        </question>
 
 <!--         //1 -->
         <question id = "2" type = "radio">

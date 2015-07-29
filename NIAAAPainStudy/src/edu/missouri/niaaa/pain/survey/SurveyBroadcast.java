@@ -34,7 +34,15 @@ public class SurveyBroadcast extends BroadcastReceiver {
         int surveyType = intent.getIntExtra(Util.SV_TYPE, -1);//protect -1 later
         int surveySeq = intent.getIntExtra(Util.SV_SEQ, -1);//protect -1 later
 
-        if(action.equals(Util.BD_ACTION_SURVEY_TRIGGER)){
+        String ID = Util.getSP(context, Util.SP_LOGIN).getString(Util.SP_LOGIN_KEY_USERID, "");
+        String PWD = Util.getSP(context, Util.SP_LOGIN).getString(Util.SP_LOGIN_KEY_USERPWD, "");
+
+        if(ID.equals("") || PWD.equals("")){
+            //bypass daemon if no id and pwd assigned
+            Util.Log_debug(TAG, "No ID or PWD, daemon bypassed");
+
+        }
+        else if(action.equals(Util.BD_ACTION_SURVEY_TRIGGER_RANDOM) || action.equals(Util.BD_ACTION_SURVEY_TRIGGER_FOLLOW)){
             Util.Log_debug(TAG, "action~~~ "+action);
 
             //if morning, check if activate today, or bypass
@@ -42,7 +50,7 @@ public class SurveyBroadcast extends BroadcastReceiver {
             Util.scheduleSurveyReminders(context, surveyType, surveySeq);
 
         }
-        else if(action.equals(Util.BD_ACTION_SURVEY_REMINDS)){
+        else if(action.equals(Util.BD_ACTION_SURVEY_REMINDS_RANDOM) || action.equals(Util.BD_ACTION_SURVEY_REMINDS_FOLLOW)){
             int remindSeq = intent.getIntExtra(Util.SV_REMIND_SEQ, -1);//protect -1 later
             Util.Log_debug(TAG, "action~~~ "+action+" "+intent.getIntExtra(Util.SV_SEQ, -1)+" "+intent.getIntExtra(Util.SV_REMIND_SEQ, -1));
 
@@ -53,30 +61,54 @@ public class SurveyBroadcast extends BroadcastReceiver {
 
             launchSurvey.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             launchSurvey.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-            if(Util.isSuspensionFlag(context)){
-                //under suspension
-                Util.Log_debug(TAG, "### write event, noPrompt_under Suspension ->  survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
-
-                //write
-                Util.writeEvent(context, surveyType, Util.CODE_SV_NO_PROMPT + "_1", surveySeq,
-                        Util.getSurveyScheduleDT(context, surveyType, surveySeq),
-                        Util.getSurveyAlarmDT(Calendar.getInstance(),remindSeq),
-                        "", Util.sdf.format(Calendar.getInstance().getTime()));
-
-                Toast.makeText(context, "An auto-triggered survey is just blocked by suspension!", Toast.LENGTH_LONG).show();
+            
+            //end cycle
+            if((surveyType == Util.SV_TYPE_DRINKING_FOLLOWUP || surveyType == Util.SV_TYPE_PAIN_FOLLOWUP || surveyType == Util.SV_TYPE_DUAL_FOLLOWUP) && surveySeq == Util.getExistingFollowupSchedules(context).split(",").length){
+                Util.Log_debug(TAG, "end cycle~~~ "+surveySeq+" "+remindSeq);
+                launchSurvey.putExtra(Util.SV_END_CYCLE, true);
+                
+                if(remindSeq == SurveyActivity.REMIND_LASTONE){
+                    //end cycle 2/2
+                    Util.Log_debug(TAG, "cancel cycle~~~2/2 "+surveySeq+" "+remindSeq);
+                    Util.removeCycleFlag(context);
+                }
             }
-            else if(Util.isIsolateFlag(context)){
-              //under survey isolater
-                Util.Log_debug(TAG, "### write event, noPrompt_under survey isolater ->  survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
+
+            if((Util.isSuspensionFlag(context))// && surveyType != Util.SV_TYPE_DRINKING_FOLLOWUP ) //pain study wants followups being suspended 
+                    || (Util.isInCycle(context) && (surveyType != Util.SV_TYPE_DRINKING_FOLLOWUP && surveyType != Util.SV_TYPE_PAIN_FOLLOWUP && surveyType != Util.SV_TYPE_DUAL_FOLLOWUP)) 
+                    || Util.isIsolateFlag(context)
+                    ){
+                //bypass last remind
+                if(remindSeq == SurveyActivity.REMIND_LASTONE){//##??
+                    return;
+                }
+                
+                //distinguish
+                String reason = "";
+                String subCode = "";
+                if(Util.isSuspensionFlag(context)){
+                    reason = "Suspension";
+                    subCode = "_1";
+                }
+                else if(Util.isInCycle(context)){
+                    reason = "Followup Cycle";
+                    subCode = "_2";
+                }
+                else{//Util.isIsolateFlag(context)
+                    reason = "Survey Isolator";
+                    subCode = "_3";
+                }
+                
+                //under 
+                Util.Log_debug(TAG, "### write event, noPrompt_under "+ reason +" ->  survey: "+surveyType+" seq: "+surveySeq+" remind: "+remindSeq);
 
                 //write
-                Util.writeEvent(context, surveyType, Util.CODE_SV_NO_PROMPT + "_4", surveySeq,
+                Util.writeEvent(context, surveyType, Util.CODE_SV_NO_PROMPT + subCode, surveySeq,
                         Util.getSurveyScheduleDT(context, surveyType, surveySeq),
                         Util.getSurveyAlarmDT(Calendar.getInstance(),remindSeq),
-                        "", Util.sdf.format(Calendar.getInstance().getTime()));
+                        "", Util.dtF.format(Calendar.getInstance().getTime()));
 
-                Toast.makeText(context, "An auto-triggered survey is just blocked by survey isolating!", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "An auto-triggered survey is just blocked by "+reason+"!", Toast.LENGTH_LONG).show();
             }
             else{
                 context.startActivity(launchSurvey);

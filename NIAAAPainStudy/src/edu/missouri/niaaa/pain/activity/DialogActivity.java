@@ -169,7 +169,7 @@ public class DialogActivity extends Activity {
         am.setStreamVolume(AudioManager.STREAM_MUSIC, Util.VOLUME, AudioManager.FLAG_PLAY_SOUND);
 
         soundTask = new StartTask();
-        soundTimer.schedule(soundTask,soundPlayAfter);
+//        soundTimer.schedule(soundTask,soundPlayAfter);
 
 
         vibrator.vibrate(5000);

@@ -7,9 +7,9 @@
 <!--         //1 -->
         <question id = "2" type = "radio">
             <text>Which OPIOID PAIN MEDICATION did you take?</text>
-            <answer id = "1">Primary (the medication you take regularly)</answer>
-            <answer id = "2">Secondary (the medication you take as needed)</answer>
-            <answer id = "3" skip = "11q4">Both</answer>
+            <answer id = "1" triggerFile="4">Primary (the medication you take regularly)</answer>
+            <answer id = "2" triggerFile="4">Secondary (the medication you take as needed)</answer>
+            <answer id = "3" triggerFile="4" skip = "11q4">Both</answer>
         </question>
 
 <!--         //2 -->

@@ -122,6 +122,9 @@ public class SurveyMenu extends Activity {
                             if(!Util.isTodayActivated(SurveyMenu.this)){//??##
                                 Toast.makeText(SurveyMenu.this, R.string.morning_report_unfinished, Toast.LENGTH_LONG).show();
                             }
+                            else if(Util.isInCycle(SurveyMenu.this)){
+                                Toast.makeText(SurveyMenu.this, R.string.morning_report_msg5, Toast.LENGTH_LONG).show();
+                            }
                             else{
                                 Alert(R.string.first_drink_title, R.string.first_drink_msg, temp);
                             }
