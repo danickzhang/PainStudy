@@ -1155,7 +1155,8 @@ public class Util {
             }
             else{
                 //do nothing
-
+                //modify on Aug 3, for tag Activited not been cleaned when device is shutdown, overnight.
+                scheduleRandomSurvey(context, getNewRandomSchedules(context, startFromNoon, systemTriggered));
             }
         }
         else{
@@ -1191,7 +1192,40 @@ public class Util {
         }
         else{
             if(sp.contains(SP_SURVEY_KEY_RANDOM_SETS)){
-                return true;
+                
+                Calendar now = Calendar.getInstance();
+                
+                //write to file random schedule
+                String strArr[] = sp.getString(SP_SURVEY_KEY_RANDOM_SETS, "").split(",");
+
+                if(strArr.length != 1){
+
+                    long time = Long.parseLong(strArr[0]);
+
+                    Calendar r = Calendar.getInstance();
+                    r.setTimeInMillis(time);
+
+                    Util.Log_debug(TAG, "random set date is "+r.get(Calendar.MONTH)+1+"/"+r.get(Calendar.DAY_OF_MONTH)+"/"+r.get(Calendar.YEAR));
+                    if(now.get(Calendar.HOUR_OF_DAY) < 3){
+                        if(now.get(Calendar.DAY_OF_YEAR) == r.get(Calendar.DAY_OF_YEAR)+1){
+                            return true;
+                        }
+                        else{
+                            return false;
+                        }
+                    }
+                    else{
+                        if(now.get(Calendar.DAY_OF_YEAR) == r.get(Calendar.DAY_OF_YEAR)){
+                            return true;
+                        }
+                        else{
+                            return false;
+                        }
+                    }
+                }
+                else{
+                    return false;
+                }
             }
             else{
                 return false;
@@ -1199,7 +1233,7 @@ public class Util {
         }
     }
 
-
+    
     /**
      * @return
      */
@@ -1213,7 +1247,7 @@ public class Util {
             Calendar now = Calendar.getInstance();
             Calendar day = Calendar.getInstance();
             day.setTimeInMillis(sp.getLong(SP_SURVEY_KEY_FLAG_ACTIVATE, 0));
-//            Log.d(TAG, dtF.format(day.getTime()));
+//            Log.d(TAG, dtF.format(day.getTime())+" "+sp.getLong(SP_SURVEY_KEY_FLAG_ACTIVATE, 0));
             if(now.get(Calendar.HOUR_OF_DAY) < 3){
                 if(now.get(Calendar.DAY_OF_YEAR) == day.get(Calendar.DAY_OF_YEAR)+1){
                     return true;

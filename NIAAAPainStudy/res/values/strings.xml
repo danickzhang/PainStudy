@@ -113,7 +113,7 @@
     <string name="morning_report_title4">Alert</string>
     <string name="morning_report_msg4">Please remember to connect your sensor.</string>
     <string name="morning_report_title5">Alert</string>
-    <string name="morning_report_msg5">You have already reported an initial drink, so you don\'t need to do an Initial Drink report again. Please wait until to receive a follow-up to report any additional drinks.</string>
+    <string name="morning_report_msg5">You have already reported an initial survey, so you don\'t need to do an Initial Report again. Please wait to receive a follow-up prompt to report any additional actions.</string>
 
     <!-- Initial Drinking -->
     <string name="initial_drink_name">Initial Drinking</string>

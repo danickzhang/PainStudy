@@ -85,7 +85,7 @@ public class DaemonReceiver extends BroadcastReceiver {
             //cancel all survey except followups (which means only need to cancel randoms, but randoms are not able to reach after midnight, so just remove the random_sets)
             //modify: do not remove random_sets, because this will allow isActivate() = true, so that still allow initial drinking
 //            Util.deActivate(context);
-//            Util.cancelRandomSurvey(context);
+//            Util.cancelRandomSurvey(context);//##??
 
             Toast.makeText(context, "MIDNIGHT close sensor and cancel survey", Toast.LENGTH_LONG).show();
 
@@ -101,10 +101,12 @@ public class DaemonReceiver extends BroadcastReceiver {
             //for morning
             Util.rescheduleMorningSurvey(context);
 
+            //also remove random_sets
+            Util.deActivate(context);
             //cancel followup
-            Util.cancelFollowups(context, 4);
-            Util.cancelFollowups(context, 6);
-            Util.cancelFollowups(context, 7);
+//            Util.cancelFollowups(context, 4);
+//            Util.cancelFollowups(context, 6);
+//            Util.cancelFollowups(context, 7);
 
             Toast.makeText(context, "THREE'O close gps & cancel followups", Toast.LENGTH_LONG).show();
 
