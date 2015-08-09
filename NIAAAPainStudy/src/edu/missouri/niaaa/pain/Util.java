@@ -1580,6 +1580,10 @@ public class Util {
             prefix_sb.append(" ");
         }
 
+        // file name for backup upload
+        //Added by nick and Haidong on May 26 2015
+        String backup_file_name = "SurveyData."+userID+".txt";
+
         /*
          * Chen
          *
@@ -1590,9 +1594,13 @@ public class Util {
         try {
             ensb = encryption(context, prefix_sb.toString() + sb.toString());
             if(WRITE_RAW){
-                writeToFile("Event.txt", sb.toString());
+                writeToFile("Event."+userID+".txt", sb.toString());
+                
+                Util.writeToFile(backup_file_name, prefix_sb.toString() + sb.toString());
             }else{
-                writeToFileEnc("Event.txt", ensb);
+                writeToFileEnc("Event."+userID+".txt", ensb);
+                
+                Util.writeToBackupFileEnc(backup_file_name, ensb);
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block

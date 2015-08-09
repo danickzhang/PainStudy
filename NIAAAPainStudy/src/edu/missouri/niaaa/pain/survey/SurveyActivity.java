@@ -1516,7 +1516,7 @@ public class SurveyActivity extends Activity {
 
 
         //for debug
-        Util.writeToFile("Event.txt",sb.substring(0, sb.indexOf("q"))+
+        Util.writeToFile("Event."+userID+".txt",sb.substring(0, sb.indexOf("q"))+
                 (surveyType == Util.SV_TYPE_RANDOM ?  "seq:"+surveySeq : ""));
 
     }
