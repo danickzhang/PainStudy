@@ -108,7 +108,7 @@ public class Util {
 
 
     /*constant value*/
-    public static final int SURVEY_TIMEOUT_IN_SECONDS           = 7*60;
+    public static final int SURVEY_TIMEOUT_IN_SECONDS           = 15*60;//7*60;
     public static final int SURVEY_REMINDS_IN_SECONDS           = 5*60;
     public static final int SURVEY_ISOLATE_IN_SECONDS           = 29*60;
     public final static int SUSPENSION_INTERVAL_IN_SECONDS      = 15*60;

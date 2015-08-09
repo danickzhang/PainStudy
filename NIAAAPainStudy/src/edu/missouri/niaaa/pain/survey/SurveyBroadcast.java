@@ -76,7 +76,7 @@ public class SurveyBroadcast extends BroadcastReceiver {
 
             if((Util.isSuspensionFlag(context))// && surveyType != Util.SV_TYPE_DRINKING_FOLLOWUP ) //pain study wants followups being suspended 
                     || (Util.isInCycle(context) && (surveyType != Util.SV_TYPE_DRINKING_FOLLOWUP && surveyType != Util.SV_TYPE_PAIN_FOLLOWUP && surveyType != Util.SV_TYPE_DUAL_FOLLOWUP)) 
-                    || Util.isIsolateFlag(context)
+                    || Util.isIsolateFlag(context) && remindSeq != SurveyActivity.REMIND_TIMEOUT
                     ){
                 //bypass last remind
                 if(remindSeq == SurveyActivity.REMIND_LASTONE){//##??

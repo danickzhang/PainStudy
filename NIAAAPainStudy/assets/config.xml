@@ -6,7 +6,7 @@
     <item type="4" action="1" file="PainMedicationFollowupParcel.xml" name="PAIN_FOLLOWUP">Pain Medication Followup</item>
     <item type="5" action="3" file="InitialDrinkingParcel.xml" name = "INITIAL_DRINKING">Initial Drinking</item>
     <item type="6" action="1" file="DrinkingFollowupParcel.xml" name="DRINKING_FOLLOWUP">Drinking Followup</item>
-    <item type="7" action="2" file="DualFollowupParcel.xml" name="DUAL_FOLLOWUP">Dual Followup</item>
+    <item type="7" action="1" file="DualFollowupParcel.xml" name="DUAL_FOLLOWUP">Dual Followup</item>
 </menu>
 
 <!-- <components>
