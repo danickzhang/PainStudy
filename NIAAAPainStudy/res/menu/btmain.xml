@@ -3,7 +3,7 @@
     <item android:id="@+id/Enable" android:title="@string/menu_en_bt"></item>
     <item android:id="@+id/Disable" android:title="@string/menu_dis_bt"></item>
     <item android:id="@+id/manage" android:title="@string/menu_management"></item>
-    <item android:id="@+id/training" android:title="@string/training_mode"></item>
+    <item android:id="@+id/training" android:title="@string/menu_training"></item>
     <item android:id="@+id/upload" android:title="@string/menu_upload"></item>
     <item android:id="@+id/about" android:title="@string/menu_about"></item>
 

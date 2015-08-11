@@ -14,7 +14,8 @@
     <string name="menu_about">About</string>
     <string name="menu_feedback">Feedback</string>
     <string name="menu_upload">Upload</string>
-    <string name="training_mode">Training Mode</string>
+    <string name="menu_training">Training Mode</string>
+    <string name="menu_medication">Input Medication</string>
 
     <!-- Contents -->
     <string name="section_1">Start Service</string>
@@ -86,9 +87,14 @@
     <string name="assign_id_wrong">The ID format is incorrect, please try again.</string>
     <string name="assign_id_net_error">The ID was not accepted, please check network connection and try again.</string>
 
+    <!-- Medication -->
+    <string name="med_set_title">Input Medication Names</string>
+    <string name="med_set_msg">Please input names for Primary and Secondary Medication</string>
+    <string name="primary_hint">Primary</string>
+    <string name="secondary_hint">Secondary</string>
+    
 
-
-<!-- Surveys -->
+    <!-- Surveys -->
     <string name="btn_submit">Submit</string>
     <string name="btn_previous">Previous Question</string>
     <string name="btn_cancel">Cancel</string>
@@ -123,13 +129,13 @@
     <string name="first_drink_title">Confirmation</string>
     <string name="first_drink_msg">Please confirm that you would like to report</string>
 
-<!-- Service  -->
+    <!-- Service  -->
     <string name="service_start">Service started!</string>
     <string name="service_stop">Service stopped!</string>
     <string name="service_stop_title">Confirm Stop Service</string>
     <string name="service_stop_msg">This will shut down the background service and stop collecting any sensor data from your application. \nDo you really want to do this?</string>
 
-<!-- Bluetooth  -->
+    <!-- Bluetooth  -->
     <string name="bluetooth_enabled">Bluetooth is already enabled!</string>
     <string name="bluetooth_disabled">Bluetooth is disabled!</string>
 
@@ -142,10 +148,10 @@
     <string name="device_select">Select Device</string>
     <string name="device_not_found">No Devices Found</string>
 
-<!-- Sensor  -->
+    <!-- Sensor  -->
     <string name="sensor_connect">Intent Received</string>
 
-<!-- Warning  -->
+    <!-- Warning  -->
     <string name="public_key_lost">Public Key missing, exiting!</string>
 
     <string name="set_upin_failed">Set PIN failed. Please try again.</string>

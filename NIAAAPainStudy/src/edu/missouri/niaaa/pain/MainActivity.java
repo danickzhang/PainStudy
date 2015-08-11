@@ -292,6 +292,9 @@ public class MainActivity extends Activity {
         //
 //      startSService();
 
+        //input mediction
+        inputMedicationDialog(MainActivity.this).show();
+        
         restoreStatus();
     }
 
@@ -844,12 +847,17 @@ public class MainActivity extends Activity {
         }
         
         //training mode
-        
         else if(item.getItemId() == R.id.training){
             Dialog DialadminPin = AdminPinCheckDialog(this, admin_training);
             DialadminPin.show();
         }
 
+        //input medication names
+        else if(item.getItemId() == R.id.medication){
+            Dialog DialadminPin = AdminPinCheckDialog(this, admin_medication);
+            DialadminPin.show();
+        }
+        
         return super.onOptionsItemSelected(item);
     }
 
@@ -865,6 +873,7 @@ public class MainActivity extends Activity {
 
     private static final int admin_upload = 0;
     private static final int admin_training = 1;
+    private static final int admin_medication = 2;
     
     /*it's really bad to copy&paste large chunk of code*/
     private Dialog AdminPinCheckDialog(final Context context, final int mode) {
@@ -928,7 +937,10 @@ public class MainActivity extends Activity {
                                 uploadSurveyData();
                                 break;
                             case admin_training:
-                                startTrainingMenu();
+                                TrainingMenu();
+                                break;
+                            case admin_medication:
+                                InputMedication(context);
                                 break;
                                 
                             default:
@@ -967,7 +979,6 @@ public class MainActivity extends Activity {
                     Toast.makeText(getApplicationContext(), R.string.input_apin_net_error, Toast.LENGTH_SHORT).show();;
                     finish();
                 }
-
             }
         });
 
@@ -986,7 +997,65 @@ public class MainActivity extends Activity {
     }
 
     
-    private void startTrainingMenu() {
+    private void InputMedication(final Context context) {
+        // TODO Auto-generated method stub
+        inputMedicationDialog(context).show();
+    }
+    
+    
+    /*it's really bad to copy&paste large chunk of code*/
+    private Dialog inputMedicationDialog(final Context context) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        final View textEntryView = inflater.inflate(R.layout.medication_input, null);
+        TextView pinText = (TextView) textEntryView.findViewById(R.id.med_text);
+        pinText.setText(R.string.med_set_msg);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        builder.setTitle(R.string.med_set_title);
+        builder.setView(textEntryView);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+                
+                EditText pinEdit1 = (EditText) textEntryView.findViewById(R.id.med_edit1);
+                EditText pinEdit2 = (EditText) textEntryView.findViewById(R.id.med_edit2);
+                String primary = pinEdit1.getText().toString();
+                String secondary = pinEdit2.getText().toString();
+                
+                Util.Log_debug("Med Dialog", "Medication names are "+primary + ", " + secondary);
+                
+                SharedPreferences shp = Util.getSP(context, Util.SP_LOGIN);
+                //Primary
+                if(primary != null && !primary.equals("")){
+                    shp.edit().putString(Util.SP_LOGIN_PRIMARY_MED, primary).commit();
+                }
+                else{
+                    shp.edit().remove(Util.SP_LOGIN_PRIMARY_MED).commit();
+                }
+                
+                //Secondary
+                if(secondary != null && !secondary.equals("")){
+                    shp.edit().putString(Util.SP_LOGIN_SECONDARY_MED, secondary).commit();
+                }
+                else{
+                    shp.edit().remove(Util.SP_LOGIN_SECONDARY_MED).commit();
+                }
+                
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+            }
+        });
+
+        return builder.create();
+    }
+    
+    
+    private void TrainingMenu() {
         // TODO Auto-generated method stub
         
         Intent intent = new Intent(MainActivity.this, SurveyMenu.class);
