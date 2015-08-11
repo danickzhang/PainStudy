@@ -64,7 +64,7 @@ public class Util {
     /*for debug*/
     public static final boolean DEBUG_LIFECYCLE         = true;
     public static final boolean DEBUG                   = true;
-    public static final boolean RELEASE                 = false;
+    public static final boolean RELEASE                 = true;
     public static final boolean REMIND_SEPLIT = true;
     public final static boolean WRITE_RAW               = !RELEASE;
 
@@ -104,7 +104,7 @@ public class Util {
     public static final int MAX_REMINDER                = 3;
     public static final int MAX_TRIGGER_RANDOM          = 6;//6
     public static final int MAX_TRIGGER_FOLLOWUP        = 3;//3
-    public static final int VOLUME                      = !RELEASE ? 2 : 9;
+    public static final int VOLUME                      = !RELEASE ? 2 : 11;
 
 
     /*constant value*/
@@ -124,6 +124,7 @@ public class Util {
     public static final String SV_REMIND_SEQ            = "Survey_Reminder_Seq";
     public static final String SV_MANUAL                = "Survey_manual_triggered";
     public static final String SV_END_CYCLE             = "Survey_end_cycle";
+    public static final String SV_TRAINING_MODE         = "Survey_train_mode";
 
 
     public static final SimpleDateFormat dtF = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");

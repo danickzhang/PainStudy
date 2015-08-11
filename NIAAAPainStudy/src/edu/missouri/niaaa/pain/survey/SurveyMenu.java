@@ -29,11 +29,16 @@ public class SurveyMenu extends Activity {
 
     List<SurveyInfo> surveylist;
     HashMap<View, SurveyInfo> buttonMap;
+    
+    boolean trainMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
+        
+        /*for training mode*/
+        trainMode = getIntent().getBooleanExtra(Util.SV_TRAINING_MODE, false);
 
 //      ScrollView scrollView = new ScrollView(this);
         LinearLayout linearLayout = new LinearLayout(this);
@@ -58,9 +63,9 @@ public class SurveyMenu extends Activity {
             finish();
         }
         else{
-            setTitle(R.string.survey_menu_title);
+            setTitle(trainMode? R.string.survey_menu_title_training : R.string.survey_menu_title);
             TextView tv = new TextView(this);
-            tv.setText(R.string.survey_menu_select);
+            tv.setText(trainMode? R.string.survey_menu_select_training : R.string.survey_menu_select);
             linearLayout.addView(tv);
             for(SurveyInfo survey: surveylist){
                 Util.Log_debug(TAG, logEnable, survey.getType()+" "+survey.getDisplayName()+" "+survey.getAction()+" "+SurveyInfo.TYPE_SHOWN_MAP.get(survey.getAction()));
@@ -70,7 +75,7 @@ public class SurveyMenu extends Activity {
 
                 /* only show surveys with type contains "manually"
                  * bypass if debug mood */
-                if(SurveyInfo.TYPE_SHOWN_MAP.get(survey.getAction()) || !Util.RELEASE){
+                if(SurveyInfo.TYPE_SHOWN_MAP.get(survey.getAction()) || !Util.RELEASE || trainMode){
                     linearLayout.addView(b);
                 }
 
@@ -91,7 +96,10 @@ public class SurveyMenu extends Activity {
                          *      check if suspension
                          * */
 
-                        if(temp.getAction().equals("4")){
+                        if(trainMode){
+                            launchSurvey(temp.getType());
+                        }
+                        else if(temp.getAction().equals("4")){
                             //
                             Calendar mT = Calendar.getInstance();
                             Calendar noonT = Calendar.getInstance();
@@ -192,6 +200,13 @@ public class SurveyMenu extends Activity {
         alertDialog.show();
     }
 
+    
+    private void launchSurvey(String type){
+        Intent launchIntent = new Intent(getApplicationContext(), SurveyActivityTrainingMode.class);
+        launchIntent.putExtra(Util.SV_TYPE, (int)Integer.valueOf(type));
+        
+        startActivityForResult(launchIntent, 0);
+    }
 
     private void launchSurvey(String type, boolean man){
         Intent launchIntent = new Intent(getApplicationContext(), SurveyActivity.class);

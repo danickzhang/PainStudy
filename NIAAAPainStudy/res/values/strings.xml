@@ -14,6 +14,7 @@
     <string name="menu_about">About</string>
     <string name="menu_feedback">Feedback</string>
     <string name="menu_upload">Upload</string>
+    <string name="training_mode">Training Mode</string>
 
     <!-- Contents -->
     <string name="section_1">Start Service</string>
@@ -92,7 +93,9 @@
     <string name="btn_previous">Previous Question</string>
     <string name="btn_cancel">Cancel</string>
     <string name="survey_menu_title">Self-Assessment Survey Menu</string>
+    <string name="survey_menu_title_training">Survey Menu (Training Mode)</string>
     <string name="survey_menu_select">Select a survey</string>
+    <string name="survey_menu_select_training">No data will be saved or uploaded</string>
     <string name="survey_timeout">Timeout has been reached for completing the current survey.</string>
     <string name="survey_completed">Survey Complete.</string>
     <string name="survey_cancel_title">Are you sure you want to exit?</string>

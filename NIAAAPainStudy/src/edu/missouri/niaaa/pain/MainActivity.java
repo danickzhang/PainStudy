@@ -839,7 +839,14 @@ public class MainActivity extends Activity {
 
         //upload backup
         else if(item.getItemId() == R.id.upload){
-            Dialog DialadminPin = AdminPinCheckDialog(this);
+            Dialog DialadminPin = AdminPinCheckDialog(this, admin_upload);
+            DialadminPin.show();
+        }
+        
+        //training mode
+        
+        else if(item.getItemId() == R.id.training){
+            Dialog DialadminPin = AdminPinCheckDialog(this, admin_training);
             DialadminPin.show();
         }
 
@@ -856,8 +863,11 @@ public class MainActivity extends Activity {
 
 //================================================================================================================================
 
+    private static final int admin_upload = 0;
+    private static final int admin_training = 1;
+    
     /*it's really bad to copy&paste large chunk of code*/
-    private Dialog AdminPinCheckDialog(final Context context) {
+    private Dialog AdminPinCheckDialog(final Context context, final int mode) {
         LayoutInflater inflater = LayoutInflater.from(context);
         final View textEntryView = inflater.inflate(R.layout.pin_input, null);
         TextView pinText = (TextView) textEntryView.findViewById(R.id.pin_text);
@@ -911,7 +921,20 @@ public class MainActivity extends Activity {
                         Log.d("~~~~~~~~~~http post result",result);
 
                         if(result.equals("AdminIsChecked")){
-                            uploadSurveyData();
+                            //admin pin verify successfully
+                            
+                            switch(mode){
+                            case admin_upload:
+                                uploadSurveyData();
+                                break;
+                            case admin_training:
+                                startTrainingMenu();
+                                break;
+                                
+                            default:
+                                //do nothing
+                                break;
+                            }
 
                         }else if(result.equals("AdminPinIsInvalid")){
 
@@ -955,13 +978,23 @@ public class MainActivity extends Activity {
                 imm.toggleSoftInput(0, InputMethodManager.RESULT_SHOWN);
                 imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
-                finish();
+//                finish();
             }
         });
 
         return builder.create();
     }
 
+    
+    private void startTrainingMenu() {
+        // TODO Auto-generated method stub
+        
+        Intent intent = new Intent(MainActivity.this, SurveyMenu.class);
+        intent.putExtra(Util.SV_TRAINING_MODE, true);
+        startActivity(intent);
+    }
+    
+    
     private void uploadSurveyData() {
         String upload_file_name = "";
 

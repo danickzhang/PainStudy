@@ -14,7 +14,7 @@ public class Config {
     public static final int NIMH        = 2;
     public static final int EMA         = 3;
     
-    public static final int PROJECT     = CRAVING;
+    public static final int PROJECT     = PAIN;
     
     
     
