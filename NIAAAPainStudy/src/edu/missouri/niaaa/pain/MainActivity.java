@@ -1008,6 +1008,14 @@ public class MainActivity extends Activity {
         LayoutInflater inflater = LayoutInflater.from(context);
         final View textEntryView = inflater.inflate(R.layout.medication_input, null);
         TextView pinText = (TextView) textEntryView.findViewById(R.id.med_text);
+        final EditText pinEdit1 = (EditText) textEntryView.findViewById(R.id.med_edit1);
+        final EditText pinEdit2 = (EditText) textEntryView.findViewById(R.id.med_edit2);
+        final EditText pinEdit3 = (EditText) textEntryView.findViewById(R.id.med_edit3);
+        final EditText pinEdit4 = (EditText) textEntryView.findViewById(R.id.med_edit4);
+        pinEdit1.setText(shp.getString(Util.SP_LOGIN_PRIMARY_MED, ""));
+        pinEdit2.setText(shp.getString(Util.SP_LOGIN_SECONDARY_MED, ""));
+        pinEdit3.setText(shp.getString(Util.SP_LOGIN_OTHER_MED1, ""));
+        pinEdit4.setText(shp.getString(Util.SP_LOGIN_OTHER_MED2, ""));
         pinText.setText(R.string.med_set_msg);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setCancelable(false);
@@ -1017,14 +1025,13 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 
-                EditText pinEdit1 = (EditText) textEntryView.findViewById(R.id.med_edit1);
-                EditText pinEdit2 = (EditText) textEntryView.findViewById(R.id.med_edit2);
                 String primary = pinEdit1.getText().toString();
                 String secondary = pinEdit2.getText().toString();
+                String other1 = pinEdit3.getText().toString();
+                String other2 = pinEdit4.getText().toString();
                 
-                Util.Log_debug("Med Dialog", "Medication names are "+primary + ", " + secondary);
+                Util.Log_debug("Med Dialog", "Medication names are "+primary + ", " + secondary+", "+other1+", "+other2);
                 
-                SharedPreferences shp = Util.getSP(context, Util.SP_LOGIN);
                 //Primary
                 if(primary != null && !primary.equals("")){
                     shp.edit().putString(Util.SP_LOGIN_PRIMARY_MED, primary).commit();
@@ -1041,6 +1048,21 @@ public class MainActivity extends Activity {
                     shp.edit().remove(Util.SP_LOGIN_SECONDARY_MED).commit();
                 }
                 
+                //Other1
+                if(other1 != null && !other1.equals("")){
+                    shp.edit().putString(Util.SP_LOGIN_OTHER_MED1, other1).commit();
+                }
+                else{
+                    shp.edit().remove(Util.SP_LOGIN_OTHER_MED1).commit();
+                }
+                
+                //Other2
+                if(other2 != null && !other2.equals("")){
+                    shp.edit().putString(Util.SP_LOGIN_OTHER_MED2, other2).commit();
+                }
+                else{
+                    shp.edit().remove(Util.SP_LOGIN_OTHER_MED2).commit();
+                }
             }
         });
 

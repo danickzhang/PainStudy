@@ -3,9 +3,10 @@
         <description>ALCOHOL EFFECT ITEMS</description>
         <question id = "1" type = "number">
             <text>HOW MANY DRINKS did you consume SINCE the last survey you answered? Please remember to answer in STANDARD drinks.</text>
-            <answer id = "item">drink(s)</answer>
+            <answer id = "item" soft_trigger = "B">drink(s)</answer>
             <answer id = "min">0</answer>
             <answer id = "max">24</answer>
+            <answer id = "digit">N</answer>
             <answer id = "skip">13q1</answer>
             <answer id = ">" triggerFile="7">0</answer>
 	    <!-- ##?? -->

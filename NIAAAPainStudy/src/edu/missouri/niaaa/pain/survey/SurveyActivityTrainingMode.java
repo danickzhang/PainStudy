@@ -38,6 +38,7 @@ import edu.missouri.niaaa.pain.survey.category.Answer;
 import edu.missouri.niaaa.pain.survey.category.Category;
 import edu.missouri.niaaa.pain.survey.category.Question;
 import edu.missouri.niaaa.pain.survey.category.RandomCategory;
+import edu.missouri.niaaa.pain.survey.category.SurveyQuestion;
 import edu.missouri.niaaa.pain.survey.parser.SurveyInfo;
 import edu.missouri.niaaa.pain.survey.parser.XMLParser;
 
@@ -475,6 +476,8 @@ public class SurveyActivityTrainingMode extends Activity {
         // TODO Auto-generated method stub
         Util.Log_debug(TAG, "~~~Survey Complete");
 
+        workWithAnswers();
+
         dialogIntent = new Intent(this, DialogActivity.class);
         dialogIntent.putExtra(DialogActivity.DIALOG_FLAG, DialogActivity.DIALOG_FINISH);
         dialogIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -486,6 +489,30 @@ public class SurveyActivityTrainingMode extends Activity {
     }
 
 
+    private void workWithAnswers() {
+        // TODO Auto-generated method stub
+        
+        //Fill answer map for when it is passed to service
+        for(Category cat: cats){
+//          Util.Log_debug(TAG, "category is "+cat.getQuestionDesc());
+//          Util.Log_debug(TAG, "category contains questions "+cat.totalQuestions());
+            for(Question question: cat.getQuestions()){
+//              Util.Log_debug(TAG, "question id "+question.getId());
+                answerMap.put(question.getId(), question.getSelectedAnswers());
+                //Here to target the first question of Drinking Follow-up
+                for(Answer answer: question.getAnswers()){
+//                    Util.Log_debug("_________________________________","answer "+answer.getAnswerText()+" "+answer.getId()+" "+answer.hasSurveyTrigger());
+//                    Util.Log_debug(TAG, "contains trigger "+answer.hasSurveyTrigger()+" is selected "+answer.isSelected());
+                }
+
+                for(String answer: question.getSelectedAnswers()){
+                    Util.Log_debug("+++++++++++++++++++++++++++++","answer string "+answer);
+                }
+            }
+        }
+
+        Toast.makeText(this, R.string.survey_completed, Toast.LENGTH_LONG).show();
+    }
     /**
      * @return Get the next question to be displayed
      */
@@ -938,6 +965,9 @@ public class SurveyActivityTrainingMode extends Activity {
     protected void onDestroy() {
         // TODO Auto-generated method stub
         Util.Log_lifeCycle(TAG, "onDestroy~~~");
+        if(SurveyQuestion.softTriggers != null){
+            SurveyQuestion.softTriggers.clear();
+        }
 
         releaseSound();
 

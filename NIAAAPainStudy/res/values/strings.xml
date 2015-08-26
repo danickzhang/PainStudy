@@ -92,7 +92,8 @@
     <string name="med_set_msg">Please input names for Primary and Secondary Medication</string>
     <string name="primary_hint">Primary</string>
     <string name="secondary_hint">Secondary</string>
-    
+    <string name="other1_hint">Nonopioid PRESCRIPTION</string>
+    <string name="other2_hint">OVER-THE-COUNTER</string>
 
     <!-- Surveys -->
     <string name="btn_submit">Submit</string>

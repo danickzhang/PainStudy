@@ -6,6 +6,7 @@ import java.util.Map;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -15,6 +16,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import edu.missouri.niaaa.pain.Util;
 import edu.missouri.niaaa.pain.survey.category.Answer;
 import edu.missouri.niaaa.pain.survey.category.QuestionType;
 import edu.missouri.niaaa.pain.survey.category.SurveyQuestion;
@@ -35,6 +37,18 @@ public class RadioQuestion extends SurveyQuestion {
 /*  function*/
     @Override
     public LinearLayout prepareLayout(final Context c) {
+        SharedPreferences shp = Util.getSP(c, Util.SP_LOGIN);
+        
+        String primary_ori = "Primary";
+        String secondary_ori = "Secondary";
+        String none = "None";
+        String primary = shp.getString(Util.SP_LOGIN_PRIMARY_MED, none);
+        String secondary = shp.getString(Util.SP_LOGIN_SECONDARY_MED, none);
+        
+        String other1_ori = "Non-Opioid PRESCRIPTION pain medication";
+        String other2_ori = "OVER-THE-COUNTER pain medication";
+        String other1 = shp.getString(Util.SP_LOGIN_OTHER_MED1, other1_ori);
+        String other2 = shp.getString(Util.SP_LOGIN_OTHER_MED2, other2_ori);
 
         //Linearlayout
         LinearLayout layout = new LinearLayout(c);
@@ -62,7 +76,13 @@ public class RadioQuestion extends SurveyQuestion {
             radioLayout.setMargins(10, 0, 10, 0);
 
             RadioButton radio = new RadioButton(c);
-            radio.setText(ans.getAnswerText());
+            radio.setText(ans.getAnswerText()
+                    .replace(primary_ori, primary)
+                    .replace(secondary_ori, secondary)
+                    .replace(other1_ori, other1)
+                    .replace(other2_ori, other2)
+                    );
+            
             int size = (this.answers.size()>8 ? 17: (ans.getAnswerText().length()<35? 25 : 22)) ;
             radio.setTextSize(TypedValue.COMPLEX_UNIT_DIP,size);
             radio.setLayoutParams(radioLayout);
@@ -110,6 +130,33 @@ public class RadioQuestion extends SurveyQuestion {
                             }
                         })
                         .create().show();
+                    }
+                    
+                    //soft trigger
+                    if(a.hasSoftTrigger()){
+                        if(isChecked){
+                            softTriggers.put(a.getSoftTrigger(), true);
+                        }
+                        else{
+                            softTriggers.put(a.getSoftTrigger(), false);
+                        }
+                        
+                        Util.Log_debug("soft triggerttttttttttt", ""+softTriggers.get(a.getSoftTrigger()));
+                    }
+                    
+                    //soft skip
+                    if(hasSoftSkip()){
+                        String sTrigger = getSoftSkip().split(":")[0];
+                        String sSkip = getSoftSkip().split(":")[1];
+                        boolean jump = false;
+                        for(String s : sTrigger.split("_")){
+                            jump |= (softTriggers.get(s) == null ? false : softTriggers.get(s));
+                        }
+                        
+                        if(!jump){
+                            skipTo = sSkip;
+                        }
+                        Util.Log_debug("soooooooooooooooft skip", softTriggers.get("A")+" "+softTriggers.get("B")+" "+softTriggers.get("C")+" "+jump+" "+sTrigger+" "+sSkip);
                     }
                 }
             });

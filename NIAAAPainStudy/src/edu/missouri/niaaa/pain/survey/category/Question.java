@@ -34,5 +34,9 @@ public interface Question {
     public ArrayList<String> getSelectedAnswers();
 
     public boolean clearSelectedAnswers();
+    
+    public void setSoftSkip(String skip);
+    public String getSoftSkip();
+    public boolean hasSoftSkip();
 
 }

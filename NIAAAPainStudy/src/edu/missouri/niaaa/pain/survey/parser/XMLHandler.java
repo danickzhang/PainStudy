@@ -192,6 +192,10 @@ public class XMLHandler extends DefaultHandler {
              */
             if(s.equals("radio")){
                 question = new RadioQuestion(id);
+                String softSkip = attr.getValue("soft_trigger_skip");
+                if(softSkip != null){
+                    question.setSoftSkip(softSkip);
+                }
             }
             else if(s.equals("check")){
                 question = new CheckQuestion(id);
@@ -224,6 +228,10 @@ public class XMLHandler extends DefaultHandler {
 
                 if(questionType.equals(QuestionType.RADIO)){
                     question = new RadioQuestion(id);
+                    String softSkip = attr.getValue("soft_trigger_skip");
+                    if(softSkip != null){
+                        question.setSoftSkip(softSkip);
+                    }
                 }
                 else if(questionType.equals(QuestionType.CHECKBOX)){
                     question = new CheckQuestion(id);
@@ -290,6 +298,16 @@ public class XMLHandler extends DefaultHandler {
                 answer.setOption(option);
             }
 
+            /*
+             * current only radio buttons
+             * can be used to set a soft trigger 
+             * so that later some question with soft_skip can action
+             * based on this selection.
+             */
+            String softTrigger = attr.getValue("soft_trigger");
+            if(softTrigger != null){
+                answer.setSoftTrigger(softTrigger);
+            }
 
             //Set the answer to skip to a given question
             answer.setSkip(skip);

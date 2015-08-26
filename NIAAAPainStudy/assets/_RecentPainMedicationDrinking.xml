@@ -7,8 +7,8 @@
 <!--         //1 -->
         <question id = "2" type = "radio">
             <text>Which OPIOID PAIN MEDICATION did you take?</text>
-            <answer id = "1">Primary (the medication you take regularly)</answer>
-            <answer id = "2">Secondary (the medication you take as needed)</answer>
+            <answer id = "1">Primary</answer>
+            <answer id = "2">Secondary</answer>
             <answer id = "3" skip = "11q4">Both</answer>
         </question>
 
@@ -16,8 +16,9 @@
         <question id = "3" type = "number">
             <text>Please enter the number of pills you took of your OPIOID PAIN MEDICATION.</text>
             <answer id = "item">pill(s)</answer>
-            <answer id = "min">1</answer><!-- Chen, is it possible to have a decimal place? It would only need to be .5. So .5, 1, 1.5, 2 and so forth-->
+            <answer id = "min">0</answer><!-- Chen, is it possible to have a decimal place? It would only need to be .5. So .5, 1, 1.5, 2 and so forth-->
             <answer id = "max">10</answer>
+            <answer id = "digit">Y</answer>
             <answer id = "skip">11q6</answer>
         </question>
 
@@ -25,18 +26,18 @@
         <question id = "4" type = "number">
             <text>Please enter the number of pills you took of your PRIMARY opioid pain medication.</text>
             <answer id = "item">pill(s)</answer>
-            <answer id = "min">1</answer><!-- Chen, is it possible to have a decimal place? It would only need to be .5. So .5, 1, 1.5, 2 and so forth-->
+            <answer id = "min">0</answer><!-- Chen, is it possible to have a decimal place? It would only need to be .5. So .5, 1, 1.5, 2 and so forth-->
             <answer id = "max">10</answer>
-
+            <answer id = "digit">Y</answer>
         </question>
 
 <!--         //2b -->
         <question id = "5" type = "number">
             <text>Please enter the number of pills you took of your SECONDARY opioid pain medication.</text>
             <answer id = "item">pill(s)</answer>
-            <answer id = "min">1</answer><!-- Chen, is it possible to have a decimal place? It would only need to be .5. So .5, 1, 1.5, 2 and so forth-->
+            <answer id = "min">0</answer><!-- Chen, is it possible to have a decimal place? It would only need to be .5. So .5, 1, 1.5, 2 and so forth-->
             <answer id = "max">10</answer>
-
+            <answer id = "digit">Y</answer>
         </question>
 
 <!--         //3 -->
@@ -61,9 +62,9 @@
 
         <question id = "8" type = "radio">
             <text>What OTHER pain medication did you take?</text>
-            <answer id = "1"  option = "Please make a note of what you took in your medication log.">Nonopioid PRESCRIPTION pain medication</answer>
-            <answer id = "2"  option = "Please make a note of what you took in your medication log.">OVER-THE-COUNTER pain medication</answer>
-            <answer id = "3"  option = "Please make a note of what you took in your medication log.">OTHER pain medication</answer>
+            <answer id = "1">Non-Opioid PRESCRIPTION pain medication</answer>
+            <answer id = "2">OVER-THE-COUNTER pain medication</answer>
+            <answer id = "3" option = "Please make a note of what you took in your medication log.">OTHER pain medication</answer>
         </question>
 
     </category>

@@ -15,6 +15,10 @@ public abstract class SurveyQuestion implements Question {
     protected String questionText;
     protected String questionId;
     protected QuestionType questionType;
+    
+    protected String softSkip;
+    protected boolean hasSoftSkip = false;
+    public static HashMap<String, Boolean> softTriggers = new HashMap<String, Boolean>();
 
 
     @Override
@@ -84,5 +88,29 @@ public abstract class SurveyQuestion implements Question {
     public String getId(){
         return questionId;
     }
+
+
+    @Override
+    public void setSoftSkip(String skip) {
+        // TODO Auto-generated method stub
+        this.softSkip = skip;
+        this.hasSoftSkip = true;
+    }
+
+
+    @Override
+    public String getSoftSkip() {
+        // TODO Auto-generated method stub
+        return this.softSkip;
+    }
+
+
+    @Override
+    public boolean hasSoftSkip() {
+        // TODO Auto-generated method stub
+        return this.hasSoftSkip;
+    }
+    
+    
 
 }

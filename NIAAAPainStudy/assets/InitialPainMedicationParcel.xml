@@ -8,7 +8,7 @@
         <description>RECENT DRINKING</description>
         <question id = "3q1" type = "radio">
             <text>Have you CONSUMED ALCOHOL since the last survey you answered?</text>
-            <answer id = "1" triggerFile="6">Yes</answer>
+            <answer id = "1" triggerFile="6" soft_trigger = "B">Yes</answer>
             <answer id = "2" skip = "13q1">No</answer>
 	    <!-- ##?? -->
         </question>

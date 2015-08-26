@@ -5,7 +5,7 @@
         <description>RECENT PAIN MEDICATION USE</description>
         <question id = "2q1" type = "radio">
             <text>Have you taken any OPIOID PAIN MEDICATION since the last survey you answered?</text>
-            <answer id = "1" triggerFile="4">Yes</answer>
+            <answer id = "1" triggerFile="4" soft_trigger = "A">Yes</answer>
             <answer id = "2" skip = "11q7">No</answer>
         </question>
     </category>
@@ -17,7 +17,7 @@
         <description>RECENT DRINKING</description>
         <question id = "2q2" type = "radio">
             <text>Have you CONSUMED ALCOHOL since the last survey you answered?</text>
-            <answer id = "1" triggerFile="6">Yes</answer>
+            <answer id = "1" triggerFile="6" soft_trigger = "B">Yes</answer>
             <answer id = "2" skip = "13q1">No</answer>
 	    <!-- ##?? -->
         </question>

@@ -54,6 +54,7 @@ import edu.missouri.niaaa.pain.survey.category.Answer;
 import edu.missouri.niaaa.pain.survey.category.Category;
 import edu.missouri.niaaa.pain.survey.category.Question;
 import edu.missouri.niaaa.pain.survey.category.RandomCategory;
+import edu.missouri.niaaa.pain.survey.category.SurveyQuestion;
 import edu.missouri.niaaa.pain.survey.parser.SurveyInfo;
 import edu.missouri.niaaa.pain.survey.parser.XMLParser;
 
@@ -660,7 +661,7 @@ public class SurveyActivity extends Activity {
                         }
                         
                         triggerList.add(answer.getTriggerFile());
-                      Log.d("_________________________________","has trigger "+answer.getTriggerFile());
+//                        Log.d("_________________________________","has trigger "+answer.getTriggerFile());
                     }
                 }
 
@@ -1340,7 +1341,10 @@ public class SurveyActivity extends Activity {
     protected void onDestroy() {
         // TODO Auto-generated method stub
         Util.Log_lifeCycle(TAG, "onDestroy~~~");
-
+        if(SurveyQuestion.softTriggers != null){
+            SurveyQuestion.softTriggers.clear();
+        }
+        
         releaseSound();
 //        Util.cancelSurveyTimeout(SurveyActivity.this, surveyType, surveySeq);// cannot success.
 

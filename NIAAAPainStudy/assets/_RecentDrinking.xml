@@ -6,6 +6,7 @@
             <answer id = "item">drink(s)</answer>
             <answer id = "min">1</answer>
             <answer id = "max">24</answer>
+            <answer id = "digit">N</answer>
         </question>
         <question id = "2" type = "radio">
             <text>When did you finish your FIRST drink?</text>

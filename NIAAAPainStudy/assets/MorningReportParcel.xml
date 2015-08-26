@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <root>
 
     <category>
@@ -8,6 +8,7 @@
             <answer id = "item">hour(s)</answer>
             <answer id = "min">1</answer>
             <answer id = "max">24</answer>
+            <answer id = "digit">N</answer>
         </question>
         <question id = "1q2" type = "radio">
             <text>How would you rate the quality of your sleep?</text>
@@ -39,7 +40,7 @@
         <description>RECENT PAIN MEDICATION USE</description>
         <question id = "1q5" type = "radio">
             <text>Have you taken any OPIOID PAIN MEDICATION since wake-up?</text>
-            <answer id = "1" triggerFile="4">Yes</answer>
+            <answer id = "1" triggerFile="4" soft_trigger = "A">Yes</answer>
             <answer id = "2" skip = "11q7">No</answer>
         </question>
     </category>
@@ -51,7 +52,7 @@
         <description>RECENT DRINKING</description>
         <question id = "1q6" type = "radio">
             <text>Have you CONSUMED ALCOHOL since wake-up?</text>
-            <answer id = "1" triggerFile="6">Yes</answer>
+            <answer id = "1" triggerFile="6" soft_trigger = "B">Yes</answer>
             <answer id = "2" skip = "13q1">No</answer>
 	    <!-- ##?? -->
         </question>

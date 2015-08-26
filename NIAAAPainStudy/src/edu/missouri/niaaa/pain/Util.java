@@ -141,6 +141,8 @@ public class Util {
     public static final String SP_LOGIN_KEY_USERPWD             = "USER_PWD";
     public static final String SP_LOGIN_PRIMARY_MED             = "PRIMARY_MED";
     public static final String SP_LOGIN_SECONDARY_MED           = "SECONDARY_MED";
+    public static final String SP_LOGIN_OTHER_MED1              = "OTHER_MED1";
+    public static final String SP_LOGIN_OTHER_MED2              = "OTHER_MED2";
     /*bed time info*/
     public static final String SP_BEDTIME                       = SP_BASE + "BEDTIME";
     public static final String SP_BEDTIME_KEY_HOUR              = "BEDTIME_HOUR";

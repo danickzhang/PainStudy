@@ -13,6 +13,7 @@ public interface Answer {
     public void setSkip(String id);
 
     public void setOption(String opt);
+    public void setSoftTrigger(String softTrigger);
 
     public String getId();
     public String getAnswerText();
@@ -29,6 +30,9 @@ public interface Answer {
 
     public String getOption();
     public boolean hasOption();
+    
+    public String getSoftTrigger();
+    public boolean hasSoftTrigger();
 
 
     public boolean equals(Answer ans);

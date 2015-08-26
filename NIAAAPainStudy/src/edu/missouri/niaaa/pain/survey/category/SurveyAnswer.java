@@ -21,6 +21,8 @@ public class SurveyAnswer implements Answer, Cloneable {
     protected String skipId;
     protected String option;
     protected boolean hasOption = false;
+    protected String softTrigger;
+    protected boolean hasSoftTrigger = false;
 
 
 /*  constructor*/
@@ -167,6 +169,25 @@ public class SurveyAnswer implements Answer, Cloneable {
     public Object clone() throws CloneNotSupportedException {
         // TODO Auto-generated method stub
         return super.clone();
+    }
+
+    @Override
+    public void setSoftTrigger(String softTrigger) {
+        // TODO Auto-generated method stub
+        this.softTrigger = softTrigger;
+        this.hasSoftTrigger = true;
+    }
+
+    @Override
+    public String getSoftTrigger() {
+        // TODO Auto-generated method stub
+        return this.softTrigger;
+    }
+
+    @Override
+    public boolean hasSoftTrigger() {
+        // TODO Auto-generated method stub
+        return this.hasSoftTrigger;
     }
 
 
