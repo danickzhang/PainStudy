@@ -293,11 +293,18 @@ public class MainActivity extends Activity {
 //      startSService();
 
         //input mediction
-        inputMedicationDialog(MainActivity.this).show();
+//        inputMedicationDialog(MainActivity.this).show();
+        inputMedNameForTheFirstTime();
         
         restoreStatus();
     }
 
+    private void inputMedNameForTheFirstTime(){
+        if(!shp.getBoolean(Util.SP_LOGIN_HAD_INPUT, false)){
+            inputMedicationDialog(MainActivity.this).show();
+            shp.edit().putBoolean(Util.SP_LOGIN_HAD_INPUT, true).commit();
+        }
+    }
 
     private void setSharedValue(){
 

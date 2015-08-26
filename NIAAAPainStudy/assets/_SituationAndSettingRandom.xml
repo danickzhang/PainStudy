@@ -1,7 +1,7 @@
 <root>
     <category>
         <description>PAIN</description>
-        <question id = "1" type = "radio">
+        <question id = "1" type = "radio" soft_trigger_skip = "A_B:13q10">
             <text>How much PHYSICAL PAIN have you felt in the PAST 15 MINUTES:</text>
             <answer id = "1">0 - No pain</answer>
             <answer id = "2">1</answer>
@@ -105,7 +105,7 @@
         <description>RECENT MARIJUANA USE</description>
         <question id = "19" type = "radio">
             <text>Have you USED MARIJUANA since the last survey you answered?</text>
-            <answer id = "1">Yes</answer>
+            <answer id = "1" soft_trigger = "C">Yes</answer>
             <answer id = "2">No</answer>
         </question>
     </category>
@@ -123,7 +123,7 @@
             <answer id = "5">Extremely</answer>
             <text id = "20">How well does this describe you over the PAST 15 MINUTES?  ||my mood was unpleasant.</text>
             <text id = "21">How well does this describe you over the PAST 15 MINUTES?  ||my mood was annoying me.</text>
-            <text id = "22">How well does this describe you over the PAST 15 MINUTES?  ||I enjoyed how I was feeling.</text>
+            <text id = "22" soft_trigger_skip = "A_B_C:13q27">How well does this describe you over the PAST 15 MINUTES?  ||I enjoyed how I was feeling.</text>
         </questionblock>
     </category>
 

@@ -143,6 +143,7 @@ public class Util {
     public static final String SP_LOGIN_SECONDARY_MED           = "SECONDARY_MED";
     public static final String SP_LOGIN_OTHER_MED1              = "OTHER_MED1";
     public static final String SP_LOGIN_OTHER_MED2              = "OTHER_MED2";
+    public static final String SP_LOGIN_HAD_INPUT               = "MED_NAMES_HAD_INPUT";
     /*bed time info*/
     public static final String SP_BEDTIME                       = SP_BASE + "BEDTIME";
     public static final String SP_BEDTIME_KEY_HOUR              = "BEDTIME_HOUR";
