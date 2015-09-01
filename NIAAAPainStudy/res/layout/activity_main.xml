@@ -54,11 +54,13 @@
         android:id="@+id/section_label8"
         style="@style/button_style"
         android:text="trigger"
+        android:visibility="gone"
         />
     <Button
         android:id="@+id/section_label9"
         style="@style/button_style"
         android:text="button"
+        android:visibility="gone"
         />
 
 </LinearLayout>

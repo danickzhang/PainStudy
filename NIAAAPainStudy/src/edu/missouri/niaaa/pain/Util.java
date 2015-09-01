@@ -46,7 +46,6 @@ import android.util.Log;
 
 import com.google.android.gms.location.DetectedActivity;
 
-import edu.missouri.niaaa.Craving;
 import edu.missouri.niaaa.pain.location.ActivityRecognitionService;
 import edu.missouri.niaaa.pain.location.LocationBroadcast;
 import edu.missouri.niaaa.pain.location.LocationUtilities;
@@ -180,13 +179,13 @@ public class Util {
 
     /*server addresses*/
 
-    /*Craving Study*/
-    public final static String VALIDATE_ADDRESS             = Craving.VALIDATE_ADDRESS;
-    public final static String WRITE_ARRAY_TO_FILE          = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtTest/Crt2/writeArrayToFile.php";
-    public final static String WRITE_ARRAY_TO_FILE_DEC      = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtTest/Crt2/writeArrayToFileDec.php";
-    public final static String COMPLIANCE_ADDRESS           = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtTest/Crt2/complianceDec.php";
-    public final static String STUDY_DAY_MODIFY_ADDRESS     = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtTest/Crt2/changeStudyWeekDec.php";
-    public final static String WRITE_ARRAY_TO_RECOVERY_DEC  = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtTest/Crt2/recoverDec.php";
+    /*Pain Study*/
+    public final static String VALIDATE_ADDRESS             = "http://dslsrv8.cs.missouri.edu/webapps/CrtPAIN/validateUserDec.php";
+    public final static String WRITE_ARRAY_TO_FILE          = "http://dslsrv8.cs.missouri.edu/webapps/CrtPAIN/writeArrayToFile.php";
+    public final static String WRITE_ARRAY_TO_FILE_DEC      = "http://dslsrv8.cs.missouri.edu/webapps/CrtPAIN/writeArrayToFileDec_date20150826.php";
+    public final static String COMPLIANCE_ADDRESS           = "http://dslsrv8.cs.missouri.edu/webapps/CrtPAIN/complianceDec.php";
+    public final static String STUDY_DAY_MODIFY_ADDRESS     = "http://dslsrv8.cs.missouri.edu/webapps/CrtPAIN/changeStudyWeekDec.php";
+    public final static String WRITE_ARRAY_TO_RECOVERY_DEC  = "http://dslsrv8.cs.missouri.edu/webapps/CrtPAIN/recoverDec.php";
 
     /*EMA-STL Study*/
 //    public final static String VALIDATE_ADDRESS             = "http://dslsrv8.cs.missouri.edu/~hw85f/Server/CrtEMA/validateUser.php";
