@@ -26,11 +26,11 @@
             <answer id = "3">Somewhat</answer>
             <answer id = "4">Quite a bit</answer>
             <answer id = "5">An extreme amount</answer>
-            <text id = "2">Since I drank ALCOHOL or took PAIN MEDICATION, my physical pain has decreased.</text>
-            <text id = "3">Since I drank ALCOHOL or took PAIN MEDICATION, I feel happier.</text>
-            <text id = "5">Since I drank ALCOHOL or took PAIN MEDICATION, my mood is less unpleasant.</text>
-            <text id = "7">Since I drank ALCOHOL or took PAIN MEDICATION, it has been easier to tolerate my physical pain.</text>
-            <text id = "9">Since I drank ALCOHOL or took PAIN MEDICATION, my mood is less negative.</text>
+            <text id = "2">Since I drank ALCOHOL or took PAIN MEDICATION,  ||my physical pain has decreased.</text>
+            <text id = "3">Since I drank ALCOHOL or took PAIN MEDICATION,  ||I feel happier.</text>
+            <text id = "5">Since I drank ALCOHOL or took PAIN MEDICATION,  ||my mood is less unpleasant.</text>
+            <text id = "7">Since I drank ALCOHOL or took PAIN MEDICATION,  |it has been easier to tolerate my physical pain.</text>
+            <text id = "9">Since I drank ALCOHOL or took PAIN MEDICATION,  ||my mood is less negative.</text>
         </questionblock>
     </category>
     
