@@ -891,7 +891,7 @@ public class SurveyActivityTrainingMode extends Activity {
         soundTimer.schedule(soundTask,soundPlayAfter);
 
 
-        vibrator.vibrate(5000);
+        vibrator.vibrate(Util.VIBRATE_FOR_SECONDS * 1000);
     }
 
     private class StartTask extends TimerTask {

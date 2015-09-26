@@ -16,6 +16,7 @@
     <string name="menu_upload">Upload</string>
     <string name="menu_training">Training Mode</string>
     <string name="menu_medication">Input Medication</string>
+    <string name="menu_skip">Skip Switcher</string>
 
     <!-- Contents -->
     <string name="section_1">Start Service</string>
@@ -90,6 +91,7 @@
     <!-- Medication -->
     <string name="med_set_title">Input Medication Names</string>
     <string name="med_set_msg">Please input names for Primary and Secondary Medication</string>
+    <string name="skip_set_msg">Please set 50% skip switcher for Pain Followups</string>
     <string name="primary_hint">Primary</string>
     <string name="secondary_hint">Secondary</string>
     <string name="other1_hint">Nonopioid PRESCRIPTION</string>

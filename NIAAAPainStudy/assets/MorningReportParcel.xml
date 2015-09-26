@@ -18,7 +18,7 @@
             <answer id = "4">Very good</answer>
         </question>
 
-        <question id = "1q4" type = "radio">
+        <question id = "1q3" type = "radio">
             <text>How much did your physical pain interfere with your sleep last night?</text>
             <answer id = "1">Very slightly or not at all</answer>
             <answer id = "2">A little</answer>
@@ -32,7 +32,7 @@
 
     <category>
         <description>RECENT PAIN MEDICATION USE</description>
-        <question id = "1q5" type = "radio">
+        <question id = "1q4" type = "radio">
             <text>Have you taken any OPIOID PAIN MEDICATION since wake-up?</text>
             <answer id = "1" triggerFile="4" soft_trigger = "A">Yes</answer>
             <answer id = "2" skip = "11q7">No</answer>
@@ -44,7 +44,7 @@
     <!-- <RECENT DRINKING> -->
     <category>
         <description>RECENT DRINKING</description>
-        <question id = "1q6" type = "radio">
+        <question id = "1q5" type = "radio">
             <text>Have you CONSUMED ALCOHOL since wake-up?</text>
             <answer id = "1" triggerFile="6" soft_trigger = "B">Yes</answer>
             <answer id = "2" skip = "13q1">No</answer>
@@ -66,11 +66,11 @@
             <answer id = "3">Somewhat</answer>
             <answer id = "4">Quite a bit</answer>
             <answer id = "5">An extreme amount</answer>
-            <text id = "1q7">If I take OPIOID PAIN MEDICATION today, I expect it would decrease my physical pain.</text>
-            <text id = "1q8">If I take OPIOID PAIN MEDICATION today, I expect it would make me feel happier.</text>
-            <text id = "1q10">If I take OPIOID PAIN MEDICATION today, I expect it would make me feel less unpleasant.</text>
-            <text id = "1q12">If I take OPIOID PAIN MEDICATION today, I expect it would make it easier to tolerate my physical pain.</text>
-            <text id = "1q14">If I take OPIOID PAIN MEDICATION today, I expect it would make me feel less negative.</text>
+            <text id = "1q6">If I take OPIOID PAIN MEDICATION today, I expect it would decrease my physical pain.</text>
+            <text id = "1q7">If I take OPIOID PAIN MEDICATION today, I expect it would make me feel happier.</text>
+            <text id = "1q8">If I take OPIOID PAIN MEDICATION today, I expect it would make me feel less unpleasant.</text>
+            <text id = "1q9">If I take OPIOID PAIN MEDICATION today, I expect it would make it easier to tolerate my physical pain.</text>
+            <text id = "1q10">If I take OPIOID PAIN MEDICATION today, I expect it would make me feel less negative.</text>
         </questionblock>
     </category>
 
@@ -82,17 +82,17 @@
             <answer id = "3">Somewhat</answer>
             <answer id = "4">Quite a bit</answer>
             <answer id = "5">An extreme amount</answer>
-            <text id = "1q15">If I drink ALCOHOL today, I expect it would decrease my physical pain.</text>
-            <text id = "1q16">If I drink ALCOHOL today, I expect it would make me feel happier.</text>
-            <text id = "1q18">If I drink ALCOHOL today, I expect it would make me feel less unpleasant.</text>
-            <text id = "1q20">If I drink ALCOHOL today, I expect it would make it easier to tolerate my physical pain.</text>
-            <text id = "1q22">If I drink ALCOHOL today, I expect it would make me feel less negative.</text>
+            <text id = "1q11">If I drink ALCOHOL today, I expect it would decrease my physical pain.</text>
+            <text id = "1q12">If I drink ALCOHOL today, I expect it would make me feel happier.</text>
+            <text id = "1q13">If I drink ALCOHOL today, I expect it would make me feel less unpleasant.</text>
+            <text id = "1q14">If I drink ALCOHOL today, I expect it would make it easier to tolerate my physical pain.</text>
+            <text id = "1q15">If I drink ALCOHOL today, I expect it would make me feel less negative.</text>
         </questionblock>
     </category>
 
     <category>
         <description>DRINKING PLAN</description>
-        <question id = "1q23" type = "radio">
+        <question id = "1q16" type = "radio">
             <text>Do you plan on drinking today or tonight?</text>
             <answer id = "1">Yes</answer>
             <answer id = "2">No</answer>
@@ -101,7 +101,7 @@
 
     <category>
         <description>PAIN DAY</description>
-        <question id = "1q24" type = "radio">
+        <question id = "1q17" type = "radio">
             <text>How much pain do you expect to feel today?</text>
             <answer id = "1">0 - No pain</answer>
             <answer id = "2">1</answer>

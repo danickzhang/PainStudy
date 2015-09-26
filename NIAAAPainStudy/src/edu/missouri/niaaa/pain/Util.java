@@ -84,6 +84,7 @@ public class Util {
     public final static String CODE_NAME_CRAVING = "4";
     public final static String CODE_NAME_RANDOM = "5";
     public final static String CODE_NAME_FOLLOW = "6";
+    public final static String CODE_NAME_DUAL = "15";
 
     public final static String CODE_SUSPENSION          = "7";//12
     public final static String CODE_BEDTIME             = "8";//13
@@ -97,6 +98,7 @@ public class Util {
     public final static String CODE_SV_TIMEOUT          = "_23";
     public final static String CODE_SV_REFUSED          = "_24";
     public final static String CODE_SV_NO_PROMPT        = "_25";
+    public final static String CODE_SV_RANDOMSKIP       = "_26";
 
 
     /*survey config*/
@@ -112,6 +114,7 @@ public class Util {
     public static final int SURVEY_ISOLATE_IN_SECONDS           = 29*60;
     public final static int SUSPENSION_INTERVAL_IN_SECONDS      = 15*60;
     public final static int FOLLOWUP_IN_SECONDS                 = 30*60;
+    public final static int VIBRATE_FOR_SECONDS                 = 10;
 
     public final static String TIME_NONE = "none";
     public final static int defHour = 12;
@@ -143,6 +146,7 @@ public class Util {
     public static final String SP_LOGIN_OTHER_MED1              = "OTHER_MED1";
     public static final String SP_LOGIN_OTHER_MED2              = "OTHER_MED2";
     public static final String SP_LOGIN_HAD_INPUT               = "MED_NAMES_HAD_INPUT";
+    public static final String SP_LOGIN_RANDOM_SKIP             = "RANDOM_SKIP_SWITCHER";
     /*bed time info*/
     public static final String SP_BEDTIME                       = SP_BASE + "BEDTIME";
     public static final String SP_BEDTIME_KEY_HOUR              = "BEDTIME_HOUR";
@@ -277,19 +281,19 @@ public class Util {
 
         switch(surveyType){
         case 1:
-            return CODE_NAME_MORNING;
+            return "1";
         case 2:
-            return CODE_NAME_RANDOM;
+            return "2";
         case 3:
             return "3";
         case 4:
             return "4";
         case 5:
-            return CODE_NAME_DRINKING;
+            return "5";
         case 6:
-            return CODE_NAME_FOLLOW;
+            return "6";
         case 7:
-            return CODE_NAME_MOOD;//##??
+            return "15";
         default:
             return "-1";
         }

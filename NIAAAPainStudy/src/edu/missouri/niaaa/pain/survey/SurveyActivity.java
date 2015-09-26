@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -174,6 +175,41 @@ public class SurveyActivity extends Activity {
         surveyFileName = si.getFileName();
 
         pinCheckDialogTitle = (Util.RELEASE ? getString(R.string.pin_title) : getString(R.string.pin_title) + " for reminder "+remindSeq);
+        
+        shp = getSharedPreferences(Util.SP_LOGIN, Context.MODE_PRIVATE);
+        Util.Log_debug(TAG, "randomly cancel PF enable" + shp.getBoolean(Util.SP_LOGIN_RANDOM_SKIP, false));
+        if(shp.getBoolean(Util.SP_LOGIN_RANDOM_SKIP, false)){
+            randomCancelPF();
+        }
+    }
+
+
+    private void randomCancelPF() {
+        // TODO Auto-generated method stub
+        Random rand =new Random(System.currentTimeMillis());
+        int r = rand.nextInt(2);
+        
+        Util.Log_debug(TAG, "randomly cancel P F "+surveyType+" "+remindSeq+" "+r);
+
+        if(surveyType == Util.SV_TYPE_PAIN_FOLLOWUP && remindSeq == 1 && r > 0){
+            Util.cancelSurveyReminders(this, surveyType, surveySeq);
+            surveyStartDatetime = Calendar.getInstance();
+
+            //write
+            Util.writeEvent(SurveyActivity.this, surveyType, Util.CODE_SV_RANDOMSKIP, surveySeq,
+                    Util.getSurveyScheduleDT(SurveyActivity.this, surveyType, surveySeq),
+                    Util.getSurveyAlarmDT(surveyAlarmDT,remindSeq),
+                    Util.dtF.format(surveyStartDatetime.getTime()), Util.dtF.format(Calendar.getInstance().getTime()));
+            
+            //end Cycle
+            if(endCycle){
+                Util.cancelFollowups(SurveyActivity.this, 4);
+                Util.cancelFollowups(SurveyActivity.this, 6);
+                Util.cancelFollowups(SurveyActivity.this, 7);
+            }
+            
+            finish();
+        }
     }
 
 
@@ -633,11 +669,27 @@ public class SurveyActivity extends Activity {
         
         splitSurveyOnComplete(this, surveyType, surveySeq, hasTrigger);
 
+        writeAnswers();
         
         startActivity(dialogIntent);
         finish();
     }
 
+
+
+    private void writeAnswers() {
+        // TODO Auto-generated method stub
+        
+        //write
+        //recording
+        try {
+            writeSurveyToFile(answerMap);
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
 
     private boolean workWithAnswers() {
@@ -672,15 +724,15 @@ public class SurveyActivity extends Activity {
         }
         //answerMap.put(currentQuestion.getId(), currentQuestion.getSelectedAnswers());
 
-        //write
-        //recording
-        try {
-            writeSurveyToFile(answerMap);
-
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+//        //write
+//        //recording
+//        try {
+//            writeSurveyToFile(answerMap);
+//
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
 
         Toast.makeText(this, R.string.survey_completed, Toast.LENGTH_LONG).show();
         return hasTrigger;
@@ -1246,7 +1298,7 @@ public class SurveyActivity extends Activity {
         soundTimer.schedule(soundTask,soundPlayAfter);
 
 
-        vibrator.vibrate(5000);
+        vibrator.vibrate(Util.VIBRATE_FOR_SECONDS * 1000);
     }
 
     private class StartTask extends TimerTask {

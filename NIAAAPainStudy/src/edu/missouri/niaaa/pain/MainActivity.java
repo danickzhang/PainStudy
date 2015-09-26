@@ -49,7 +49,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import edu.missouri.niaaa.pain.activity.AdminManageActivity;
@@ -64,6 +67,7 @@ import edu.missouri.niaaa.pain.survey.SurveyMenu;
 public class MainActivity extends Activity {
     static String TAG = "MainActivity.java";
     boolean logEnable = true;
+    boolean randomSkip = false;
 
     /*onActivityResult Result Code*/
     static final int INTENT_REQUEST_BLUETOOTH = 1;
@@ -865,6 +869,12 @@ public class MainActivity extends Activity {
             DialadminPin.show();
         }
         
+        //randomly skip pain follows
+        else if(item.getItemId() == R.id.randomskip){
+            Dialog DialadminPin = AdminPinCheckDialog(this, admin_randomskip);
+            DialadminPin.show();
+        }
+        
         return super.onOptionsItemSelected(item);
     }
 
@@ -881,6 +891,7 @@ public class MainActivity extends Activity {
     private static final int admin_upload = 0;
     private static final int admin_training = 1;
     private static final int admin_medication = 2;
+    private static final int admin_randomskip = 3;
     
     /*it's really bad to copy&paste large chunk of code*/
     private Dialog AdminPinCheckDialog(final Context context, final int mode) {
@@ -949,6 +960,9 @@ public class MainActivity extends Activity {
                             case admin_medication:
                                 InputMedication(context);
                                 break;
+                            case admin_randomskip:
+                                RandomSkipSwitcher(context);
+                                break;
                                 
                             default:
                                 //do nothing
@@ -1004,6 +1018,56 @@ public class MainActivity extends Activity {
     }
 
     
+    protected void RandomSkipSwitcher(Context context) {
+        // TODO Auto-generated method stub
+        LayoutInflater inflater = LayoutInflater.from(context);
+        final View textEntryView = inflater.inflate(R.layout.skip_switcher, null);
+        TextView pinText = (TextView) textEntryView.findViewById(R.id.med_text);
+        pinText.setText(R.string.skip_set_msg);
+        
+        boolean skip = shp.getBoolean(Util.SP_LOGIN_RANDOM_SKIP, false);
+        Switch skipSwitcher = (Switch) textEntryView.findViewById(R.id.random_switcher);
+        skipSwitcher.setChecked(skip);
+        skipSwitcher.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,
+                    boolean isChecked) {
+                // TODO Auto-generated method stub
+                
+                if(isChecked){//randomly skipped
+                    randomSkip = true;
+                }
+                
+                else{//always on
+                    randomSkip = false;
+                }  
+            }});
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        builder.setTitle(R.string.med_set_title);
+        builder.setView(textEntryView);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+                
+                
+                Util.Log_debug("Random Skip Dialog", "randomly skipped "+randomSkip);
+                shp.edit().putBoolean(Util.SP_LOGIN_RANDOM_SKIP, randomSkip).commit();
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+            }
+        });
+
+        builder.create().show();;
+    }
+
+
     private void InputMedication(final Context context) {
         // TODO Auto-generated method stub
         inputMedicationDialog(context).show();

@@ -3,6 +3,7 @@
     <item android:id="@+id/manage" android:title="@string/menu_management"></item>
     <item android:id="@+id/training" android:title="@string/menu_training"></item>
     <item android:id="@+id/medication" android:title="@string/menu_medication"></item>
+    <item android:id="@+id/randomskip" android:title="@string/menu_skip"></item>
     <item android:id="@+id/upload" android:title="@string/menu_upload"></item>
     <item android:id="@+id/about" android:title="@string/menu_about"></item>
 
