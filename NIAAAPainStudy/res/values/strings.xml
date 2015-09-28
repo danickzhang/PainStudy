@@ -39,7 +39,7 @@
 
     <!-- Suspension -->
     <string name="suspension_title">Please Confirm Suspension</string>
-    <string name="suspension_msg">During the suspension you won\'t receive any random prompts, but you WILL receive drinking follow-ups.</string>
+    <string name="suspension_msg">During the suspension you won\'t receive any random prompts.</string>
     <string name="suspension_break_title">Break Suspension</string>
     <string name="suspension_break_msg">Please confirm that you want to break suspension.</string>
     <string name="suspension_set_text">Select suspension duration:</string>
