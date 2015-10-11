@@ -508,7 +508,7 @@ public class MainActivity extends Activity {
 
                 if(!Util.isSuspensionFlag(MainActivity.this)){
                     int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-                    if(hour >= 21 || hour <3){
+                    if(hour >= 20 || hour <3){
                         //verify user pin
                         userPinCheckDialogForBedtime(MainActivity.this).show();
                     }else{
@@ -952,7 +952,7 @@ public class MainActivity extends Activity {
                             
                             switch(mode){
                             case admin_upload:
-                                uploadSurveyData();
+                                uploadBackupData();
                                 break;
                             case admin_training:
                                 TrainingMenu();
@@ -1057,12 +1057,12 @@ public class MainActivity extends Activity {
             }
         });
 
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
-
-            }
-        });
+//        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int whichButton) {
+//
+//            }
+//        });
 
         builder.create().show();;
     }
@@ -1157,14 +1157,16 @@ public class MainActivity extends Activity {
     }
     
     
-    private void uploadSurveyData() {
+    private void uploadBackupData() {
         String upload_file_name = "";
+        String upload_file_name2 = "";
 
         String ID = shp.getString(Util.SP_LOGIN_KEY_USERID, "");
         Log.d(TAG, "ID: "+ID);
 
         if(!(ID.equals(""))){
             upload_file_name = "SurveyData."+ID+".txt";
+            upload_file_name2 = "LocationData."+ID+".txt";
         }
         //This probably won't happen
         else{
@@ -1187,8 +1189,8 @@ public class MainActivity extends Activity {
 //      boolean finalResult = false;
         String data = "";
 
-        try {
-            // open the file for reading
+        try{
+         // open the file for reading
             InputStream instream = new FileInputStream(Util.PHONE_BASE_PATH + upload_file_name);
 
             // if file the available for reading
@@ -1209,8 +1211,49 @@ public class MainActivity extends Activity {
                 inputreader.close();
                 data = stringBuilder.toString();
 
-                Log.d(TAG, "Data: "+data);
+//                Log.d(TAG, "Data: "+data);
+            
+            }
+        }catch (FileNotFoundException e) {
+            Log.e(TAG, "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e(TAG, "Can not read file: " + e.toString());
+        }
+        
+        try{
+            // open the file for reading
+               InputStream instream = new FileInputStream(Util.PHONE_BASE_PATH + upload_file_name2);
 
+               // if file the available for reading
+               if (instream != null) {
+                   // prepare the file for reading
+                   InputStreamReader inputreader = new InputStreamReader(instream);
+                   BufferedReader buffreader = new BufferedReader(inputreader);
+
+                   String line = "";
+
+                   StringBuilder stringBuilder = new StringBuilder();
+
+                   while((line = buffreader.readLine()) != null){
+                       stringBuilder.append(line);
+                       Log.d(TAG, "Line: "+line);
+                   }
+
+                   inputreader.close();
+                   data += stringBuilder.toString();
+
+//                   Log.d(TAG, "Data: "+data);
+               
+               }
+           }catch (FileNotFoundException e) {
+               Log.e(TAG, "File not found: " + e.toString());
+           } catch (IOException e) {
+               Log.e(TAG, "Can not read file: " + e.toString());
+           }
+           
+        
+        try {
+            if(data != "" && data != null){
                 if(Util.checkDataConnectivity(this)){
 
                     mContext = this;
@@ -1226,10 +1269,8 @@ public class MainActivity extends Activity {
                     t.execute(data);
                 }
             }
-        }catch (FileNotFoundException e) {
-            Log.e(TAG, "File not found: " + e.toString());
-        } catch (IOException e) {
-            Log.e(TAG, "Can not read file: " + e.toString());
+        }catch (Exception e) {
+            Log.e(TAG, e.toString());
         }
     }
 

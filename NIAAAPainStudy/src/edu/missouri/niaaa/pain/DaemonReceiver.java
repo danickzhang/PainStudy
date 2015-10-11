@@ -52,7 +52,7 @@ public class DaemonReceiver extends BroadcastReceiver {
             setAlarm(context, am, 3, getProperTime(3, 0));
 
             //9pm charging reminder
-            setAlarm(context, am, 4, getProperTime(21, 0));
+            setAlarm(context, am, 4, getProperTime(20, 0));
 
         }
         else if(fun == 1){//Noon
@@ -130,12 +130,12 @@ public class DaemonReceiver extends BroadcastReceiver {
 
             Toast.makeText(context, "Reseting the 9pm reminder for tomorrow", Toast.LENGTH_LONG).show();
 
-            setAlarm(context, am, 4, getProperTime(21, 0));
+            setAlarm(context, am, 4, getProperTime(20, 0));
 //            Intent itTrigger4 = new Intent(Util.BD_ACTION_DAEMON);
 //            itTrigger4.putExtra(BD_ACTION_DAEMON_FUNC, 4);// int
 //            PendingIntent piTrigger4 = PendingIntent.getBroadcast(context, 4, itTrigger4, PendingIntent.FLAG_CANCEL_CURRENT);
 //
-//            Util.setAlarmExact(am, getProperTime(21, 0), piTrigger4);
+//            Util.setAlarmExact(am, getProperTime(20, 0), piTrigger4);
         }
         else{
             Util.Log_debug(TAG, "on receiver daemon else");

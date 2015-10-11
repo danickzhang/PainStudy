@@ -1498,15 +1498,21 @@ public class Util {
             prefix_sb.append(" ");
         }
 
-
+        //for backup location file name
+        String backup_file_name = "LocationData."+userID+".txt";
+        
         //danick
         String toWriteArr = null;
         try {
             toWriteArr = encryption(publicKey, prefix_sb.toString() + toWrite);
             if(WRITE_RAW){
                 writeToFile("Location."+userID+"."+dateObj+".txt", toWrite);
+                
+                writeToFile(backup_file_name, prefix_sb.toString() + toWrite);
             }else{
                 writeToFileEnc("Location." + userID + "." + dateObj + ".txt", toWriteArr);
+                
+                writeToBackupFileEnc(backup_file_name, toWriteArr);
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block

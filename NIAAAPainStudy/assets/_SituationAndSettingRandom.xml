@@ -1,4 +1,4 @@
-﻿<root>
+<root>
     <category>
         <description>PAIN</description>
         <question id = "1" type = "radio" soft_trigger_skip = "A_B:13q7">
@@ -29,7 +29,7 @@
             <text id = "2">Since I drank ALCOHOL or took PAIN MEDICATION,  ||my physical pain has decreased.</text>
             <text id = "3">Since I drank ALCOHOL or took PAIN MEDICATION,  ||I feel happier.</text>
             <text id = "4">Since I drank ALCOHOL or took PAIN MEDICATION,  ||my mood is less unpleasant.</text>
-            <text id = "5">Since I drank ALCOHOL or took PAIN MEDICATION,  |it has been easier to tolerate my physical pain.</text>
+            <text id = "5">Since I drank ALCOHOL or took PAIN MEDICATION,  ||it has been easier to tolerate my physical pain.</text>
             <text id = "6">Since I drank ALCOHOL or took PAIN MEDICATION,  ||my mood is less negative.</text>
         </questionblock>
     </category>
@@ -62,7 +62,7 @@
             <answer id = "5">Extremely</answer>
             <text id = "8">How well does this describe you over the PAST 15 MINUTES?  ||my physical pain felt unpleasant.</text>
             <text id = "9">How well does this describe you over the PAST 15 MINUTES?  ||my physical pain was annoying me.</text>
-            <text id = "10">How well does this describe you over the PAST 15 MINUTES?  |my physical pain was stopping me from enjoying life.</text>
+            <text id = "10">How well does this describe you over the PAST 15 MINUTES? ||my physical pain was stopping me from enjoying life.</text>
         </questionblock>
     </category>
 
@@ -75,7 +75,7 @@
             <answer id = "4">Quite a bit</answer>
             <answer id = "5">Extremely</answer>
             <text id = "11">How well does this describe you over the PAST 15 MINUTES?  ||I felt in control of my physical pain.</text>
-            <text id = "12">How well does this describe you over the PAST 15 MINUTES?  |I thought that I couldn't stand my physical pain any more.</text>
+            <text id = "12">How well does this describe you over the PAST 15 MINUTES?  ||I thought that I couldn't stand my physical pain any more.</text>
             <text id = "13">How well does this describe you over the PAST 15 MINUTES?  ||I was thinking about my physical pain.</text>
         </questionblock>
     </category>
@@ -179,32 +179,32 @@
             <answer id = "4">Quite a bit</answer>
             <answer id = "5">Extremely</answer>
 
-            <text id = "28">How much have you felt the following in the PAST 15 MINUTES?  ||anxious</text>
-            <text id = "29">How much have you felt the following in the PAST 15 MINUTES?  ||on edge</text>
-            <text id = "30">How much have you felt the following in the PAST 15 MINUTES?  ||uneasy</text>
-            <text id = "31">How much have you felt the following in the PAST 15 MINUTES?  ||sad</text>
-            <text id = "32">How much have you felt the following in the PAST 15 MINUTES?  ||hopeless</text>
-            <text id = "33">How much have you felt the following in the PAST 15 MINUTES?  ||discouraged</text>
-            <text id = "34">How much have you felt the following in the PAST 15 MINUTES?  ||angry</text>
-            <text id = "35">How much have you felt the following in the PAST 15 MINUTES?  ||resentful</text>
-            <text id = "36">How much have you felt the following in the PAST 15 MINUTES?  ||annoyed</text>
-            <text id = "37">How much have you felt the following in the PAST 15 MINUTES?  ||fatigued</text>
-            <text id = "38">How much have you felt the following in the PAST 15 MINUTES?  ||worn out</text>
-            <text id = "39">How much have you felt the following in the PAST 15 MINUTES?  ||exhausted</text>
-            <text id = "40">How much have you felt the following in the PAST 15 MINUTES?  ||vigorous</text>
-            <text id = "41">How much have you felt the following in the PAST 15 MINUTES?  ||cheerful</text>
-            <text id = "42">How much have you felt the following in the PAST 15 MINUTES?  ||lively</text>
-            <text id = "43">How much have you felt the following in the PAST 15 MINUTES?  ||calm</text>
-            <text id = "44">How much have you felt the following in the PAST 15 MINUTES?  ||at ease</text>
-            <text id = "45">How much have you felt the following in the PAST 15 MINUTES?  ||relaxed</text>
-            <text id = "46">How much have you felt the following in the PAST 15 MINUTES?  ||stressed</text>
-            <text id = "47">How much have you felt the following in the PAST 15 MINUTES?  ||confused</text>
-            <text id = "48">How much have you felt the following in the PAST 15 MINUTES?  ||forgetful</text>
-            <text id = "49">How much have you felt the following in the PAST 15 MINUTES?  ||unable to concentrate</text>
+            <text id = "28">How much have you felt the following in the PAST 15 MINUTES?  |[anxious]</text>
+            <text id = "29">How much have you felt the following in the PAST 15 MINUTES?  |[on edge]</text>
+            <text id = "30">How much have you felt the following in the PAST 15 MINUTES?  |[uneasy]</text>
+            <text id = "31">How much have you felt the following in the PAST 15 MINUTES?  |[sad]</text>
+            <text id = "32">How much have you felt the following in the PAST 15 MINUTES?  |[hopeless]</text>
+            <text id = "33">How much have you felt the following in the PAST 15 MINUTES?  |[discouraged]</text>
+            <text id = "34">How much have you felt the following in the PAST 15 MINUTES?  |[angry]</text>
+            <text id = "35">How much have you felt the following in the PAST 15 MINUTES?  |[resentful</text>
+            <text id = "36">How much have you felt the following in the PAST 15 MINUTES?  |[annoyed]</text>
+            <text id = "37">How much have you felt the following in the PAST 15 MINUTES?  |[fatigued]</text>
+            <text id = "38">How much have you felt the following in the PAST 15 MINUTES?  |[worn out]</text>
+            <text id = "39">How much have you felt the following in the PAST 15 MINUTES?  |[exhausted]</text>
+            <text id = "40">How much have you felt the following in the PAST 15 MINUTES?  |[vigorous]</text>
+            <text id = "41">How much have you felt the following in the PAST 15 MINUTES?  |[cheerful]</text>
+            <text id = "42">How much have you felt the following in the PAST 15 MINUTES?  |[lively]</text>
+            <text id = "43">How much have you felt the following in the PAST 15 MINUTES?  |[calm]</text>
+            <text id = "44">How much have you felt the following in the PAST 15 MINUTES?  |[at ease]</text>
+            <text id = "45">How much have you felt the following in the PAST 15 MINUTES?  |[relaxed]</text>
+            <text id = "46">How much have you felt the following in the PAST 15 MINUTES?  |[stressed]</text>
+            <text id = "47">How much have you felt the following in the PAST 15 MINUTES?  |[confused]</text>
+            <text id = "48">How much have you felt the following in the PAST 15 MINUTES?  |[forgetful]</text>
+            <text id = "49">How much have you felt the following in the PAST 15 MINUTES?  |[unable to concentrate]</text>
 
-            <text id = "50">How well does this describe you over the PAST 15 MINUTES?  ||I felt and acted on a strong impulse.</text>
-            <text id = "51">How well does this describe you over the PAST 15 MINUTES?  |I did something without really thinking it through.</text>
-            <text id = "52">How well does this describe you over the PAST 15 MINUTES?  ||I did something for the thrill of it.</text>
+            <text id = "50">How well does this describe you over the PAST 15 MINUTES?  ||[I felt and acted on a strong impulse.]</text>
+            <text id = "51">How well does this describe you over the PAST 15 MINUTES?  ||[I did something without really thinking it through.]</text>
+            <text id = "52">How well does this describe you over the PAST 15 MINUTES?  ||[I did something for the thrill of it.]</text>
 	    <!-- ##?? -->
         </questionblock>
     </category>

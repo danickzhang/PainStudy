@@ -177,7 +177,7 @@ public class SurveyActivity extends Activity {
         pinCheckDialogTitle = (Util.RELEASE ? getString(R.string.pin_title) : getString(R.string.pin_title) + " for reminder "+remindSeq);
         
         shp = getSharedPreferences(Util.SP_LOGIN, Context.MODE_PRIVATE);
-        Util.Log_debug(TAG, "randomly cancel PF enable" + shp.getBoolean(Util.SP_LOGIN_RANDOM_SKIP, false));
+        Util.Log_debug(TAG, "randomly cancel PF enable " + shp.getBoolean(Util.SP_LOGIN_RANDOM_SKIP, false));
         if(shp.getBoolean(Util.SP_LOGIN_RANDOM_SKIP, false)){
             randomCancelPF();
         }
@@ -1635,12 +1635,24 @@ public class SurveyActivity extends Activity {
 
         String data = null;
         String phase = start ? "trigger" : "complete";
+        String raw = uID + "," + rsDate + "," + rsID + "," + phase;
+        
+        String backup_file_name = "ComplianceData."+uID+".txt";
         try {
-            data = Util.encryption(context, uID + "," + rsDate + "," + rsID + "," + phase);
+            data = Util.encryption(context, raw);
+            
+            if(Util.WRITE_RAW){
+                Util.writeToFile(backup_file_name, raw);
+            }else{
+                Util.writeToFile(backup_file_name, raw);
+                //Util.writeToBackupFileEnc(backup_file_name, raw);//data);
+            }
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        
+        
 
         Util.Log_debug(TAG, false, "---write compliance user is "+uID+" type "+surveyType+surveySeq+" seq "+randomSeq+" "+phase);
 
