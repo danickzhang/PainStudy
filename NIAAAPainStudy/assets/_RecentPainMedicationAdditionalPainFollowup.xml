@@ -62,6 +62,14 @@
             <answer id = "2">OVER-THE-COUNTER pain medication</answer>
             <answer id = "3" option = "Please make a note of what you took in your medication log.">OTHER pain medication</answer>
         </question>
+        
+        <question id = "9" type = "number">
+            <text>Please enter the number of pills you took of your OTHER Pain Medication.</text>
+            <answer id = "item">pill(s)</answer>
+            <answer id = "min">0</answer><!-- Chen, is it possible to have a decimal place? It would only need to be .5. So .5, 1, 1.5, 2 and so forth-->
+            <answer id = "max">10</answer>
+            <answer id = "digit">Y</answer>
+        </question>
 
     </category>
 </root>

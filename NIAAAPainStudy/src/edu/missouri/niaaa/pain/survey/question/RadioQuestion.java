@@ -7,7 +7,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.text.Html;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -62,7 +61,8 @@ public class RadioQuestion extends SurveyQuestion {
 
         TextView questionText = new TextView(c);
 //        questionText.setText(getQuestion().replace("|", "\n"));
-        questionText.setText(Html.fromHtml(getQuestion().replace("|", "<br>").replace("[", "<font color=\"red\">").replace("]", "</font>")));
+//        questionText.setText(Html.fromHtml(getQuestion().replace("|", "<br>").replace("[", "<font color=\"red\">").replace("]", "</font>")));
+        questionText.setText(getQuestion().replace("|", "\n").replace("[", "").replace("]", ""));
 //        questionText.setText(R.string.app_names);
         //questionText.setTextAppearance(c, R.attr.textAppearanceLarge);
         questionText.setTextSize(TypedValue.COMPLEX_UNIT_DIP,22);//20);
