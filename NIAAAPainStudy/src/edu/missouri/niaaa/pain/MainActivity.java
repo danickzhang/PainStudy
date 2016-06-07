@@ -1025,7 +1025,8 @@ public class MainActivity extends Activity {
         TextView pinText = (TextView) textEntryView.findViewById(R.id.med_text);
         pinText.setText(R.string.skip_set_msg);
         
-        boolean skip = shp.getBoolean(Util.SP_LOGIN_RANDOM_SKIP, false);
+        boolean skip = shp.getBoolean(Util.SP_LOGIN_RANDOM_SKIP, true);
+        randomSkip = skip;
         Switch skipSwitcher = (Switch) textEntryView.findViewById(R.id.random_switcher);
         skipSwitcher.setChecked(skip);
         skipSwitcher.setOnCheckedChangeListener(new OnCheckedChangeListener(){
@@ -1042,6 +1043,7 @@ public class MainActivity extends Activity {
                 else{//always on
                     randomSkip = false;
                 }  
+                Util.Log_debug("Random Skip Dialog", "randomly skip on change "+randomSkip);
             }});
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setCancelable(false);
@@ -1162,6 +1164,7 @@ public class MainActivity extends Activity {
         String upload_file_name2 = "";
 
         String ID = shp.getString(Util.SP_LOGIN_KEY_USERID, "");
+//        String ID = "0000";
         Log.d(TAG, "ID: "+ID);
 
         if(!(ID.equals(""))){

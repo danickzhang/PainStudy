@@ -177,8 +177,8 @@ public class SurveyActivity extends Activity {
         pinCheckDialogTitle = (Util.RELEASE ? getString(R.string.pin_title) : getString(R.string.pin_title) + " for reminder "+remindSeq);
         
         shp = getSharedPreferences(Util.SP_LOGIN, Context.MODE_PRIVATE);
-        Util.Log_debug(TAG, "randomly cancel PF enable " + shp.getBoolean(Util.SP_LOGIN_RANDOM_SKIP, false));
-        if(shp.getBoolean(Util.SP_LOGIN_RANDOM_SKIP, false)){
+        Util.Log_debug(TAG, "randomly cancel PF enable " + shp.getBoolean(Util.SP_LOGIN_RANDOM_SKIP, true));
+        if(shp.getBoolean(Util.SP_LOGIN_RANDOM_SKIP, true)){
             randomCancelPF();
         }
     }
@@ -667,9 +667,13 @@ public class SurveyActivity extends Activity {
         dialogIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         dialogIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         
+        
+        writeAnswers();
+        
+        //exchange position with writeA() so than splitSurvey wont erase scheduledTimeStame
         splitSurveyOnComplete(this, surveyType, surveySeq, hasTrigger);
 
-        writeAnswers();
+
         
         startActivity(dialogIntent);
         finish();
@@ -807,6 +811,8 @@ public class SurveyActivity extends Activity {
             
             if(triggerSize==0){
                 //do nothing
+                
+                Util.scheduleFollowups(this, Util.getUpdatedFollowupSchedules(this, surveySeq, hasTrigger), 4);
             }
             else if(triggerSize==1){
                 if(triggerList.get(0).equals("7")){
@@ -853,6 +859,9 @@ public class SurveyActivity extends Activity {
             
             if(triggerSize==0){
                 //do nothing
+                
+                //do something, update the schedule time for next drinking followup counting down from current survey finish time
+                Util.scheduleFollowups(this, Util.getUpdatedFollowupSchedules(this, surveySeq, hasTrigger), 6);
             }
             else if(triggerSize==1){
                 if(triggerList.get(0).equals("7")){
